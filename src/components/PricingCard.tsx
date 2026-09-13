@@ -22,28 +22,28 @@ export default function PricingCard({ service }: React.PropsWithChildren<{ servi
   };
 
   return (
-    <div className={`group flex flex-col bg-surface-container border ${service.popular ? 'border-primary/30 shadow-[0_0_30px_rgba(var(--color-primary-rgb),0.15)]' : 'border-white/5'} rounded-3xl p-8 transition-colors relative overflow-hidden text-left shadow-lg h-full`}>
+    <div className={`group flex flex-col bg-transparent border-t ${service.popular ? 'border-primary border-x px-6 -mx-6' : 'border-white/10'} pt-8 pb-8 transition-colors relative text-left h-full`}>
       {service.popular && (
-          <div className="absolute top-0 right-0 p-6">
-            <div className="px-3 py-1 bg-primary/20 backdrop-blur-sm rounded-full text-[10px] font-bold text-primary flex items-center gap-1 uppercase tracking-widest font-mono">
+          <div className="absolute top-0 right-0 mt-8">
+            <div className="px-3 py-1 bg-primary/10 text-primary type-level-4">
                 Popular
             </div>
           </div>
       )}
-      <div className="font-mono text-[10px] text-primary uppercase tracking-widest font-bold mb-3">{service.category}</div>
-      <h3 className="font-display text-2xl font-bold text-white mb-2 pr-20">{service.title}</h3>
-      <p className="text-on-surface-variant text-sm mb-6 leading-relaxed font-sans line-clamp-2">{service.description}</p>
+      <div className="type-level-4 text-primary mb-4">{service.category}</div>
+      <h3 className="type-level-2 text-white mb-4 pr-20">{service.title}</h3>
+      <p className="type-level-3 text-sm mb-8 pr-4">{service.description}</p>
       
       {/* Slider Area */}
-      <div className="bg-background rounded-xl p-6 border border-white/5 mb-6 flex-grow flex flex-col justify-between">
-        <div className="mt-4">
-          <div className="flex justify-between items-center mb-2">
-            <span className="font-mono text-xs text-on-surface-variant uppercase tracking-widest">
+      <div className="border border-white/10 p-6 mb-8 flex-grow flex flex-col justify-between">
+        <div className="mt-2">
+          <div className="flex justify-between items-center mb-6">
+            <span className="type-level-4 text-on-surface-variant">
               {service.sliderSteps[activeStep].label}
             </span>
-            <span className="font-display font-bold text-2xl text-white">
+            <span className="type-level-2 text-white text-3xl">
               ${service.sliderSteps[activeStep].price}
-              <span className="text-xs font-sans font-normal text-on-surface-variant">/mo</span>
+              <span className="text-sm font-normal text-white/50">/mo</span>
             </span>
           </div>
 
@@ -81,7 +81,7 @@ export default function PricingCard({ service }: React.PropsWithChildren<{ servi
       <div className="mt-auto flex flex-col gap-4">
         <button 
            onClick={handleAddToCart}
-           className="w-full py-4 rounded-xl font-bold text-sm bg-white/5 hover:bg-white/10 text-white transition-colors flex items-center justify-center gap-2 border border-white/10"
+           className={`w-full py-4 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 ${service.popular ? 'bg-primary text-black hover:bg-primary-hover' : 'bg-white text-black hover:bg-gray-200'}`}
         >
           <ShoppingCart className="w-4 h-4" /> Add to Cart
         </button>

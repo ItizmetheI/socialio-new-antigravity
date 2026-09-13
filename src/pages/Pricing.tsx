@@ -8,7 +8,7 @@ import { motion } from "motion/react";
 export default function Pricing() {
   return (
     <>
-      <div className="mesh-gradient-pricing fixed top-0 left-0 w-full h-full -z-10"></div>
+      {/* Removed decorative mesh gradient */}
       
       <main className="pt-32 w-full">
         {/* Hero Section */}

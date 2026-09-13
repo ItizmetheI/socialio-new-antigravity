@@ -63,7 +63,7 @@ export default function ServiceDetail() {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden pt-32 pb-24 text-on-surface">
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 blur-[120px] rounded-full pointer-events-none -z-10" />
+
 
       <main className="max-w-7xl mx-auto px-6">
 
@@ -120,7 +120,7 @@ export default function ServiceDetail() {
                       transition={{ duration: 0.5, delay: idx * 0.15 }}
                       className="bg-surface-container border border-white/10 rounded-3xl p-8 relative overflow-hidden group hover:border-white/20 transition-all"
                     >
-                      <div className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-[40px] transition-colors ${idx % 2 === 0 ? "bg-primary/10 group-hover:bg-primary/20" : "bg-purple-500/10 group-hover:bg-purple-500/20"}`} />
+
                       {idx % 2 === 0
                         ? <TrendingUp className="w-7 h-7 text-primary mb-4" />
                         : <Target className="w-7 h-7 text-purple-400 mb-4" />
@@ -182,7 +182,7 @@ export default function ServiceDetail() {
 
             {/* First 7 Days */}
             <div className="bg-surface-container border border-white/5 rounded-3xl p-8 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] -z-10" />
+
               <h2 className="font-display text-2xl font-bold text-white mb-2">Your first 7 days</h2>
               <p className="text-on-surface-variant font-sans mb-8 text-sm">What happens right after you check out.</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -357,7 +357,7 @@ export default function ServiceDetail() {
 
             {/* Recent Work Showcase */}
             <div className="bg-surface-container border border-white/10 rounded-3xl p-6 shadow-xl relative overflow-hidden">
-               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-[40px] -z-10" />
+
                <h3 className="font-display text-lg font-bold text-white mb-1">Recent Showcase</h3>
                <p className="text-xs text-on-surface-variant font-sans mb-5">A sample of recent deliverables from this service.</p>
                

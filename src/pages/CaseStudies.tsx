@@ -83,8 +83,8 @@ export default function CaseStudies() {
   return (
     <div className="pt-32 pb-24 relative overflow-hidden bg-background">
       {/* Background Elements */}
-      <div className="absolute inset-0 mesh-gradient-case-studies opacity-20 mix-blend-screen pointer-events-none" />
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -z-10 translate-x-1/3 -translate-y-1/3"></div>
+      {/* Removed decorative mesh gradient */}
+
 
       <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col items-center">
         

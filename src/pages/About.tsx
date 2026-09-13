@@ -50,7 +50,7 @@ export default function About() {
 
   return (
     <div className="pt-32 pb-24 relative overflow-hidden bg-background min-h-screen text-on-surface">
-      <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/10 blur-[150px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/3" />
+
       
       <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col items-center">
         

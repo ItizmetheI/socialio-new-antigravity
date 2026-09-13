@@ -89,7 +89,7 @@ export default function Blog() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="w-full mb-16 group cursor-pointer"
         >
-           <div className="glass-card rounded-[2rem] p-4 md:p-6 border border-outline-variant/30 flex flex-col md:flex-row gap-8 items-center overflow-hidden">
+           <div className="bg-surface-container border border-white/10 rounded-[2rem] p-4 md:p-6 flex flex-col md:flex-row gap-8 items-center overflow-hidden">
              <div className="w-full md:w-1/2 aspect-[16/10] rounded-2xl overflow-hidden relative">
                 <img src={posts[0].image} alt={posts[0].title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
              </div>
@@ -125,7 +125,7 @@ export default function Blog() {
                whileInView={{ opacity: 1, y: 0 }}
                viewport={{ once: true }}
                transition={{ duration: 0.5, delay: index * 0.1 }}
-               className="glass-card rounded-[1.5rem] border border-outline-variant/30 overflow-hidden group hover:border-primary/50 transition-colors flex flex-col"
+               className="bg-surface-container border border-white/10 rounded-[1.5rem] overflow-hidden group hover:border-primary/50 transition-colors flex flex-col"
              >
                 <div className="aspect-[16/10] overflow-hidden relative">
                   <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
@@ -159,9 +159,9 @@ export default function Blog() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="mt-24 w-full max-w-4xl glass-card border border-primary/20 rounded-[2.5rem] p-10 md:p-16 flex flex-col md:flex-row items-center gap-12 relative overflow-hidden"
+          className="mt-24 w-full max-w-4xl bg-surface-container border border-white/10 rounded-[2.5rem] p-10 md:p-16 flex flex-col md:flex-row items-center gap-12 relative overflow-hidden"
         >
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-[80px]" />
+
           
           <div className="flex-1 relative z-10 text-center md:text-left">
             <h3 className="text-headline-md font-headline-md text-white mb-4">Get the weekly playbook</h3>
@@ -176,7 +176,7 @@ export default function Blog() {
                 className="bg-surface-container/80 border border-outline-variant/30 rounded-xl px-5 py-3 text-white focus:outline-none focus:border-primary min-w-[250px]"
                 required
               />
-               <button type="submit" className="primary-button-glow font-bold text-on-primary-fixed px-6 py-3 rounded-xl whitespace-nowrap">
+               <button type="submit" className="bg-primary hover:bg-primary-hover font-bold text-on-primary-fixed px-6 py-3 rounded-xl whitespace-nowrap transition-colors">
                 Subscribe
               </button>
             </form>

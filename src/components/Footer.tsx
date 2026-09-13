@@ -17,17 +17,17 @@ export default function Footer() {
   };
 
   return (
-    <footer className="w-full bg-background border-t border-white/5 pt-20 pb-8 mt-24">
+    <footer className="w-full bg-background border-t border-white/10 pt-20 pb-8 mt-24">
       <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
+        <div className="grid-12 w-full gap-y-12 mb-16">
             
             {/* Brand & Newsletter */}
-            <div className="lg:col-span-2">
+            <div className="col-span-12 lg:col-span-5 pr-8">
                 <div className="font-display text-3xl font-bold text-white mb-6">KB Growth</div>
                 <p className="font-sans text-on-surface-variant max-w-sm mb-8">
                   Precision marketing for high-growth teams. We turn digital attention into enterprise value.
                 </p>
-                <div className="bg-surface-container rounded-2xl p-6 border border-white/5 mb-8">
+                <div className="border border-white/10 p-6 mb-8 bg-background">
                    <h5 className="font-bold text-white mb-2 text-sm font-sans flex items-center gap-2">
                       <Mail className="w-4 h-4 text-primary" /> Join the Growth Newsletter
                    </h5>
@@ -44,9 +44,9 @@ export default function Footer() {
                          value={email}
                          onChange={(e) => setEmail(e.target.value)}
                          onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                         className="bg-background border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-primary flex-grow" 
+                         className="bg-background border border-white/10 px-4 py-2 text-sm text-white focus:outline-none focus:border-primary flex-grow" 
                        />
-                       <button onClick={handleSubmit} className="bg-white text-black p-2 rounded-lg hover:bg-gray-200 transition-colors">
+                       <button onClick={handleSubmit} className="bg-white text-black px-6 py-2 hover:bg-gray-200 transition-colors font-bold type-level-4">
                          <ArrowRight className="w-4 h-4" />
                        </button>
                      </div>
@@ -60,8 +60,8 @@ export default function Footer() {
             </div>
 
             {/* Social Services */}
-            <div className="lg:col-span-1">
-                <h5 className="font-mono text-xs uppercase tracking-widest text-white font-bold mb-6">Social Media</h5>
+            <div className="col-span-12 sm:col-span-4 lg:col-span-2">
+                <h5 className="type-level-4 text-white mb-6">Social Media</h5>
                 <ul className="space-y-4 font-sans text-sm">
                     {socialCategories.map(s => (
                        <li key={s.id}><Link to={`/service/${s.id}`} className="text-on-surface-variant hover:text-white transition-colors block line-clamp-1">{s.title}</Link></li>
@@ -71,8 +71,8 @@ export default function Footer() {
             </div>
 
             {/* Other Services */}
-            <div className="lg:col-span-1">
-                <h5 className="font-mono text-xs uppercase tracking-widest text-white font-bold mb-6">Growth & Scale</h5>
+            <div className="col-span-12 sm:col-span-4 lg:col-span-2">
+                <h5 className="type-level-4 text-white mb-6">Growth & Scale</h5>
                 <ul className="space-y-4 font-sans text-sm">
                     {otherCategories.map(s => (
                        <li key={s.id}><Link to={`/service/${s.id}`} className="text-on-surface-variant hover:text-white transition-colors block line-clamp-1">{s.title}</Link></li>
@@ -82,8 +82,8 @@ export default function Footer() {
             </div>
 
             {/* Company */}
-            <div className="lg:col-span-1">
-                <h5 className="font-mono text-xs uppercase tracking-widest text-white font-bold mb-6">Company</h5>
+            <div className="col-span-12 sm:col-span-4 lg:col-span-3">
+                <h5 className="type-level-4 text-white mb-6">Company</h5>
                 <ul className="space-y-4 font-sans text-sm">
                     <li><Link to="/about" className="text-on-surface-variant hover:text-white transition-colors">About Us</Link></li>
                     <li><Link to="/industries" className="text-on-surface-variant hover:text-white transition-colors">Industries We Serve</Link></li>

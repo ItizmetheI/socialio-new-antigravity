@@ -4,7 +4,7 @@ import { useCart } from "../context/CartContext";
 import CartDrawer from "./CartDrawer";
 import { useState, useEffect } from "react";
 import { servicesData } from "../data/services";
-import Magnetic from "./Magnetic";
+
 
 export default function NavBar() {
   const { pathname } = useLocation();
@@ -12,6 +12,16 @@ export default function NavBar() {
   
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  // Handle scroll behavior for quiet nav
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -33,7 +43,7 @@ export default function NavBar() {
   return (
     <>
       <nav 
-        className="fixed top-0 w-full z-40 bg-background/80 backdrop-blur-xl border-b border-white/5 shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]"
+        className={`fixed top-0 w-full z-40 transition-all duration-300 ${scrolled ? 'bg-background/95 backdrop-blur-md border-b border-white/10 shadow-sm py-0' : 'bg-transparent border-transparent py-2'}`}
         onMouseLeave={() => setActiveDropdown(null)}
       >
         <div className="flex justify-between items-center max-w-7xl mx-auto px-6 h-20">
@@ -74,14 +84,12 @@ export default function NavBar() {
                 </span>
               )}
             </button>
-            <Link to="/contact" className="hidden border border-white/10 md:inline-block bg-white text-black px-6 py-2 rounded-xl font-bold text-sm transition-all duration-300 hover:bg-gray-200">
+            <Link to="/contact" className="hidden md:inline-block border border-white/10 bg-white text-black px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-gray-200">
               Client Login
             </Link>
-            <Magnetic>
-              <Link to="/contact" className="hidden md:inline-block bg-primary text-background px-6 py-2 rounded-xl font-bold text-sm transition-all duration-300 hover:bg-primary-hover shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.3)] hover:shadow-primary/50">
-                Get Started
-              </Link>
-            </Magnetic>
+            <Link to="/contact" className="hidden md:inline-block bg-primary text-background px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-primary-hover">
+              Get Started
+            </Link>
             <button 
               className="md:hidden text-white"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -153,10 +161,10 @@ export default function NavBar() {
               
               <div className="h-[1px] bg-white/10 my-2 w-full"></div>
               
-              <Link to="/contact" className="text-center bg-primary text-background px-6 py-3 rounded-xl font-bold text-sm">
+              <Link to="/contact" className="text-center bg-primary text-background px-6 py-3 font-bold text-sm">
                 Get Started
               </Link>
-              <Link to="/contact" className="text-center border border-white/20 bg-transparent text-white px-6 py-3 rounded-xl font-bold text-sm">
+              <Link to="/contact" className="text-center border border-white/20 bg-transparent text-white px-6 py-3 font-bold text-sm">
                 Client Login
               </Link>
            </div>

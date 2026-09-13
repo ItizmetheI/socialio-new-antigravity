@@ -32,8 +32,7 @@ export default function Services() {
       
       {/* Background visual elements */}
       <div className="absolute top-0 inset-x-0 h-[600px] overflow-hidden -z-10 pointer-events-none">
-         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px] -translate-y-1/2"></div>
-         <div className="absolute top-1/4 right-0 w-[400px] h-[400px] bg-purple-500/5 rounded-full blur-[100px]"></div>
+
       </div>
 
       <main className="pt-32 max-w-7xl mx-auto px-6 mb-24 relative z-10 text-on-surface">
@@ -45,7 +44,7 @@ export default function Services() {
           transition={{ duration: 0.8 }}
           className="mb-16 md:mb-24 text-center max-w-3xl mx-auto"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full text-sm font-medium text-on-surface-variant mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-sm text-sm font-medium text-on-surface-variant mb-6">
             <Sparkles className="w-4 h-4 text-primary" />
             Simple, Transparent Pricing
           </div>
@@ -131,7 +130,7 @@ export default function Services() {
           transition={{ duration: 0.6 }}
           className="mt-24 p-10 md:p-14 border border-white/10 bg-surface-container rounded-3xl relative overflow-hidden text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-10 shadow-2xl"
         >
-           <div className="absolute right-0 top-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[80px] -z-10"></div>
+
            <div className="relative z-10 max-w-xl">
              <h3 className="font-display text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">Not sure where to start?</h3>
              <p className="font-sans text-lg text-on-surface-variant leading-relaxed">Book a free discovery call with our growth team. We'll audit your current setup and recommend the exact services you need to hit your goals.</p>

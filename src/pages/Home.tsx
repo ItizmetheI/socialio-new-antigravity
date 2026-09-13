@@ -7,7 +7,7 @@ import PricingCard from "../components/PricingCard";
 import StatsGraph from "../components/StatsGraph";
 import CustomPlayer from "../components/CustomPlayer";
 import { ActiveVideoProvider, useActiveVideo } from "../context/VideoContext";
-import Magnetic from "../components/Magnetic";
+
 import SpotlightCard from "../components/SpotlightCard";
 
 function useAnimatedCounter(start: number, end: number, duration: number, suffix = "", inView = true) {
@@ -82,7 +82,7 @@ interface CarouselCardProps {
 
 const HoverOverlay = () => (
   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20 rounded-[14px]">
-    <div className="bg-surface-container border border-white/5 text-white/70 px-4 py-2 rounded-full text-[10px] uppercase tracking-[0.1em] flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+    <div className="bg-surface-container border border-white/5 text-white/70 px-4 py-2 rounded-sm text-[10px] uppercase tracking-[0.1em] flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
       View <ArrowUpRight className="w-3 h-3" />
     </div>
   </div>
@@ -116,7 +116,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({ item, columnIndex }) => {
   if (item.type === 'video') {
     return (
       <div className="w-full aspect-[9/16] bg-[#1a1a1a] rounded-[14px] shrink-0 relative group shadow-[0_4px_20px_rgba(0,0,0,0.10)] overflow-hidden">
-        <div className="absolute inset-x-0 bottom-0 top-1/3 bg-gradient-to-t from-black/80 to-transparent pointer-events-none z-10 opacity-70 group-hover:opacity-40 transition-opacity" />
+        <div className="absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-t from-black/40 to-transparent pointer-events-none z-10 opacity-50 group-hover:opacity-20 transition-opacity" />
         
         {/* We use CustomPlayer with pointer events auto when playing */}
         <div className="absolute inset-0 -z-0">
@@ -162,7 +162,7 @@ function HeroCarousel() {
   const { playingColumnIndex } = useActiveVideo();
 
   return (
-    <div className="hidden lg:flex absolute right-0 xl:-right-4 top-1/2 -translate-y-1/2 h-[750px] w-[450px] xl:w-[550px] gap-4 z-20 overflow-hidden [mask-image:linear-gradient(to_bottom,transparent_0%,black_15%,black_85%,transparent_100%)] group/carousel pointer-events-none">
+    <div className="absolute inset-0 lg:left-0 lg:w-full h-full gap-4 z-20 flex overflow-hidden [mask-image:linear-gradient(to_bottom,transparent_0%,black_15%,black_85%,transparent_100%)] group/carousel pointer-events-none">
       {/* Column 1 - Slide Up */}
       <div 
         className={`flex-1 flex flex-col gap-3 pb-3 animate-slide-up hover:[animation-play-state:paused] pointer-events-auto ${playingColumnIndex === 1 ? '[animation-play-state:paused]' : ''}`}
@@ -228,18 +228,17 @@ export default function Home() {
   return (
     <>
       {/* High-Impact Hero Section */}
-      <main className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 max-w-7xl mx-auto min-h-[90vh] flex flex-col justify-center">
+      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 max-w-7xl mx-auto min-h-[90vh] flex flex-col justify-center border-b border-white/5">
         {/* Background elements */}
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none -z-10 translate-x-1/3 -translate-y-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-tertiary/10 rounded-full blur-[100px] pointer-events-none -z-10 -translate-x-1/3 translate-y-1/3"></div>
-        <div className="absolute inset-0 mesh-gradient-home opacity-40 pointer-events-none -z-20"></div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+        {/* Removed decorative mesh gradient */}
+
+        <div className="grid-12 w-full items-center relative z-10">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="max-w-4xl relative z-10 w-full"
+            className="col-span-12 lg:col-span-6 w-full pr-0 lg:pr-12"
           >
             <div className="flex items-center gap-3 mb-8">
               <div className="flex -space-x-2">
@@ -259,95 +258,101 @@ export default function Home() {
               </div>
             </div>
             
-            <h1 className="font-bold text-white mb-8 tracking-[-0.04em] text-[clamp(50px,6vw,90px)] leading-[1.1]">
+            <h1 className="type-level-1 text-white mb-8">
               Stop Guessing. <br className="hidden md:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">Start Scaling.</span>
+              <span>Start Scaling.</span>
             </h1>
 
-            <p className="text-on-surface-variant text-lg md:text-xl max-w-xl mb-12 leading-relaxed border-l-2 border-primary/30 pl-6 font-medium">
+            <p className="type-level-3 max-w-xl mb-12 border-l-2 border-primary/30 pl-6">
               From scroll-stopping social content to ranking-ready blog posts — we handle your entire content operation so you can focus on running the business.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-16 w-full">
-              <Magnetic strength={0.3}>
-                <Link to="/pricing" className="bg-primary text-background px-8 py-4 rounded-xl font-bold text-base w-full sm:w-auto hover:bg-primary-hover transition-colors shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.3)] hover:shadow-primary/50 text-center relative overflow-hidden group block">
-                   <span className="relative z-10 flex items-center justify-center gap-2">View Our Pricing <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></span>
-                </Link>
-              </Magnetic>
-              <Magnetic strength={0.2}>
-                <button className="bg-surface-container border border-white/10 text-white px-8 py-4 rounded-xl font-bold text-base w-full sm:w-auto hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
-                   <Play className="w-5 h-5" /> See How It Works
-                </button>
-              </Magnetic>
+              <Link to="/pricing" className="bg-primary text-background px-8 py-4 rounded-xl font-bold text-base w-full sm:w-auto hover:bg-primary-hover transition-colors shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.3)] hover:shadow-primary/50 text-center relative overflow-hidden group block">
+                 <span className="relative z-10 flex items-center justify-center gap-2">View Our Pricing <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></span>
+              </Link>
+              <button className="bg-surface-container border border-white/10 text-white px-8 py-4 rounded-xl font-bold text-base w-full sm:w-auto hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
+                 <Play className="w-5 h-5" /> See How It Works
+              </button>
             </div>
             
-            {/* Interactive Service Selector (Moved under Hero content) */}
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-            >
-               <div className="bg-[#111111] border border-white/5 p-8 rounded-3xl relative overflow-hidden">
-                  <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-[80px] -z-10"></div>
-                  
-                  <h3 className="text-2xl font-bold text-white mb-8 tracking-tight">What do you need help with?</h3>
-                  
-                  <div className="flex flex-wrap gap-2 mb-8">
-                    {categories.map((cat, idx) => (
-                      <button 
-                        key={idx}
-                        onClick={() => setActiveHeroTab(cat)}
-                        className={`px-5 py-2.5 rounded-xl font-sans text-sm font-semibold transition-all ${activeHeroTab === cat ? 'bg-primary text-background shadow-lg' : 'bg-surface-container text-on-surface-variant hover:bg-white/10 hover:text-white border border-white/5'}`}
-                      >
-                        {cat}
-                      </button>
-                    ))}
-                  </div>
+          </motion.div>
 
-                  {/* Preview Card */}
-                  <div className="bg-background/80 border border-white/5 rounded-[1.5rem] p-6 lg:p-8 transition-all flex flex-col md:flex-row items-center gap-8">
-                     <div className="flex-grow w-full">
-                       <div className="flex items-center gap-5 mb-5">
-                         <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-                           <CheckCircle2 className="w-6 h-6" />
+          {/* Right Side: Refined Vertical Carousel */}
+          <div className="col-span-12 lg:col-span-6 lg:col-start-7 mt-16 lg:mt-0 relative h-[600px] lg:h-full">
+            <ActiveVideoProvider>
+               <HeroCarousel />
+            </ActiveVideoProvider>
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive Service Selector - Extracted to its own section for pacing */}
+      <section className="section-quiet bg-surface-container/30 border-y border-white/5 py-24">
+        <div className="grid-12 w-full">
+           <div className="col-span-12 max-w-4xl mx-auto w-full">
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+              >
+                 <div className="py-8 relative overflow-hidden">
+                    
+                    <h2 className="type-level-2 text-white mb-10 tracking-tight text-center">What do you need help with?</h2>
+                    
+                    <div className="flex flex-wrap justify-center gap-3 mb-12">
+                      {categories.map((cat, idx) => (
+                        <button 
+                          key={idx}
+                          onClick={() => setActiveHeroTab(cat)}
+                          className={`px-6 py-3 rounded-sm font-sans text-sm font-semibold transition-all ${activeHeroTab === cat ? 'bg-white text-black shadow-lg scale-100' : 'bg-surface-container text-on-surface-variant hover:bg-white/10 hover:text-white border border-white/5'}`}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Preview Card */}
+                    <div className="border-y border-white/10 py-12 transition-all flex flex-col md:flex-row items-center gap-8">
+                       <div className="flex-grow w-full">
+                         <div className="flex items-center gap-5 mb-5">
+                           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0 border border-primary/20">
+                             <CheckCircle2 className="w-6 h-6" />
+                           </div>
+                           <div>
+                             <h4 className="type-level-3 font-bold text-white mb-1">{previewService.title}</h4>
+                             <div className="font-sans text-sm text-on-surface-variant max-w-md">{previewService.description}</div>
+                           </div>
                          </div>
-                         <div>
-                           <h4 className="font-display text-xl font-bold text-white mb-1">{previewService.title}</h4>
-                           <div className="font-sans text-sm text-on-surface-variant">{previewService.description}</div>
+                         
+                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
+                            {previewService.features.slice(0, 4).map((f: string, i: number) => (
+                               <div key={i} className="flex items-start gap-3 text-sm text-on-surface-variant font-sans">
+                                 <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5 opacity-80" />
+                                 {f}
+                               </div>
+                            ))}
                          </div>
                        </div>
                        
-                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
-                          {previewService.features.slice(0, 4).map((f: string, i: number) => (
-                             <div key={i} className="flex items-start gap-2.5 text-sm text-on-surface-variant font-sans">
-                               <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                               {f}
-                             </div>
-                          ))}
+                       <div className="flex flex-row md:flex-col items-center md:items-start justify-between w-full md:w-auto gap-4 md:gap-3 shrink-0 md:pl-10 md:border-l border-white/5 h-full py-2">
+                         <div className="text-left">
+                           <span className="type-level-4 text-on-surface-variant block mb-2">Starting at</span>
+                           <div className="font-display font-bold text-4xl text-white">${previewService.sliderSteps[0].price}<span className="text-base font-sans font-normal text-on-surface-variant">/mo</span></div>
+                         </div>
+                         <Link to={`/service/${previewService.id}`} className="mt-4 px-8 py-4 w-full text-center bg-white text-black hover:bg-gray-200 transition-colors rounded-xl font-bold text-sm flex justify-center items-center gap-2">
+                           Explore <ArrowUpRight className="w-4 h-4" />
+                         </Link>
                        </div>
-                     </div>
-                     
-                     <div className="flex flex-row md:flex-col items-center md:items-end justify-between w-full md:w-auto gap-4 md:gap-3 shrink-0 md:pl-8 md:border-l border-white/5">
-                       <div className="text-left md:text-right">
-                         <span className="text-xs text-on-surface-variant block mb-1 uppercase tracking-wider font-semibold">Starting at</span>
-                         <div className="font-display font-bold text-3xl text-white">${previewService.sliderSteps[0].price}<span className="text-base font-sans font-normal text-on-surface-variant">/mo</span></div>
-                       </div>
-                       <Link to={`/service/${previewService.id}`} className="px-6 py-3 w-full text-center bg-white text-black hover:bg-gray-200 transition-colors rounded-xl font-bold text-sm flex justify-center items-center gap-2">
-                         Explore <ArrowUpRight className="w-4 h-4" />
-                       </Link>
-                     </div>
-                  </div>
-               </div>
-            </motion.div>
-
-          </motion.div>
-
-          {/* Right Side: Vertical Carousel */}
-          <ActiveVideoProvider>
-             <HeroCarousel />
-          </ActiveVideoProvider>
+                    </div>
+                 </div>
+              </motion.div>
+           </div>
         </div>
-      </main>
+      </section>
+
+
 
       {/* Trusted By Marquee - Clean Minimal */}
       <section className="py-16 bg-surface-container border-y border-white/5">
@@ -379,26 +384,23 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Quick Stats Stack */}
-            <div className="flex flex-col gap-6 lg:col-span-1">
-              <div className="flex-1 p-6 border border-white/5 bg-white/[0.02] rounded-2xl flex flex-col justify-center relative overflow-hidden group">
-                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] pointer-events-none group-hover:bg-primary/20 transition-colors"></div>
+            {/* Quick Stats Stack - Typography & Dividers instead of Cards (Task 5: Destroy Card Soup) */}
+            <div className="flex flex-col gap-8 lg:col-span-1 justify-center">
+              <div className="flex flex-col justify-center border-l-2 border-primary/20 pl-6">
                  <div className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">Pieces of Content Delivered</div>
-                 <div className="text-primary font-display text-5xl md:text-6xl font-bold tracking-tighter">
+                 <div className="text-white font-display text-5xl md:text-6xl font-bold tracking-tighter">
                    <Counter start={0} end={8415} duration={1500} suffix="+" inView={isInView} />
                  </div>
               </div>
-              <div className="flex-1 p-6 border border-white/5 bg-white/[0.02] rounded-2xl flex flex-col justify-center relative overflow-hidden group">
-                 <div className="absolute top-0 left-0 w-32 h-32 bg-tertiary/5 rounded-full blur-[40px] pointer-events-none group-hover:bg-tertiary/20 transition-colors"></div>
+              <div className="flex flex-col justify-center border-l-2 border-tertiary/20 pl-6">
                  <div className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">Active Campaigns</div>
-                 <div className="text-tertiary font-display text-5xl md:text-6xl font-bold tracking-tighter">
+                 <div className="text-white font-display text-5xl md:text-6xl font-bold tracking-tighter">
                    <Counter start={0} end={86} duration={2000} inView={isInView} />
                  </div>
               </div>
-              <div className="flex-1 p-6 border border-white/5 bg-white/[0.02] rounded-2xl flex flex-col justify-center relative overflow-hidden group">
-                 <div className="absolute bottom-0 right-0 w-32 h-32 bg-secondary/5 rounded-full blur-[40px] pointer-events-none group-hover:bg-secondary/20 transition-colors"></div>
+              <div className="flex flex-col justify-center border-l-2 border-secondary/20 pl-6">
                  <div className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">Client Retention Rate</div>
-                 <div className="text-secondary font-display text-5xl md:text-6xl font-bold tracking-tighter">
+                 <div className="text-white font-display text-5xl md:text-6xl font-bold tracking-tighter">
                    <Counter start={0} end={94} duration={2000} suffix="%" inView={isInView} />
                  </div>
               </div>
@@ -412,67 +414,41 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How it Works */}
-      <section className="py-24 bg-background">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center mb-20">
-            <span className="text-primary text-xs font-semibold uppercase tracking-[0.1em] mb-4 block">The Process</span>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight">How KB Growth Works</h2>
-            <p className="text-on-surface-variant max-w-2xl mx-auto text-lg">We simplified the agency model into a predictable, frictionless assembly line for growth.</p>
+      {/* How it Works - Editorial Split (Task 1: Kill AI Templates, Task 4: Stop Centering) */}
+      <section className="section-quiet bg-background border-t border-white/5 relative">
+        <div className="grid-12 w-full relative z-10">
+          {/* Left Column: Title */}
+          <div className="col-span-12 lg:col-span-5 mb-16 lg:mb-0">
+            <span className="type-level-4 text-primary block mb-8">The Process</span>
+            <h2 className="type-level-2 text-white mb-8 lg:pr-8">We simplified the agency model into a predictable, frictionless assembly line.</h2>
+            <p className="type-level-3 lg:pr-12">No endless email chains. No ambiguous deliverables. Just a structured sprint for growth built entirely around producing outcomes over output.</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-             {/* Connection line */}
-             <div className="hidden md:block absolute top-[50px] left-[15%] right-[15%] h-[2px] bg-white/10 z-0">
-               <div className="h-full bg-primary w-full opacity-50"></div>
+          
+          {/* Right Column: Steps (Asymmetric Layout) */}
+          <div className="col-span-12 lg:col-span-6 lg:col-start-7 flex flex-col gap-16">
+             <div className="flex gap-8 items-start group">
+               <div className="type-level-4 text-white/30 pt-1 shrink-0 group-hover:text-primary transition-colors">01</div>
+               <div className="border-t border-white/10 pt-4 flex-grow">
+                 <h3 className="type-level-3 font-bold text-white mb-4">Subscribe & Onboard</h3>
+                 <p className="type-level-3 text-sm">Select your plan, complete our focused alignment questionnaire, and get access to your dedicated Slack channel within hours.</p>
+               </div>
              </div>
              
-             <motion.div 
-               initial={{ opacity: 0, y: 30 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true, margin: "-50px" }}
-               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
-               className="relative z-10"
-             >
-               <SpotlightCard className="rounded-3xl hover:-translate-y-2 transition-transform duration-300">
-                 <div className="p-8 text-center">
-                   <div className="w-16 h-16 rounded-2xl bg-primary/20 text-primary border border-primary/20 mx-auto flex items-center justify-center font-bold text-xl mb-6">1</div>
-                   <h3 className="text-xl font-bold text-white mb-4">Subscribe & Onboard</h3>
-                   <p className="text-on-surface-variant text-sm leading-relaxed">Select your plan, complete our focused alignment questionnaire, and get access to your dedicated Slack channel within hours.</p>
-                 </div>
-               </SpotlightCard>
-             </motion.div>
+             <div className="flex gap-8 items-start group">
+               <div className="type-level-4 text-white/30 pt-1 shrink-0 group-hover:text-tertiary transition-colors">02</div>
+               <div className="border-t border-white/10 pt-4 flex-grow">
+                 <h3 className="type-level-3 font-bold text-white mb-4">Submit Briefs</h3>
+                 <p className="type-level-3 text-sm">Use your kanban board to request as many creatives or campaigns as you need. We dissect the brief and get straight to work.</p>
+               </div>
+             </div>
              
-             <motion.div 
-               initial={{ opacity: 0, y: 30 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true, margin: "-50px" }}
-               transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-               className="relative z-10"
-             >
-               <SpotlightCard className="rounded-3xl hover:-translate-y-2 transition-transform duration-300" spotlightColor="rgba(76, 215, 246, 0.15)">
-                 <div className="p-8 text-center">
-                   <div className="w-16 h-16 rounded-2xl bg-tertiary/20 text-tertiary border border-tertiary/20 mx-auto flex items-center justify-center font-bold text-xl mb-6">2</div>
-                   <h3 className="text-xl font-bold text-white mb-4">Submit Briefs</h3>
-                   <p className="text-on-surface-variant text-sm leading-relaxed">Use your kanban board to request as many creatives or campaigns as you need. We dissect the brief and get straight to work.</p>
-                 </div>
-               </SpotlightCard>
-             </motion.div>
-             
-             <motion.div 
-               initial={{ opacity: 0, y: 30 }}
-               whileInView={{ opacity: 1, y: 0 }}
-               viewport={{ once: true, margin: "-50px" }}
-               transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
-               className="relative z-10"
-             >
-               <SpotlightCard className="rounded-3xl hover:-translate-y-2 transition-transform duration-300" spotlightColor="rgba(173, 198, 255, 0.15)">
-                 <div className="p-8 text-center">
-                   <div className="w-16 h-16 rounded-2xl bg-secondary/20 text-secondary border border-secondary/20 mx-auto flex items-center justify-center font-bold text-xl mb-6">3</div>
-                   <h3 className="text-xl font-bold text-white mb-4">Review & Scale</h3>
-                   <p className="text-on-surface-variant text-sm leading-relaxed">Receive your first batch in days. Provide feedback seamlessly. Once approved, we launch, measure, and scale the winners.</p>
-                 </div>
-               </SpotlightCard>
-             </motion.div>
+             <div className="flex gap-8 items-start group">
+               <div className="type-level-4 text-white/30 pt-1 shrink-0 group-hover:text-secondary transition-colors">03</div>
+               <div className="border-t border-white/10 pt-4 flex-grow">
+                 <h3 className="type-level-3 font-bold text-white mb-4">Review & Scale</h3>
+                 <p className="type-level-3 text-sm">Receive your first batch in days. Provide feedback seamlessly. Once approved, we launch, measure, and scale the winners.</p>
+               </div>
+             </div>
           </div>
         </div>
       </section>
@@ -508,11 +484,11 @@ export default function Home() {
             {/* Box 1: Social Media Posts */}
             {(activePortfolioTab === 'Featured' || activePortfolioTab === 'Social Posts') && (
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-              whileInView={{ opacity: 1, scale: 1, y: 0 }} 
+              initial={{ opacity: 0, y: 20 }} 
+              whileInView={{ opacity: 1, y: 0 }} 
               viewport={{ once: true, margin: "-50px" }} 
               transition={{ duration: 0.5 }} 
-              className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 md:p-8 hover:bg-white/[0.04] transition-colors relative overflow-hidden group"
+              className="border-t border-white/10 pt-8 hover:bg-white/[0.02] transition-colors relative group"
             >
                <div className="flex justify-between items-center mb-8">
                  <div className="flex items-center gap-3 text-white">
@@ -533,11 +509,11 @@ export default function Home() {
             {/* Box 2: Short-Form Videos */}
             {(activePortfolioTab === 'Featured' || activePortfolioTab === 'Short-Form') && (
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-              whileInView={{ opacity: 1, scale: 1, y: 0 }} 
+              initial={{ opacity: 0, y: 20 }} 
+              whileInView={{ opacity: 1, y: 0 }} 
               viewport={{ once: true, margin: "-50px" }} 
               transition={{ duration: 0.5, delay: 0.1 }} 
-              className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 md:p-8 hover:bg-white/[0.04] transition-colors relative overflow-hidden group"
+              className="border-t border-white/10 pt-8 hover:bg-white/[0.02] transition-colors relative group"
             >
                <div className="flex justify-between items-center mb-8">
                  <div className="flex items-center gap-3 text-white">
@@ -570,11 +546,11 @@ export default function Home() {
             {/* Box 3: Blog & SEO */}
             {(activePortfolioTab === 'Featured') && (
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-              whileInView={{ opacity: 1, scale: 1, y: 0 }} 
+              initial={{ opacity: 0, y: 20 }} 
+              whileInView={{ opacity: 1, y: 0 }} 
               viewport={{ once: true, margin: "-50px" }} 
               transition={{ duration: 0.5, delay: 0.2 }} 
-              className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 md:p-8 hover:bg-white/[0.04] transition-colors relative overflow-hidden group"
+              className="border-t border-white/10 pt-8 hover:bg-white/[0.02] transition-colors relative group"
             >
                <div className="flex justify-between items-center mb-8">
                  <div className="flex items-center gap-3 text-white">
@@ -617,11 +593,11 @@ export default function Home() {
             {/* Box 4: Social Media Posts */}
             {(activePortfolioTab === 'Featured' || activePortfolioTab === 'Social Posts') && (
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-              whileInView={{ opacity: 1, scale: 1, y: 0 }} 
+              initial={{ opacity: 0, y: 20 }} 
+              whileInView={{ opacity: 1, y: 0 }} 
               viewport={{ once: true, margin: "-50px" }} 
               transition={{ duration: 0.5, delay: 0.3 }} 
-              className="bg-white/[0.02] border border-white/10 rounded-2xl p-6 md:p-8 hover:bg-white/[0.04] transition-colors relative overflow-hidden group"
+              className="border-t border-white/10 pt-8 hover:bg-white/[0.02] transition-colors relative group"
             >
                <div className="flex justify-between items-center mb-8">
                  <div className="flex items-center gap-3 text-white">
@@ -642,11 +618,11 @@ export default function Home() {
             {/* Box 5: UGC (Span full width) */}
             {(activePortfolioTab === 'Featured' || activePortfolioTab === 'UGC') && (
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 20 }} 
-              whileInView={{ opacity: 1, scale: 1, y: 0 }} 
+              initial={{ opacity: 0, y: 20 }} 
+              whileInView={{ opacity: 1, y: 0 }} 
               viewport={{ once: true, margin: "-50px" }} 
               transition={{ duration: 0.5 }} 
-              className="lg:col-span-2 bg-white/[0.02] border border-white/10 rounded-2xl p-6 md:p-8 hover:bg-white/[0.04] transition-colors relative overflow-hidden group"
+              className="lg:col-span-2 border-t border-white/10 pt-8 hover:bg-white/[0.02] transition-colors relative group"
             >
                <div className="flex justify-between items-center mb-8">
                  <div className="flex items-center gap-3 text-white">
@@ -673,34 +649,41 @@ export default function Home() {
             </motion.div>
             )}
           </div>
+        </div>
           
           {/* Trust Bar */}
-          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-12 py-12 mt-16 border-y border-white/5 text-on-surface-variant font-mono text-xs uppercase tracking-widest font-bold">
-             <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary/50" /> Vetted Marketers</div>
-             <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-tertiary/50" /> Fast Turnarounds</div>
-             <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-secondary/50" /> Fully Managed</div>
-             <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary/50" /> Fixed Pricing</div>
-             <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-tertiary/50" /> Cancel Anytime</div>
+          <div className="grid-12 w-full">
+            <div className="col-span-12 flex flex-wrap items-center justify-between gap-6 py-12 mt-16 border-y border-white/5 text-on-surface-variant type-level-4">
+               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary/50" /> Vetted Marketers</div>
+               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-tertiary/50" /> Fast Turnarounds</div>
+               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-secondary/50" /> Fully Managed</div>
+               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary/50" /> Fixed Pricing</div>
+               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-tertiary/50" /> Cancel Anytime</div>
+            </div>
           </div>
 
           {/* Services & Pricing Block */}
-          <div className="mt-24 max-w-7xl mx-auto">
-            <div className="mb-16 text-center">
-              <span className="text-primary font-mono text-xs uppercase tracking-widest mb-4 block">KB Growth Pricing Structure</span>
-              <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6 tracking-tighter">
-                Flat-rate services. No surprises.
+          <div className="mt-32 pt-16 border-t border-white/5 grid-12 w-full items-end mb-16">
+            <div className="col-span-12 md:col-span-6 lg:col-span-7 pr-8">
+              <span className="type-level-4 text-primary block mb-6">KB Growth Pricing Structure</span>
+              <h2 className="type-level-1 text-white">
+                Flat-rate services.<br/>No surprises.
               </h2>
-              <p className="text-on-surface-variant font-sans text-lg md:text-xl max-w-2xl mx-auto">
+            </div>
+            <div className="col-span-12 md:col-span-6 lg:col-span-5 pb-4 mt-8 md:mt-0">
+              <p className="type-level-3">
                 Simple, transparent pricing. Everything you need to scale your social media presence without the agency overhead.
               </p>
             </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+          </div>
+          
+          <div className="grid-12 w-full">
+            <div className="col-span-12 grid grid-cols-1 lg:grid-cols-3 gap-8">
                {servicesData.filter(s => ["social-media-posts", "short-form-videos", "seo-blog-posts"].includes(s.id)).slice(0, 3).map((service, index) => (
                   <motion.div
                     key={service.id}
-                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-50px" }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
@@ -708,6 +691,7 @@ export default function Home() {
                   </motion.div>
                ))}
             </div>
+          </div>
             
             <div className="mt-16 flex items-center justify-center gap-8 md:gap-16 flex-wrap text-center opacity-80">
               <div className="font-sans">
@@ -723,82 +707,75 @@ export default function Home() {
                  <div className="text-sm text-on-surface-variant font-medium">Vetted Creators</div>
               </div>
             </div>
-          </div>
 
-          {/* Money Back Guarantee Block */}
-          <div ref={guaranteeRef} className="mt-20 max-w-5xl mx-auto bg-surface-container border border-white/10 rounded-[2rem] p-8 md:p-14 relative overflow-hidden shadow-2xl flex flex-col md:flex-row items-center justify-between gap-12 group/card">
-             <div className="absolute right-0 top-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none group-hover/card:bg-primary/20 transition-colors duration-1000"></div>
-             
-             <div className="max-w-xl z-10 text-left">
-               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-white font-mono text-xs uppercase tracking-widest mb-8">
-                 <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.6)]"></span> Zero-Risk Deployment
+          {/* Minimal Guarantee Block (Task 7: Remove excessive rounded borders) */}
+          <div ref={guaranteeRef} className="mt-32 pt-16 border-t border-white/5 grid-12 w-full items-start">
+             <div className="col-span-12 md:col-span-6 lg:col-span-5 pr-8">
+               <div className="type-level-4 text-primary mb-8">
+                 Ironclad Guarantee
                </div>
-               <h3 className="font-display text-4xl md:text-5xl font-bold text-white leading-tight mb-6 tracking-tighter">
-                 Not happy with your first batch? <br />
-                 <span className="text-secondary bg-clip-text">Get your money back.</span>
+               <h3 className="type-level-2 text-white mb-6">
+                 Results in 14 days.<br />
+                 <span className="text-white/50">Or it's free.</span>
                </h3>
-               <p className="text-on-surface-variant font-sans text-lg leading-relaxed mb-8 max-w-lg">
+               <p className="type-level-3 mb-8">
                  We are so confident in our creative output that every new engagement comes with a 14-day absolute satisfaction guarantee. No friction, no endless email chains.
                </p>
-               <div className="space-y-4 font-sans text-base">
+               <div className="space-y-4">
                  <div className="flex items-start gap-4">
-                   <div className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 mt-0.5">
-                     <CheckCircle2 className="w-3 h-3 text-primary" />
-                   </div>
-                   <p className="text-on-surface-variant leading-relaxed">Full 14 days to review your first batch of creatives and align with your dedicated squad.</p>
+                   <div className="w-1.5 h-1.5 bg-primary mt-2 rounded-full shrink-0"></div>
+                   <p className="type-level-3 text-sm">Full 14 days to review your first batch of creatives and align with your dedicated squad.</p>
                  </div>
                  <div className="flex items-start gap-4">
-                   <div className="w-6 h-6 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0 mt-0.5">
-                     <CheckCircle2 className="w-3 h-3 text-primary" />
-                   </div>
-                   <p className="text-on-surface-variant leading-relaxed">Multiple revision rounds automatically baked into the sprint timeline to ensure exact brand alignment.</p>
+                   <div className="w-1.5 h-1.5 bg-primary mt-2 rounded-full shrink-0"></div>
+                   <p className="type-level-3 text-sm">Multiple revision rounds automatically baked into the sprint timeline to ensure exact brand alignment.</p>
                  </div>
                </div>
-            </div>
-                    <div className="w-full max-w-[280px] shrink-0 z-10 relative hidden md:block">
-               {/* Tech Dial Gauge */}
-               <div className="relative w-64 h-64 rounded-[2rem] flex flex-col items-center justify-center bg-surface-container-lowest shadow-[inset_0_0_80px_rgba(0,0,0,0.5)] border border-white/5 mx-auto">
-                  <div className="absolute inset-0 bg-primary/10 rounded-[2rem] blur-[40px] scale-75 -z-10 animate-pulse" />
-                  <svg className="absolute inset-0 w-full h-full -rotate-[135deg]" viewBox="0 0 200 200">
-                     <circle cx="100" cy="100" r="85" fill="none" stroke="currentColor" strokeWidth="6" className="text-white/5" strokeLinecap="round" strokeDasharray="534" strokeDashoffset="133.5" />
-                     <circle cx="100" cy="100" r="85" fill="none" stroke="currentColor" strokeWidth="6" className="text-primary transition-all duration-[1500ms] ease-out" strokeLinecap="round" strokeDasharray="534" strokeDashoffset={guaranteeInView ? 267 : 534} />
-                  </svg>
-                  <span className="font-mono text-xs text-on-surface-variant uppercase tracking-widest mb-2 shadow-sm animate-pulse">Sprint Day</span>
-                  <span className="font-display text-8xl md:text-9xl font-bold text-white tracking-tighter shadow-lg">{guaranteeDay}</span>
+             </div>
+
+             <div className="col-span-12 md:col-span-6 lg:col-start-8 mt-16 md:mt-0">
+               <div className="relative aspect-square flex flex-col items-center justify-center border border-white/10 p-8">
+                  <span className="type-level-4 text-on-surface-variant mb-4">Sprint Day</span>
+                  <span className="type-level-1 text-white">{guaranteeDay}</span>
                   
-                  <div className="absolute -bottom-4 px-4 py-2 bg-background border border-white/10 rounded-full flex items-center gap-2 shadow-xl">
-                     <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse shadow-[0_0_10px_rgba(34,197,94,0.6)]"></span>
-                     <span className="font-mono text-xs uppercase tracking-widest text-white font-bold">Guaranteed</span>
+                  <div className="mt-8 flex items-center gap-2">
+                     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                     <span className="type-level-4 text-white">Guaranteed</span>
                   </div>
                </div>
-            </div>
+             </div>
           </div>
+      </section>
 
-
-        </div>
+      {/* Quiet Section (Task 11) */}
+      <section className="section-quiet">
+         <div className="text-center">
+            <span className="type-level-4 text-white/50 mb-12 block">04 &mdash; Our Work</span>
+            <h2 className="type-level-1 text-white leading-none">We make things<br/>people actually<br/>notice.</h2>
+         </div>
       </section>
 
       {/* FAQ Section */}
-      <section className="py-24 md:py-32 px-6 border-t border-white/5">
-        <div className="max-w-3xl mx-auto">
-          <div className="text-center mb-16 flex flex-col items-center">
-            <span className="font-mono text-xs uppercase tracking-widest text-primary font-bold mb-4">FAQ</span>
-            <h2 className="font-display text-4xl md:text-5xl tracking-tighter text-white font-bold">Questions we get a lot.</h2>
+      <section className="section-quiet bg-surface-container border-t border-white/5">
+        <div className="grid-12 w-full">
+          <div className="col-span-12 lg:col-span-5 mb-16 lg:mb-0 pr-8">
+             <span className="type-level-4 text-primary mb-8 block">FAQ</span>
+            <h2 className="type-level-2 text-white leading-tight">Questions<br/>we get a lot.</h2>
           </div>
-          <div className="flex flex-col">
+          <div className="col-span-12 lg:col-span-7 flex flex-col">
             {FAQS.map((faq, index) => (
-              <div key={index} className="border-b border-white/5">
+              <div key={index} className="border-t border-white/10 last:border-b">
                 <button 
                   onClick={() => setOpenFaq(openFaq === index ? null : index)}
                   className="w-full py-6 flex items-center justify-between text-left group"
                 >
-                  <span className="font-display font-bold text-white text-lg lg:text-xl group-hover:text-primary transition-colors pr-8">{faq.question}</span>
-                  <ChevronDown className={`w-5 h-5 text-on-surface-variant flex-shrink-0 transition-transform duration-300 ${openFaq === index ? 'rotate-180' : ''}`} />
+                  <span className="text-lg font-medium text-white group-hover:text-primary transition-colors pr-8">{faq.question}</span>
+                  <ChevronDown className={`w-5 h-5 text-white/30 flex-shrink-0 transition-transform duration-300 ${openFaq === index ? 'rotate-180' : ''}`} />
                 </button>
                 <div 
-                  className={`overflow-hidden transition-all duration-300 ease-in-out ${openFaq === index ? 'max-h-96 opacity-100 mb-6' : 'max-h-0 opacity-0'}`}
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${openFaq === index ? 'max-h-96 opacity-100 pb-8' : 'max-h-0 opacity-0'}`}
                 >
-                  <p className="text-on-surface-variant font-sans text-sm leading-relaxed max-w-2xl">{faq.answer}</p>
+                  <p className="type-level-3">{faq.answer}</p>
                 </div>
               </div>
             ))}
@@ -806,24 +783,21 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Clean Minimal CTA */}
-      <section className="py-24 md:py-32 px-6 bg-background">
-        <div className="max-w-4xl mx-auto flex flex-col items-center text-center p-12 md:p-24 border border-white/10 rounded-2xl relative overflow-hidden shadow-2xl">
-            <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent -z-10"></div>
-            <span className="font-mono text-xs uppercase tracking-widest text-primary mb-6 font-bold flex items-center gap-2">
+      {/* Clean Minimal CTA (Task 6: Brutalist CTA) */}
+      <section className="section-quiet bg-background">
+        <div className="w-full max-w-7xl mx-auto px-6 text-center flex flex-col items-center">
+            <span className="type-level-4 text-primary mb-8 flex items-center gap-2 justify-center">
                <span className="w-2 h-2 bg-primary rounded-full animate-ping"></span> Initialize Growth
             </span>
-            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl tracking-tighter mb-8 text-white font-bold leading-tight">
-              Ready to <span className="text-white">Dominate?</span>
+            <h2 className="type-level-1 text-white mb-12">
+              Ready to Dominate?
             </h2>
-            <p className="font-sans text-on-surface-variant mb-12 max-w-xl text-lg md:text-xl">
+            <p className="type-level-3 max-w-2xl mx-auto mb-16">
               Book a strategy call with our growth engineers. We'll audit your current setup and show you exactly where you're leaving money on the table.
             </p>
-            <Magnetic strength={0.4}>
-              <Link to="/contact" className="px-8 py-4 bg-white text-black font-mono text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors duration-300 rounded shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(215,183,255,0.3)] inline-block">
-                Start The Audit
-              </Link>
-            </Magnetic>
+            <Link to="/contact" className="px-12 py-6 bg-white text-black type-level-4 hover:bg-primary hover:text-white transition-colors duration-300 inline-block">
+              Start The Audit &rarr;
+            </Link>
         </div>
       </section>
     </>

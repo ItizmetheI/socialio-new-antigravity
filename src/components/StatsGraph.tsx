@@ -13,7 +13,7 @@ export default function StatsGraph() {
   return (
     <div className="h-full min-h-[300px] w-full bg-surface-container rounded-2xl border border-white/5 p-6 relative overflow-hidden group">
       {/* Background glow */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px] pointer-events-none group-hover:bg-primary/20 transition-colors" />
+
       
       <div className="flex justify-between items-center mb-6 relative z-10">
         <div>
