@@ -6,7 +6,7 @@ export default function Compare() {
     <div className="min-h-screen pt-32 pb-24 px-6 max-w-7xl mx-auto text-on-surface">
       <div className="text-center mb-16">
         <div className="font-mono text-xs uppercase tracking-widest text-primary mb-4 font-bold">The Alternative</div>
-        <h1 className="font-display text-5xl md:text-6xl font-bold text-white mb-6 tracking-tighter">Why Choose KB Growth?</h1>
+        <h1 className="font-display text-5xl md:text-6xl font-bold text-white mb-6 tracking-tighter">Why Choose Socialio?</h1>
         <p className="font-sans text-xl text-on-surface-variant max-w-2xl mx-auto">
           See how our productized model stacks up against the old ways of scaling marketing.
         </p>
@@ -19,7 +19,7 @@ export default function Compare() {
               <th className="p-6 font-display text-xl w-1/4">Feature</th>
               <th className="p-6 font-display text-xl w-1/4 text-white bg-white/5 rounded-t-3xl border-x border-t border-white/10 relative">
                  <div className="absolute top-0 left-0 w-full h-1 bg-primary"></div>
-                 KB Growth
+                 Socialio
               </th>
               <th className="p-6 font-display text-xl w-1/4">In-House Hire</th>
               <th className="p-6 font-display text-xl w-1/4">Traditional Agency</th>

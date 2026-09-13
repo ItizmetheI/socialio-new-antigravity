@@ -55,7 +55,7 @@ export default function Reviews() {
        company: "Creator Studio",
        type: "Agency",
        platform: "Direct",
-       text: "We outsource all our client UGC needs to KB Growth. Flat rates and incredible quality every single time.",
+       text: "We outsource all our client UGC needs to Socialio. Flat rates and incredible quality every single time.",
        rating: 5,
        verified: true
     },

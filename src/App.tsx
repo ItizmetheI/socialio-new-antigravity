@@ -4,7 +4,8 @@
  */
 
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import Loader from './components/Loader';
 import { AnimatePresence, motion } from 'motion/react';
 import { ReactLenis } from 'lenis/react';
 import Home from './pages/Home';
@@ -71,12 +72,17 @@ function AnimatedRoutes() {
 }
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <ReactLenis root>
       <BrowserRouter>
         <CartProvider>
+          {isLoading && <Loader onComplete={() => setIsLoading(false)} />}
           <ScrollToTop />
-          <div className="min-h-screen flex flex-col bg-background text-on-surface hover:text-white transition-colors duration-500">
+          <div 
+            className={`min-h-screen flex flex-col bg-background text-on-surface transition-colors duration-500 ${isLoading ? 'opacity-0' : 'opacity-100 transition-opacity duration-1000'}`}
+          >
             <NavBar />
             <main className="flex-grow">
               <AnimatedRoutes />

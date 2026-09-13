@@ -18,7 +18,7 @@ export default function Privacy() {
             <section>
               <h2 className="text-xl font-bold text-white mb-4">1. Information We Collect</h2>
               <p className="mb-4">
-                We collect information that you provide directly to us when using our services or contacting us. This may include your name, email address, company details, and any other information you choose to provide.
+                We collect information that you provide directly to us when using our services or contacting us. This may include your name, email address, company details, and anySocialioer information you choose to provide.
               </p>
             </section>
             
@@ -39,7 +39,7 @@ export default function Privacy() {
             <section>
               <h2 className="text-xl font-bold text-white mb-4">4. Contact Us</h2>
               <p className="mb-4">
-                If you have any questions about this Privacy Policy, please contact us at privacy@kbgrowth.com.
+                If you have any questions about this Privacy Policy, please contact us at support@socialio.io.
               </p>
             </section>
           </div>

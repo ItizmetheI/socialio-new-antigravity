@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { servicesData } from "../data/services";
-import { Twitter, Linkedin, Instagram, Mail, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Facebook, Linkedin, Instagram, Mail, ArrowRight, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 
 export default function Footer() {
@@ -23,7 +23,7 @@ export default function Footer() {
             
             {/* Brand & Newsletter */}
             <div className="col-span-12 lg:col-span-5 pr-8">
-                <div className="font-display text-3xl font-bold text-white mb-6">KB Growth</div>
+                <Link to="/" className="block mb-6"><img src="/logo.png" alt="Socialio" className="h-10 w-auto" /></Link>
                 <p className="font-sans text-on-surface-variant max-w-sm mb-8">
                   Precision marketing for high-growth teams. We turn digital attention into enterprise value.
                 </p>
@@ -53,9 +53,9 @@ export default function Footer() {
                    )}
                 </div>
                 <div className="flex items-center gap-4 text-on-surface-variant">
-                   <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><Twitter className="w-5 h-5" /></a>
+                   <a href="https://www.facebook.com/share/17oA4Peihv/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><Facebook className="w-5 h-5" /></a>
                    <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><Linkedin className="w-5 h-5" /></a>
-                   <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><Instagram className="w-5 h-5" /></a>
+                   <a href="https://www.instagram.com/getsocialio?igsh=MTZ2Y21ucDN1dmRvdg==" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors"><Instagram className="w-5 h-5" /></a>
                 </div>
             </div>
 
@@ -106,7 +106,7 @@ export default function Footer() {
             <div className="flex flex-wrap items-center gap-6 text-xs text-on-surface-variant font-sans">
                 <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
                 <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-                <span>© {new Date().getFullYear()} KB Growth. All rights reserved.</span>
+                <span>© {new Date().getFullYear()} Socialio. All rights reserved.</span>
             </div>
         </div>
       </div>

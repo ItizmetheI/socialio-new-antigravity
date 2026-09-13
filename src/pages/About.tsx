@@ -61,7 +61,7 @@ export default function About() {
           transition={{ duration: 0.6 }}
           className="text-center max-w-4xl mb-24 pt-10"
         >
-          <div className="inline-block px-4 py-1.5 bg-white/5 border border-white/10 rounded-full font-mono text-[10px] text-white/70 mb-8 uppercase tracking-widest font-bold">About KB Growth</div>
+          <div className="inline-block px-4 py-1.5 bg-white/5 border border-white/10 rounded-full font-mono text-[10px] text-white/70 mb-8 uppercase tracking-widest font-bold">About Socialio</div>
           <h1 className="font-display text-5xl md:text-7xl tracking-tighter mb-8 text-white font-bold leading-tight">
             The growth engineers <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">behind the scenes.</span>
           </h1>
@@ -97,7 +97,7 @@ export default function About() {
             <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">We killed the traditional agency model.</h2>
             <div className="space-y-6 font-sans text-on-surface-variant text-lg leading-relaxed">
               <p>
-                We started KB Growth out of pure frustration. Founders were paying massive retainers for "strategy documents" and endless scoping calls, but what they actually needed was execution. They needed videos to post, ads to launch, and copy to publish.
+                We started Socialio out of pure frustration. Founders were paying massive retainers for "strategy documents" and endless scoping calls, but what they actually needed was execution. They needed videos to post, ads to launch, and copy to publish.
               </p>
               <p>
                 Traditional agencies overpromise, underdeliver, and trap you in archaic 6-month contracts with no incentive to move fast. 

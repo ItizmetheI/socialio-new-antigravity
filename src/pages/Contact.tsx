@@ -52,7 +52,7 @@ export default function Contact() {
                 <Mail className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <a href="mailto:hello@kbgrowth.com" className="font-sans text-lg font-bold text-white hover:text-primary transition-colors">hello@kbgrowth.com</a>
+                <a href="mailto:support@socialio.io" className="font-sans text-lg font-bold text-white hover:text-primary transition-colors">support@socialio.io</a>
               </div>
             </div>
 

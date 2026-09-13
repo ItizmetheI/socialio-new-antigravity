@@ -47,7 +47,9 @@ export default function NavBar() {
         onMouseLeave={() => setActiveDropdown(null)}
       >
         <div className="flex justify-between items-center max-w-7xl mx-auto px-6 h-20">
-          <Link to="/" className="font-display text-2xl font-bold tracking-tighter text-white">KB Growth</Link>
+          <Link to="/" className="flex items-center">
+            <img src="/logo.png" alt="Socialio" className="h-8 w-auto" />
+          </Link>
           <div className="hidden md:flex items-center gap-8 relative">
             <Link to="/" className={isActive("/")}>Home</Link>
             

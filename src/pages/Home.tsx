@@ -9,6 +9,9 @@ import CustomPlayer from "../components/CustomPlayer";
 import { ActiveVideoProvider, useActiveVideo } from "../context/VideoContext";
 
 import SpotlightCard from "../components/SpotlightCard";
+import CustomCursor from "../components/CustomCursor";
+import TextReveal from "../components/TextReveal";
+import Magnetic from "../components/Magnetic";
 
 function useAnimatedCounter(start: number, end: number, duration: number, suffix = "", inView = true) {
   const [value, setValue] = useState(start);
@@ -227,6 +230,7 @@ export default function Home() {
 
   return (
     <>
+      <CustomCursor />
       {/* High-Impact Hero Section */}
       <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 max-w-7xl mx-auto min-h-[90vh] flex flex-col justify-center border-b border-white/5">
         {/* Background elements */}
@@ -258,19 +262,20 @@ export default function Home() {
               </div>
             </div>
             
-            <h1 className="type-level-1 text-white mb-8">
-              Stop Guessing. <br className="hidden md:block" />
-              <span>Start Scaling.</span>
-            </h1>
+            <TextReveal className="type-level-1 text-white mb-8">
+              Stop Guessing. Start Scaling.
+            </TextReveal>
 
             <p className="type-level-3 max-w-xl mb-12 border-l-2 border-primary/30 pl-6">
               From scroll-stopping social content to ranking-ready blog posts — we handle your entire content operation so you can focus on running the business.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-16 w-full">
-              <Link to="/pricing" className="bg-primary text-background px-8 py-4 rounded-xl font-bold text-base w-full sm:w-auto hover:bg-primary-hover transition-colors shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.3)] hover:shadow-primary/50 text-center relative overflow-hidden group block">
-                 <span className="relative z-10 flex items-center justify-center gap-2">View Our Pricing <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></span>
-              </Link>
+              <Magnetic strength={0.3}>
+                <Link to="/pricing" className="bg-primary text-background px-8 py-4 rounded-xl font-bold text-base w-full sm:w-auto hover:bg-primary-hover transition-colors shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.3)] hover:shadow-primary/50 text-center relative overflow-hidden group block">
+                   <span className="relative z-10 flex items-center justify-center gap-2">View Our Pricing <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></span>
+                </Link>
+              </Magnetic>
               <button className="bg-surface-container border border-white/10 text-white px-8 py-4 rounded-xl font-bold text-base w-full sm:w-auto hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
                  <Play className="w-5 h-5" /> See How It Works
               </button>
@@ -488,8 +493,9 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }} 
               viewport={{ once: true, margin: "-50px" }} 
               transition={{ duration: 0.5 }} 
-              className="border-t border-white/10 pt-8 hover:bg-white/[0.02] transition-colors relative group"
+              className="h-full"
             >
+              <SpotlightCard className="p-8 h-full">
                <div className="flex justify-between items-center mb-8">
                  <div className="flex items-center gap-3 text-white">
                    <div className="p-2 rounded-lg bg-surface-container border border-white/10"><Image className="w-4 h-4 text-on-surface-variant" /></div>
@@ -503,6 +509,7 @@ export default function Home() {
                   <div className="rounded-xl overflow-hidden relative group/img aspect-square border border-white/5"><img src="https://images.unsplash.com/photo-1504270997636-07ddfbd48948?auto=format&fit=crop&q=80&w=400&h=400" className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-700 opacity-80 hover:opacity-100" alt="Post" /></div>
                   <div className="rounded-xl overflow-hidden relative group/img aspect-square border border-white/5"><img src="https://images.unsplash.com/photo-1516259762381-22954d7d3ad2?auto=format&fit=crop&q=80&w=400&h=400" className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-700 opacity-80 hover:opacity-100" alt="Post" /></div>
                </div>
+              </SpotlightCard>
             </motion.div>
             )}
             
@@ -513,8 +520,9 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }} 
               viewport={{ once: true, margin: "-50px" }} 
               transition={{ duration: 0.5, delay: 0.1 }} 
-              className="border-t border-white/10 pt-8 hover:bg-white/[0.02] transition-colors relative group"
+              className="h-full"
             >
+              <SpotlightCard className="p-8 h-full">
                <div className="flex justify-between items-center mb-8">
                  <div className="flex items-center gap-3 text-white">
                    <div className="p-2 rounded-lg bg-surface-container border border-white/10"><Video className="w-4 h-4 text-on-surface-variant" /></div>
@@ -540,6 +548,7 @@ export default function Home() {
                      </div>
                   </div>
                </div>
+              </SpotlightCard>
             </motion.div>
             )}
 
@@ -550,8 +559,9 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }} 
               viewport={{ once: true, margin: "-50px" }} 
               transition={{ duration: 0.5, delay: 0.2 }} 
-              className="border-t border-white/10 pt-8 hover:bg-white/[0.02] transition-colors relative group"
+              className="h-full"
             >
+              <SpotlightCard className="p-8 h-full">
                <div className="flex justify-between items-center mb-8">
                  <div className="flex items-center gap-3 text-white">
                    <div className="p-2 rounded-lg bg-surface-container border border-white/10"><MonitorPlay className="w-4 h-4 text-on-surface-variant" /></div>
@@ -587,6 +597,7 @@ export default function Home() {
                      </div>
                   </div>
                </div>
+              </SpotlightCard>
             </motion.div>
             )}
 
@@ -597,8 +608,9 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }} 
               viewport={{ once: true, margin: "-50px" }} 
               transition={{ duration: 0.5, delay: 0.3 }} 
-              className="border-t border-white/10 pt-8 hover:bg-white/[0.02] transition-colors relative group"
+              className="h-full"
             >
+              <SpotlightCard className="p-8 h-full">
                <div className="flex justify-between items-center mb-8">
                  <div className="flex items-center gap-3 text-white">
                    <div className="p-2 rounded-lg bg-surface-container border border-white/10"><Layers className="w-4 h-4 text-on-surface-variant" /></div>
@@ -612,6 +624,7 @@ export default function Home() {
                   <div className="rounded-xl overflow-hidden relative group/img aspect-[3/4] border border-white/5"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=400&h=533" className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-700 opacity-80 hover:opacity-100" alt="Ad" /></div>
                   <div className="rounded-xl overflow-hidden relative group/img aspect-[3/4] border border-white/5"><img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=400&h=533" className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-700 opacity-80 hover:opacity-100" alt="Ad" /></div>
                </div>
+              </SpotlightCard>
             </motion.div>
             )}
 
@@ -622,8 +635,9 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }} 
               viewport={{ once: true, margin: "-50px" }} 
               transition={{ duration: 0.5 }} 
-              className="lg:col-span-2 border-t border-white/10 pt-8 hover:bg-white/[0.02] transition-colors relative group"
+              className="lg:col-span-2 h-full"
             >
+              <SpotlightCard className="p-8 h-full">
                <div className="flex justify-between items-center mb-8">
                  <div className="flex items-center gap-3 text-white">
                    <div className="p-2 rounded-lg bg-surface-container border border-white/10"><UserSquare2 className="w-4 h-4 text-on-surface-variant" /></div>
@@ -646,6 +660,7 @@ export default function Home() {
                       </div>
                  ))}
                </div>
+              </SpotlightCard>
             </motion.div>
             )}
           </div>
@@ -665,7 +680,7 @@ export default function Home() {
           {/* Services & Pricing Block */}
           <div className="mt-32 pt-16 border-t border-white/5 grid-12 w-full items-end mb-16">
             <div className="col-span-12 md:col-span-6 lg:col-span-7 pr-8">
-              <span className="type-level-4 text-primary block mb-6">KB Growth Pricing Structure</span>
+              <span className="type-level-4 text-primary block mb-6">Socialio Pricing Structure</span>
               <h2 className="type-level-1 text-white">
                 Flat-rate services.<br/>No surprises.
               </h2>
