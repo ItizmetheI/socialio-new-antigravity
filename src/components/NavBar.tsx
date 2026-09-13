@@ -4,6 +4,7 @@ import { useCart } from "../context/CartContext";
 import CartDrawer from "./CartDrawer";
 import { useState, useEffect } from "react";
 import { servicesData } from "../data/services";
+import Logo from "./Logo";
 
 
 export default function NavBar() {
@@ -47,9 +48,9 @@ export default function NavBar() {
         onMouseLeave={() => setActiveDropdown(null)}
       >
         <div className="flex justify-between items-center max-w-7xl mx-auto px-6 h-20">
-          <Link to="/" className="flex items-center">
-            <img src="/logo.png" alt="Socialio" className="h-8 w-auto" />
-          </Link>
+          <div className="flex items-center">
+            <Logo />
+          </div>
           <div className="hidden md:flex items-center gap-8 relative">
             <Link to="/" className={isActive("/")}>Home</Link>
             
@@ -86,10 +87,10 @@ export default function NavBar() {
                 </span>
               )}
             </button>
-            <Link to="/contact" className="hidden md:inline-block border border-white/10 bg-white text-black px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-gray-200">
+            <Link to="/contact" className="hidden md:inline-block border border-white/10 bg-transparent text-white px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-white/5 rounded-full">
               Client Login
             </Link>
-            <Link to="/contact" className="hidden md:inline-block bg-primary text-background px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-primary-hover">
+            <Link to="/contact" className="hidden md:inline-block bg-white text-black px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-gray-200 rounded-full">
               Get Started
             </Link>
             <button 
@@ -129,21 +130,21 @@ export default function NavBar() {
                    </div>
                 </div>
               )}
-              {activeDropdown === 'company' && (
+               {activeDropdown === 'company' && (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-                   <Link to="/about" onClick={() => setActiveDropdown(null)} className="group bg-background p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-colors">
+                   <Link to="/about" onClick={() => setActiveDropdown(null)} className="group bg-background p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-colors shadow-sm">
                       <h3 className="font-display text-lg font-bold text-white mb-2">About Us</h3>
                       <p className="text-sm text-on-surface-variant font-sans">Learn about our mission to productize the marketing agency model.</p>
                    </Link>
-                   <Link to="/industries" onClick={() => setActiveDropdown(null)} className="group bg-background p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-colors">
+                   <Link to="/industries" onClick={() => setActiveDropdown(null)} className="group bg-background p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-colors shadow-sm">
                       <h3 className="font-display text-lg font-bold text-white mb-2">Industries We Serve</h3>
                       <p className="text-sm text-on-surface-variant font-sans">See how we drive scale in SaaS, E-com, Health, and more.</p>
                    </Link>
-                   <Link to="/reviews" onClick={() => setActiveDropdown(null)} className="group bg-background p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-colors">
+                   <Link to="/reviews" onClick={() => setActiveDropdown(null)} className="group bg-background p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-colors shadow-sm">
                       <h3 className="font-display text-lg font-bold text-white mb-2">Client Reviews</h3>
                       <p className="text-sm text-on-surface-variant font-sans">Read verified reviews from companies successfully scaling with us.</p>
                    </Link>
-                   <Link to="/compare" onClick={() => setActiveDropdown(null)} className="group bg-background p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-colors">
+                   <Link to="/compare" onClick={() => setActiveDropdown(null)} className="group bg-background p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-colors shadow-sm">
                       <h3 className="font-display text-lg font-bold text-white mb-2">Compare The Alternative</h3>
                       <p className="text-sm text-on-surface-variant font-sans">See why hiring us beats traditional agencies and in-house roles.</p>
                    </Link>

@@ -74,7 +74,7 @@ export default function CustomPlayer({ url, playing: defaultPlaying = false, mut
   };
 
   return (
-    <div className="relative w-full h-full group bg-black rounded-inherit overflow-hidden">
+    <div className="relative w-full h-full group bg-black overflow-hidden">
       <div className="absolute inset-0 pointer-events-none bg-black">
         <video
           ref={videoRef}
@@ -127,7 +127,7 @@ export default function CustomPlayer({ url, playing: defaultPlaying = false, mut
           onClick={(e) => { e.preventDefault(); e.stopPropagation(); setPlaying(true); }}
           className="absolute inset-0 flex items-center justify-center bg-black/10 cursor-pointer pointer-events-auto z-[5] transition-colors hover:bg-black/20"
         >
-          <div className="w-14 h-14 rounded-full bg-white/10 text-white border border-white/30 flex items-center justify-center backdrop-blur-md hover:scale-105 hover:bg-white/20 transition-all shadow-[0_8px_32px_rgba(0,0,0,0.2)]">
+          <div className="w-14 h-14 bg-black/50 text-white border border-white/30 flex items-center justify-center backdrop-blur-md hover:bg-white hover:text-black transition-all">
             <Play className="w-6 h-6 ml-1" fill="currentColor" />
           </div>
         </div>

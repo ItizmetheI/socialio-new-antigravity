@@ -50,9 +50,9 @@
   --color-secondary-fixed: #d8e2ff;
   --color-inverse-on-surface: #313030;
 
-  --radius-DEFAULT: 0.25rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
+  --radius-DEFAULT: 2px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
   --radius-full: 9999px;
 
   --spacing-stack-xs: 4px;
@@ -98,8 +98,8 @@
   }
   
   .section-quiet {
-    padding-top: 240px;
-    padding-bottom: 240px;
+    padding-top: 180px;
+    padding-bottom: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -107,27 +107,28 @@
 
   /* Typography Hierarchy (Task 3) */
   .type-level-1 {
-    font-size: clamp(48px, 8vw, 96px); /* Huge headline */
-    line-height: 1;
+    font-size: clamp(48px, 8vw, 110px);
+    line-height: 0.9;
     letter-spacing: -0.04em;
     font-weight: 700;
   }
   .type-level-2 {
-    font-size: clamp(32px, 4vw, 48px); /* Section heading */
-    line-height: 1.1;
-    letter-spacing: -0.02em;
+    font-size: clamp(32px, 5vw, 64px);
+    line-height: 1;
+    letter-spacing: -0.03em;
     font-weight: 600;
   }
   .type-level-3 {
-    font-size: 18px; /* Body */
-    line-height: 1.6;
+    font-size: 18px;
+    line-height: 1.8;
     font-weight: 400;
     color: var(--color-on-surface-variant);
+    opacity: 0.9;
   }
   .type-level-4 {
-    font-size: 12px; /* Metadata / Labels */
+    font-size: 13px;
     line-height: 1;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.15em;
     font-weight: 700;
     text-transform: uppercase;
     font-family: var(--font-mono);
@@ -272,12 +273,12 @@ input[type="range"]::-webkit-slider-thumb {
   border-radius: 50%;
   background: var(--color-primary, #a78bfa);
   cursor: pointer;
-  box-shadow: 0 0 8px rgba(167,139,250,0.5);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: none;
+  transition: transform 0.15s ease;
 }
 input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.2);
-  box-shadow: 0 0 14px rgba(167,139,250,0.7);
+  box-shadow: none;
 }
 input[type="range"]::-moz-range-thumb {
   width: 16px;
@@ -286,7 +287,7 @@ input[type="range"]::-moz-range-thumb {
   background: var(--color-primary, #a78bfa);
   cursor: pointer;
   border: none;
-  box-shadow: 0 0 8px rgba(167,139,250,0.5);
+  box-shadow: none;
 }
 input[type="range"]::-moz-range-track {
   height: 4px;

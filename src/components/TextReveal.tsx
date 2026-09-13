@@ -41,9 +41,9 @@ export default function TextReveal({ children, className = "", delay = 0 }: Text
   };
 
   return (
-    <motion.h1
+    <motion.span
       ref={ref}
-      className={`flex flex-wrap ${className}`}
+      className={`inline-flex flex-wrap ${className}`}
       variants={container}
       initial="hidden"
       animate={isInView ? "visible" : "hidden"}
@@ -56,6 +56,6 @@ export default function TextReveal({ children, className = "", delay = 0 }: Text
           </motion.span>
         </span>
       ))}
-    </motion.h1>
+    </motion.span>
   );
 }

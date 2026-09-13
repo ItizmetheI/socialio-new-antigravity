@@ -11,7 +11,7 @@ const data = [
 
 export default function StatsGraph() {
   return (
-    <div className="h-full min-h-[300px] w-full bg-surface-container rounded-2xl border border-white/5 p-6 relative overflow-hidden group">
+    <div className="h-full min-h-[300px] w-full border-t border-white/10 pt-6 relative overflow-hidden group">
       {/* Background glow */}
 
       
@@ -20,7 +20,7 @@ export default function StatsGraph() {
           <h3 className="font-display font-bold text-lg text-white">Content Output Over Time</h3>
           <p className="text-on-surface-variant text-xs">Cumulative pieces delivered across all active clients</p>
         </div>
-        <div className="font-mono text-primary text-xs uppercase tracking-widest font-bold px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
+        <div className="font-mono text-white text-[10px] uppercase tracking-widest font-bold border border-white/20 px-2 py-1">
           Live Data
         </div>
       </div>
@@ -29,10 +29,6 @@ export default function StatsGraph() {
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
             <defs>
-              <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3}/>
-                <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0}/>
-              </linearGradient>
             </defs>
             <XAxis 
               dataKey="name" 
@@ -43,12 +39,11 @@ export default function StatsGraph() {
             />
             <Tooltip 
               contentStyle={{ 
-                backgroundColor: 'rgba(10, 10, 10, 0.9)', 
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '12px',
+                backgroundColor: '#1a1a1a', 
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                borderRadius: '0px',
                 color: '#fff',
-                backdropFilter: 'blur(10px)',
-                boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
+                boxShadow: 'none'
               }}
               itemStyle={{ color: '#fff', fontWeight: 'bold' }}
               labelStyle={{ color: '#888', marginBottom: '4px', fontSize: '12px' }}
@@ -57,10 +52,10 @@ export default function StatsGraph() {
             <Area 
               type="monotone" 
               dataKey="revenue" 
-              stroke="#8B5CF6" 
-              strokeWidth={3}
-              fillOpacity={1} 
-              fill="url(#colorRevenue)" 
+              stroke="#ffffff" 
+              strokeWidth={1}
+              fillOpacity={0} 
+              fill="transparent" 
             />
           </AreaChart>
         </ResponsiveContainer>

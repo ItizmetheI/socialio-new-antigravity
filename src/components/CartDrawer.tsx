@@ -22,7 +22,7 @@ export default function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "tween", duration: 0.3 }}
-            className="fixed inset-y-0 right-0 w-full md:w-[450px] bg-surface border-l border-white/5 z-50 flex flex-col shadow-2xl"
+            className="fixed inset-y-0 right-0 w-full md:w-[450px] bg-background border-l border-white/5 z-50 flex flex-col"
           >
             <div className="flex items-center justify-between p-6 border-b border-white/5">
               <h2 className="font-sans text-xl font-bold text-white flex items-center gap-2">
@@ -53,7 +53,7 @@ export default function CartDrawer() {
               ) : (
                 <div className="space-y-4">
                   {items.map((item) => (
-                    <div key={item.id} className="bg-surface-container border border-white/5 rounded-2xl p-4 flex gap-4 relative group">
+                    <div key={item.id} className="border-t border-white/10 py-4 flex gap-4 relative group">
                       <div className="flex-1">
                         <div className="flex justify-between items-start mb-1">
                           <h4 className="font-sans text-base font-bold text-white">{item.title}</h4>
@@ -86,7 +86,7 @@ export default function CartDrawer() {
                 <Link 
                   to="/contact" 
                   onClick={() => setIsCartOpen(false)}
-                  className="w-full py-4 bg-white text-black hover:bg-white/90 font-sans text-sm font-bold rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] flex justify-center items-center gap-2"
+                  className="w-full py-4 bg-white text-black hover:bg-primary hover:text-white font-sans text-sm font-bold transition-all flex justify-center items-center gap-2 rounded-xl"
                 >
                   Proceed to Checkout <ArrowRight className="w-4 h-4" />
                 </Link>

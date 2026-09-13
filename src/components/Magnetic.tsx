@@ -7,7 +7,7 @@ interface MagneticProps {
   strength?: number;
 }
 
-export default function Magnetic({ children, className = "", strength = 0.2 }: MagneticProps) {
+export default function Magnetic({ children, className = "", strength = 0.05 }: MagneticProps) {
   const ref = useRef<HTMLDivElement>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 

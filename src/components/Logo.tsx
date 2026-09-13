@@ -1,12 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Logo({ className = "" }: { className?: string }) {
   return (
-    <div className={`font-display font-bold tracking-tighter flex items-center gap-3 ${className}`}>
-      <div className="w-auto h-auto px-2 py-1 rounded-lg bg-primary flex items-center justify-center shadow-[0_0_15px_rgba(var(--color-primary-rgb),0.4)]">
-        <span className="text-background text-xl leading-none">S</span>
-      </div>
-      <span>Socialio</span>
-    </div>
+    <Link to="/" className={`flex items-center ${className}`}>
+      <img src="https://iili.io/nq7rnqB.png" alt="Socialio" className="h-10 md:h-12 w-auto object-contain" />
+    </Link>
   );
 }

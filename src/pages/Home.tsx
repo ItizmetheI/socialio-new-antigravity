@@ -9,7 +9,6 @@ import CustomPlayer from "../components/CustomPlayer";
 import { ActiveVideoProvider, useActiveVideo } from "../context/VideoContext";
 
 import SpotlightCard from "../components/SpotlightCard";
-import CustomCursor from "../components/CustomCursor";
 import TextReveal from "../components/TextReveal";
 import Magnetic from "../components/Magnetic";
 
@@ -84,8 +83,8 @@ interface CarouselCardProps {
 }
 
 const HoverOverlay = () => (
-  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20 rounded-[14px]">
-    <div className="bg-surface-container border border-white/5 text-white/70 px-4 py-2 rounded-sm text-[10px] uppercase tracking-[0.1em] flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20">
+    <div className="bg-background border border-white/20 text-white px-4 py-2 text-[10px] uppercase tracking-[0.1em] flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
       View <ArrowUpRight className="w-3 h-3" />
     </div>
   </div>
@@ -94,22 +93,14 @@ const HoverOverlay = () => (
 const CarouselCard: React.FC<CarouselCardProps> = ({ item, columnIndex }) => {
   if (item.type === 'social') {
     return (
-      <div className="w-full aspect-square bg-[#111] rounded-[14px] shrink-0 relative group cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.10)] transition-transform duration-300 hover:scale-[1.02]">
+      <div className="w-full aspect-square bg-[#111] shrink-0 relative group cursor-pointer shadow-2xl transition-transform duration-300 hover:-translate-y-2 rounded-2xl overflow-hidden">
         <HoverOverlay />
-        <div className="absolute inset-0 flex flex-col p-3 pt-6">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-5 h-5 rounded-full overflow-hidden shrink-0">
-               <img src={`https://picsum.photos/seed/${item.seed}_avatar/50/50`} alt="" className="w-full h-full object-cover" />
-            </div>
-            <div className="text-[10px] font-bold text-white">Superior</div>
+        <div className="absolute inset-0 flex flex-col p-4 pt-6">
+          <div className="flex items-center gap-2 mb-2 relative z-10">
+            <div className="text-[10px] font-bold text-white uppercase tracking-widest drop-shadow-md">[ Social ]</div>
           </div>
-          <div className="flex-grow rounded-lg overflow-hidden relative">
-             <img src={`https://picsum.photos/seed/${item.seed}/200/200`} alt="" className="absolute inset-0 w-full h-full object-cover" />
-          </div>
-          <div className="flex items-center gap-2 mt-2">
-             <div className="w-3 h-3 rounded-full border border-white/50"></div>
-             <div className="w-3 h-3 rounded-full border border-white/50"></div>
-             <div className="w-3 h-3 ml-auto rounded-sm border border-white/50"></div>
+          <div className="absolute inset-0 z-0">
+             <img src={`https://picsum.photos/seed/${item.seed}/200/200`} alt="" className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
           </div>
         </div>
       </div>
@@ -118,7 +109,7 @@ const CarouselCard: React.FC<CarouselCardProps> = ({ item, columnIndex }) => {
 
   if (item.type === 'video') {
     return (
-      <div className="w-full aspect-[9/16] bg-[#1a1a1a] rounded-[14px] shrink-0 relative group shadow-[0_4px_20px_rgba(0,0,0,0.10)] overflow-hidden">
+      <div className="w-full aspect-[9/16] bg-[#1a1a1a] shrink-0 relative group overflow-hidden shadow-2xl rounded-2xl">
         <div className="absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-t from-black/40 to-transparent pointer-events-none z-10 opacity-50 group-hover:opacity-20 transition-opacity" />
         
         {/* We use CustomPlayer with pointer events auto when playing */}
@@ -131,28 +122,28 @@ const CarouselCard: React.FC<CarouselCardProps> = ({ item, columnIndex }) => {
 
   if (item.type === 'website') {
     return (
-      <div className="w-full aspect-video bg-[#222] rounded-[14px] shrink-0 relative group cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.10)] transition-transform duration-300 hover:scale-[1.02] flex flex-col overflow-hidden">
+      <div className="w-full aspect-video bg-[#222] shrink-0 relative group cursor-pointer transition-transform duration-300 hover:-translate-y-2 flex flex-col overflow-hidden shadow-2xl rounded-2xl">
         <HoverOverlay />
-        <div className="h-5 bg-white/5 flex items-center gap-1.5 px-3">
-           <div className="w-1.5 h-1.5 rounded-full bg-red-400"></div>
-           <div className="w-1.5 h-1.5 rounded-full bg-yellow-400"></div>
-           <div className="w-1.5 h-1.5 rounded-full bg-green-400"></div>
+        <div className="h-6 bg-white/5 flex items-center px-4 border-b border-white/5 relative z-10">
+           <div className="text-[10px] uppercase tracking-widest text-white/50 font-bold">Browser</div>
         </div>
-        <img src={`https://picsum.photos/seed/${item.seed}/300/170`} alt="" className="flex-grow w-full object-cover opacity-90" />
+        <div className="flex-grow overflow-hidden relative">
+          <img src={`https://picsum.photos/seed/${item.seed}/300/170`} alt="" className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" />
+        </div>
       </div>
     );
   }
 
   if (item.type === 'blog') {
     return (
-      <div className="w-full h-[220px] bg-white rounded-[14px] shrink-0 relative group cursor-pointer shadow-[0_4px_20px_rgba(0,0,0,0.10)] transition-transform duration-300 hover:scale-[1.02] flex flex-col overflow-hidden">
+      <div className="w-full h-[220px] bg-white shrink-0 relative group cursor-pointer transition-transform duration-300 hover:-translate-y-2 flex flex-col overflow-hidden shadow-2xl rounded-2xl">
         <HoverOverlay />
-        <div className="h-[100px] relative">
-          <img src={`https://picsum.photos/seed/${item.seed}/200/100`} alt="" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="h-[100px] relative overflow-hidden">
+          <img src={`https://picsum.photos/seed/${item.seed}/200/100`} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
         </div>
-        <div className="p-4 flex flex-col flex-grow">
-           <h4 className="text-black font-bold text-xs mb-1 line-clamp-2 leading-tight">How to scale your operations effortlessly</h4>
-           <p className="text-gray-500 text-[10px] line-clamp-3 leading-relaxed mt-1">Discover the proven frameworks that top-tier companies use to automate their workflows and increase productivity by 300% without adding headcount.</p>
+        <div className="p-5 flex flex-col flex-grow">
+           <h4 className="text-black font-bold text-sm mb-1 line-clamp-2 leading-tight">How to scale your operations effortlessly</h4>
+           <p className="text-gray-600 text-xs line-clamp-3 leading-relaxed mt-2">Discover the proven frameworks that top-tier companies use to automate their workflows and increase productivity by 300% without adding headcount.</p>
         </div>
       </div>
     );
@@ -165,33 +156,33 @@ function HeroCarousel() {
   const { playingColumnIndex } = useActiveVideo();
 
   return (
-    <div className="absolute inset-0 lg:left-0 lg:w-full h-full gap-4 z-20 flex overflow-hidden [mask-image:linear-gradient(to_bottom,transparent_0%,black_15%,black_85%,transparent_100%)] group/carousel pointer-events-none">
+    <div className="absolute inset-0 h-full gap-8 z-20 flex justify-center overflow-hidden [mask-image:linear-gradient(to_bottom,transparent_0%,black_30%,black_70%,transparent_100%)] group/carousel pointer-events-none">
       {/* Column 1 - Slide Up */}
       <div 
-        className={`flex-1 flex flex-col gap-3 pb-3 animate-slide-up hover:[animation-play-state:paused] pointer-events-auto ${playingColumnIndex === 1 ? '[animation-play-state:paused]' : ''}`}
-        style={{ animationDuration: '30s' }}
+        className={`w-full max-w-[280px] flex flex-col gap-8 pb-8 animate-slide-up hover:[animation-play-state:paused] pointer-events-auto ${playingColumnIndex === 1 ? '[animation-play-state:paused]' : ''}`}
+        style={{ animationDuration: '45s' }}
       >
-        {[...col1Items, ...col1Items].map((item, i) => (
+        {[...col1Items, ...col1Items, ...col1Items].map((item, i) => (
             <CarouselCard key={`col1-${i}`} item={item} columnIndex={1} />
         ))}
       </div>
       
       {/* Column 2 - Slide Down */}
       <div 
-        className={`flex-1 flex flex-col gap-3 pb-3 animate-slide-down hover:[animation-play-state:paused] pointer-events-auto ${playingColumnIndex === 2 ? '[animation-play-state:paused]' : ''}`} 
-        style={{ animationDuration: '40s' }}
+        className={`w-full max-w-[280px] flex flex-col gap-8 pb-8 animate-slide-down hover:[animation-play-state:paused] pointer-events-auto ${playingColumnIndex === 2 ? '[animation-play-state:paused]' : ''}`} 
+        style={{ animationDuration: '60s' }}
       >
-        {[...col2Items, ...col2Items].map((item, i) => (
+        {[...col2Items, ...col2Items, ...col2Items].map((item, i) => (
             <CarouselCard key={`col2-${i}`} item={item} columnIndex={2} />
         ))}
       </div>
 
       {/* Column 3 - Slide Up */}
       <div 
-        className={`flex-1 flex flex-col gap-3 pb-3 animate-slide-up hover:[animation-play-state:paused] pointer-events-auto ${playingColumnIndex === 3 ? '[animation-play-state:paused]' : ''}`} 
-        style={{ animationDuration: '25s' }}
+        className={`w-full max-w-[280px] hidden md:flex flex-col gap-8 pb-8 animate-slide-up hover:[animation-play-state:paused] pointer-events-auto ${playingColumnIndex === 3 ? '[animation-play-state:paused]' : ''}`} 
+        style={{ animationDuration: '50s' }}
       >
-        {[...col3Items, ...col3Items].map((item, i) => (
+        {[...col3Items, ...col3Items, ...col3Items].map((item, i) => (
             <CarouselCard key={`col3-${i}`} item={item} columnIndex={3} />
         ))}
       </div>
@@ -213,147 +204,153 @@ const FAQS = [
 export default function Home() {
   const statsRef = useRef<HTMLElement>(null);
   const isInView = useInView(statsRef, { once: true, amount: 0.5 });
-  const [activeHeroTab, setActiveHeroTab] = useState(servicesData[0].category || "Social Media");
+  const [activeSection, setActiveSection] = useState(servicesData[0].id);
   const [activePortfolioTab, setActivePortfolioTab] = useState("Featured");
+  const guaranteeRef = useRef<HTMLDivElement>(null);
+  const [guaranteeDay, setGuaranteeDay] = useState(0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
 
-  const guaranteeRef = useRef<HTMLDivElement>(null);
-  const guaranteeInView = useInView(guaranteeRef, { once: true, amount: 0.5 });
-  // Instead of a janky manual setInterval, use our own useAnimatedCounter hook!
-  const guaranteeDay = useAnimatedCounter(0, 14, 1500, "", guaranteeInView);
-
-  // Get unique categories for tabs
-  const categories = Array.from(new Set(servicesData.map(s => s.category)));
-
-  // Get the first service in the active category to preview
-  const previewService = servicesData.find(s => s.category === activeHeroTab) || servicesData[0];
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          let day = 0;
+          const interval = setInterval(() => {
+            day++;
+            setGuaranteeDay(day);
+            if (day >= 14) clearInterval(interval);
+          }, 80);
+        }
+      },
+      { threshold: 0.5 }
+    );
+    if (guaranteeRef.current) {
+      observer.observe(guaranteeRef.current);
+    }
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <>
-      <CustomCursor />
-      {/* High-Impact Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 max-w-7xl mx-auto min-h-[90vh] flex flex-col justify-center border-b border-white/5">
-        {/* Background elements */}
+      {/* High-Impact Asymmetric Hero Section */}
+      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 min-h-[90vh] flex flex-col justify-center border-b border-white/5 overflow-hidden">
+        {/* Subtle grid background for agency feel */}
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay z-0 pointer-events-none"></div>
+        <div className="absolute inset-0 bg-background bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] z-0 pointer-events-none"></div>
 
-        {/* Removed decorative mesh gradient */}
-
-        <div className="grid-12 w-full items-center relative z-10">
+        <div className="max-w-7xl mx-auto w-full px-6 grid grid-cols-1 lg:grid-cols-12 items-center relative z-10 gap-12">
+            
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="col-span-12 lg:col-span-6 w-full pr-0 lg:pr-12"
+            className="lg:col-span-6 flex flex-col items-start text-left lg:pr-12"
           >
-            <div className="flex items-center gap-3 mb-8">
-              <div className="flex -space-x-2">
-                {[1,2,3,4,5].map(i => (
-                  <div key={i} className={`w-8 h-8 rounded-full border-2 border-background bg-surface-container flex items-center justify-center overflow-hidden z-[${5-i}]`}>
-                     <img src={`https://i.pravatar.cc/100?img=${i+10}`} alt="avatar" className="w-full h-full object-cover" />
-                  </div>
-                ))}
+            <div className="flex items-center gap-3 mb-8 bg-surface-container/50 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full shadow-xl">
+              <div className="flex text-primary gap-0.5">
+                <Star className="w-3.5 h-3.5 fill-primary" /><Star className="w-3.5 h-3.5 fill-primary" /><Star className="w-3.5 h-3.5 fill-primary" /><Star className="w-3.5 h-3.5 fill-primary" /><Star className="w-3.5 h-3.5 fill-primary" />
               </div>
-              <div>
-                <div className="flex text-primary gap-0.5 mb-1">
-                  <Star className="w-4 h-4 fill-primary" /><Star className="w-4 h-4 fill-primary" /><Star className="w-4 h-4 fill-primary" /><Star className="w-4 h-4 fill-primary" /><Star className="w-4 h-4 fill-primary" />
-                </div>
-                <div className="text-xs font-semibold text-white/70 uppercase tracking-[0.1em]">
-                  Trusted by 200+ brands
-                </div>
+              <div className="text-[10px] font-mono font-bold text-white uppercase tracking-[0.15em] border-l border-white/20 pl-3">
+                Proven by 200+ Scaling Brands
               </div>
             </div>
-            
-            <TextReveal className="type-level-1 text-white mb-8">
-              Stop Guessing. Start Scaling.
-            </TextReveal>
 
-            <p className="type-level-3 max-w-xl mb-12 border-l-2 border-primary/30 pl-6">
+            <div className="type-level-1 text-white mb-6 tracking-tighter leading-[0.95] text-[12vw] sm:text-[8vw] lg:text-[6vw] drop-shadow-2xl text-balance">
+              <TextReveal>Stop Guessing.</TextReveal><br/>
+              <span className="text-primary drop-shadow-[0_0_15px_rgba(221,183,255,0.3)]">
+                <TextReveal>Start Scaling.</TextReveal>
+              </span>
+            </div>
+
+            <p className="type-level-3 max-w-prose mb-12 text-on-surface-variant text-lg sm:text-xl leading-relaxed">
               From scroll-stopping social content to ranking-ready blog posts — we handle your entire content operation so you can focus on running the business.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center gap-4 mb-16 w-full">
-              <Magnetic strength={0.3}>
-                <Link to="/pricing" className="bg-primary text-background px-8 py-4 rounded-xl font-bold text-base w-full sm:w-auto hover:bg-primary-hover transition-colors shadow-[0_0_20px_rgba(var(--color-primary-rgb),0.3)] hover:shadow-primary/50 text-center relative overflow-hidden group block">
+            <div className="flex flex-col sm:flex-row items-center justify-start gap-6 w-full sm:w-auto">
+              <Magnetic>
+                <Link to="/pricing" className="bg-primary text-background px-10 py-5 rounded-full font-black text-base w-full sm:w-auto hover:bg-white hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(221,183,255,0.3)] text-center relative group block">
                    <span className="relative z-10 flex items-center justify-center gap-2">View Our Pricing <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></span>
                 </Link>
               </Magnetic>
-              <button className="bg-surface-container border border-white/10 text-white px-8 py-4 rounded-xl font-bold text-base w-full sm:w-auto hover:bg-white/10 transition-colors flex items-center justify-center gap-2">
-                 <Play className="w-5 h-5" /> See How It Works
-              </button>
+              <Magnetic>
+                <button className="bg-surface-container border border-white/10 text-white px-10 py-5 rounded-full font-bold text-base w-full sm:w-auto hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-md">
+                   <Play className="w-5 h-5 text-primary" /> See How It Works
+                </button>
+              </Magnetic>
             </div>
-            
           </motion.div>
-
-          {/* Right Side: Refined Vertical Carousel */}
-          <div className="col-span-12 lg:col-span-6 lg:col-start-7 mt-16 lg:mt-0 relative h-[600px] lg:h-full">
-            <ActiveVideoProvider>
-               <HeroCarousel />
-            </ActiveVideoProvider>
-          </div>
         </div>
+
+        {/* 3-Column Premium Bleed Carousel */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1.5, delay: 0.5 }}
+          className="absolute right-0 top-32 bottom-0 w-full lg:w-[48vw] hidden lg:block pointer-events-none z-0"
+        >
+           <ActiveVideoProvider>
+             <HeroCarousel />
+           </ActiveVideoProvider>
+        </motion.div>
       </section>
 
-      {/* Interactive Service Selector - Extracted to its own section for pacing */}
-      <section className="section-quiet bg-surface-container/30 border-y border-white/5 py-24">
-        <div className="grid-12 w-full">
-           <div className="col-span-12 max-w-4xl mx-auto w-full">
-              <motion.div 
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-              >
-                 <div className="py-8 relative overflow-hidden">
-                    
-                    <h2 className="type-level-2 text-white mb-10 tracking-tight text-center">What do you need help with?</h2>
-                    
-                    <div className="flex flex-wrap justify-center gap-3 mb-12">
-                      {categories.map((cat, idx) => (
-                        <button 
-                          key={idx}
-                          onClick={() => setActiveHeroTab(cat)}
-                          className={`px-6 py-3 rounded-sm font-sans text-sm font-semibold transition-all ${activeHeroTab === cat ? 'bg-white text-black shadow-lg scale-100' : 'bg-surface-container text-on-surface-variant hover:bg-white/10 hover:text-white border border-white/5'}`}
-                        >
-                          {cat}
-                        </button>
-                      ))}
-                    </div>
+      {/* Compact Tabbed Capabilities Section */}
+      <section className="bg-surface-container py-24 md:py-32 border-y border-white/5 relative">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-24 items-start">
+          
+          {/* Left Navigation */}
+          <div className="md:col-span-4">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-6 block">[ Capabilities ]</span>
+            <div className="flex flex-col gap-2">
+              {servicesData.map((service, idx) => (
+                <button 
+                  key={idx}
+                  onClick={() => setActiveSection(service.id)}
+                  className={`text-left px-6 py-4 rounded-xl transition-all duration-300 font-bold ${activeSection === service.id ? 'bg-white text-black shadow-lg scale-[1.02]' : 'text-on-surface-variant hover:text-white hover:bg-white/5'}`}
+                >
+                  {service.title}
+                </button>
+              ))}
+            </div>
+          </div>
 
-                    {/* Preview Card */}
-                    <div className="border-y border-white/10 py-12 transition-all flex flex-col md:flex-row items-center gap-8">
-                       <div className="flex-grow w-full">
-                         <div className="flex items-center gap-5 mb-5">
-                           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0 border border-primary/20">
-                             <CheckCircle2 className="w-6 h-6" />
-                           </div>
-                           <div>
-                             <h4 className="type-level-3 font-bold text-white mb-1">{previewService.title}</h4>
-                             <div className="font-sans text-sm text-on-surface-variant max-w-md">{previewService.description}</div>
-                           </div>
-                         </div>
-                         
-                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
-                            {previewService.features.slice(0, 4).map((f: string, i: number) => (
-                               <div key={i} className="flex items-start gap-3 text-sm text-on-surface-variant font-sans">
-                                 <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5 opacity-80" />
-                                 {f}
-                               </div>
-                            ))}
-                         </div>
-                       </div>
-                       
-                       <div className="flex flex-row md:flex-col items-center md:items-start justify-between w-full md:w-auto gap-4 md:gap-3 shrink-0 md:pl-10 md:border-l border-white/5 h-full py-2">
-                         <div className="text-left">
-                           <span className="type-level-4 text-on-surface-variant block mb-2">Starting at</span>
-                           <div className="font-display font-bold text-4xl text-white">${previewService.sliderSteps[0].price}<span className="text-base font-sans font-normal text-on-surface-variant">/mo</span></div>
-                         </div>
-                         <Link to={`/service/${previewService.id}`} className="mt-4 px-8 py-4 w-full text-center bg-white text-black hover:bg-gray-200 transition-colors rounded-xl font-bold text-sm flex justify-center items-center gap-2">
-                           Explore <ArrowUpRight className="w-4 h-4" />
-                         </Link>
-                       </div>
+          {/* Right Content */}
+          <div className="col-span-12 md:col-span-8">
+             {servicesData.filter(s => s.id === activeSection).map((service, idx) => (
+                <motion.div 
+                  key={service.id} 
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.4 }}
+                  className="bg-background rounded-2xl border border-white/10 p-8 md:p-12 shadow-2xl relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 p-8 opacity-5"><Layers className="w-48 h-48" /></div>
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-6 block relative z-10">{service.category}</span>
+                  <h4 className="type-level-1 text-white mb-6 leading-tight relative z-10 text-balance">{service.title}</h4>
+                  <p className="type-level-3 text-white/70 mb-12 max-w-prose relative z-10">{service.description}</p>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-8 mb-12 border-t border-white/10 pt-8 relative z-10">
+                     {service.features.map((f: string, i: number) => (
+                        <div key={i} className="flex items-start gap-4 type-level-3 text-sm">
+                          <CheckCircle2 className="w-5 h-5 text-primary shrink-0" />
+                          {f}
+                        </div>
+                     ))}
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mt-auto pt-8 border-t border-white/10 relative z-10">
+                    <div className="text-left flex items-baseline gap-3">
+                      <span className="type-level-4 text-white/50">Starting at</span>
+                      <div className="font-display font-bold text-3xl text-white">${service.sliderSteps[0].price}</div>
                     </div>
-                 </div>
-              </motion.div>
-           </div>
+                    <Link to={`/service/${service.id}`} className="sm:ml-auto px-8 py-4 bg-primary text-background hover:bg-white transition-colors duration-300 rounded-xl font-bold text-sm flex justify-center items-center gap-2">
+                      Explore Framework <ArrowUpRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </motion.div>
+             ))}
+          </div>
+
         </div>
       </section>
 
@@ -382,29 +379,32 @@ export default function Home() {
       </section>
 
       {/* Results Section - Streamlined */}
-      <section id="stats-section" ref={statsRef} className="py-20 bg-background relative overflow-hidden">
+      <section id="stats-section" ref={statsRef} className="py-24 md:py-32 bg-background relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight">Outcomes Over Output.</h2>
+            <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight text-balance">Outcomes Over Output.</h2>
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Quick Stats Stack - Typography & Dividers instead of Cards (Task 5: Destroy Card Soup) */}
-            <div className="flex flex-col gap-8 lg:col-span-1 justify-center">
-              <div className="flex flex-col justify-center border-l-2 border-primary/20 pl-6">
-                 <div className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">Pieces of Content Delivered</div>
+            {/* Quick Stats Stack */}
+            <div className="flex flex-col gap-12 lg:col-span-1 justify-center">
+              <div className="flex flex-col justify-center">
+                 <div className="font-mono text-[10px] uppercase tracking-widest text-primary mb-2 font-bold">[ Evidence 01 ]</div>
+                 <div className="text-on-surface-variant text-sm mb-1">Pieces of Content Delivered</div>
                  <div className="text-white font-display text-5xl md:text-6xl font-bold tracking-tighter">
                    <Counter start={0} end={8415} duration={1500} suffix="+" inView={isInView} />
                  </div>
               </div>
-              <div className="flex flex-col justify-center border-l-2 border-tertiary/20 pl-6">
-                 <div className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">Active Campaigns</div>
+              <div className="flex flex-col justify-center">
+                 <div className="font-mono text-[10px] uppercase tracking-widest text-tertiary mb-2 font-bold">[ Evidence 02 ]</div>
+                 <div className="text-on-surface-variant text-sm mb-1">Active Campaigns</div>
                  <div className="text-white font-display text-5xl md:text-6xl font-bold tracking-tighter">
                    <Counter start={0} end={86} duration={2000} inView={isInView} />
                  </div>
               </div>
-              <div className="flex flex-col justify-center border-l-2 border-secondary/20 pl-6">
-                 <div className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">Client Retention Rate</div>
+              <div className="flex flex-col justify-center">
+                 <div className="font-mono text-[10px] uppercase tracking-widest text-secondary mb-2 font-bold">[ Evidence 03 ]</div>
+                 <div className="text-on-surface-variant text-sm mb-1">Client Retention Rate</div>
                  <div className="text-white font-display text-5xl md:text-6xl font-bold tracking-tighter">
                    <Counter start={0} end={94} duration={2000} suffix="%" inView={isInView} />
                  </div>
@@ -419,37 +419,37 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How it Works - Editorial Split (Task 1: Kill AI Templates, Task 4: Stop Centering) */}
+      {/* How it Works - Editorial Split */}
       <section className="section-quiet bg-background border-t border-white/5 relative">
         <div className="grid-12 w-full relative z-10">
           {/* Left Column: Title */}
           <div className="col-span-12 lg:col-span-5 mb-16 lg:mb-0">
-            <span className="type-level-4 text-primary block mb-8">The Process</span>
-            <h2 className="type-level-2 text-white mb-8 lg:pr-8">We simplified the agency model into a predictable, frictionless assembly line.</h2>
-            <p className="type-level-3 lg:pr-12">No endless email chains. No ambiguous deliverables. Just a structured sprint for growth built entirely around producing outcomes over output.</p>
+            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-6 block">[ System ]</span>
+            <h2 className="type-level-2 text-white mb-8 lg:pr-8 text-balance">We simplified the agency model into a predictable assembly line.</h2>
+            <p className="type-level-3 lg:pr-12 max-w-prose">No endless email chains. No ambiguous deliverables. Just a structured sprint for growth built entirely around producing outcomes over output.</p>
           </div>
           
           {/* Right Column: Steps (Asymmetric Layout) */}
-          <div className="col-span-12 lg:col-span-6 lg:col-start-7 flex flex-col gap-16">
-             <div className="flex gap-8 items-start group">
+          <div className="col-span-12 lg:col-span-6 lg:col-start-7 flex flex-col gap-6">
+             <div className="flex gap-8 items-start group bg-surface-container p-8 rounded-2xl border border-white/5 hover:border-white/10 transition-colors shadow-sm">
                <div className="type-level-4 text-white/30 pt-1 shrink-0 group-hover:text-primary transition-colors">01</div>
-               <div className="border-t border-white/10 pt-4 flex-grow">
+               <div className="flex-grow">
                  <h3 className="type-level-3 font-bold text-white mb-4">Subscribe & Onboard</h3>
                  <p className="type-level-3 text-sm">Select your plan, complete our focused alignment questionnaire, and get access to your dedicated Slack channel within hours.</p>
                </div>
              </div>
              
-             <div className="flex gap-8 items-start group">
+             <div className="flex gap-8 items-start group bg-surface-container p-8 rounded-2xl border border-white/5 hover:border-white/10 transition-colors shadow-sm">
                <div className="type-level-4 text-white/30 pt-1 shrink-0 group-hover:text-tertiary transition-colors">02</div>
-               <div className="border-t border-white/10 pt-4 flex-grow">
+               <div className="flex-grow">
                  <h3 className="type-level-3 font-bold text-white mb-4">Submit Briefs</h3>
                  <p className="type-level-3 text-sm">Use your kanban board to request as many creatives or campaigns as you need. We dissect the brief and get straight to work.</p>
                </div>
              </div>
              
-             <div className="flex gap-8 items-start group">
+             <div className="flex gap-8 items-start group bg-surface-container p-8 rounded-2xl border border-white/5 hover:border-white/10 transition-colors shadow-sm">
                <div className="type-level-4 text-white/30 pt-1 shrink-0 group-hover:text-secondary transition-colors">03</div>
-               <div className="border-t border-white/10 pt-4 flex-grow">
+               <div className="flex-grow">
                  <h3 className="type-level-3 font-bold text-white mb-4">Review & Scale</h3>
                  <p className="type-level-3 text-sm">Receive your first batch in days. Provide feedback seamlessly. Once approved, we launch, measure, and scale the winners.</p>
                </div>
@@ -459,209 +459,93 @@ export default function Home() {
       </section>
 
       {/* Proof of Execution (Our Work) */}
-      <section className="py-24 md:py-32 bg-surface-container-lowest border-y border-outline-variant/10 relative overflow-hidden">
-        {/* Glow effects */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 blur-[120px] rounded-full pointer-events-none -z-10"></div>
+      <section className="py-24 md:py-32 bg-background border-y border-white/5 relative overflow-hidden">
         
         <div className="max-w-7xl mx-auto px-6">
-          {/* Section Header */}
-          <div className="mb-16 flex flex-col items-center text-center">
-            <span className="text-primary font-mono text-xs uppercase tracking-widest mb-4 block">Our Portfolio</span>
-            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tighter">
-              High-Converting Creatives
+          {/* Section Header - Left Aligned */}
+          <div className="mb-16 flex flex-col items-start text-left border-b border-white/10 pb-16">
+            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-6 block">[ Evidence Collection ]</span>
+            <h2 className="font-display text-5xl md:text-6xl font-bold text-white mb-8 tracking-tighter text-balance">
+              High-Converting Creatives.
             </h2>
-            <p className="max-w-2xl text-on-surface-variant font-sans text-lg md:text-xl leading-relaxed">
+            <p className="max-w-prose text-on-surface-variant font-sans text-lg md:text-xl leading-relaxed">
               We design assets built specifically to capture attention, reduce friction, and scale your revenue. See what we can do for you.
             </p>
           </div>
 
-          {/* Filter Tabs */}
-          <div className="flex flex-wrap justify-center gap-3 mb-16">
-            <button onClick={() => setActivePortfolioTab("Featured")} className={`px-6 py-3 font-mono font-bold text-xs uppercase tracking-widest rounded flex items-center gap-2 transition-all duration-300 ${activePortfolioTab === 'Featured' ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] scale-105' : 'bg-transparent border border-white/10 hover:bg-white/5 text-white'}`}><Sparkles className="w-4 h-4"/> Featured</button>
-            <button onClick={() => setActivePortfolioTab("Social Posts")} className={`px-6 py-3 font-mono font-bold text-xs uppercase tracking-widest rounded flex items-center gap-2 transition-all duration-300 ${activePortfolioTab === 'Social Posts' ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] scale-105' : 'bg-transparent border border-white/10 hover:bg-white/5 text-white'}`}><Image className="w-4 h-4"/> Social Posts</button>
-            <button onClick={() => setActivePortfolioTab("Short-Form")} className={`px-6 py-3 font-mono font-bold text-xs uppercase tracking-widest rounded flex items-center gap-2 transition-all duration-300 ${activePortfolioTab === 'Short-Form' ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] scale-105' : 'bg-transparent border border-white/10 hover:bg-white/5 text-white'}`}><Video className="w-4 h-4"/> Short-Form</button>
-            <button onClick={() => setActivePortfolioTab("UGC")} className={`px-6 py-3 font-mono font-bold text-xs uppercase tracking-widest rounded flex items-center gap-2 transition-all duration-300 ${activePortfolioTab === 'UGC' ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)] scale-105' : 'bg-transparent border border-white/10 hover:bg-white/5 text-white'}`}><UserSquare2 className="w-4 h-4"/> UGC</button>
+          {/* Filter Tabs - Left Aligned */}
+          <div className="flex flex-wrap justify-start gap-4 mb-16">
+            <button onClick={() => setActivePortfolioTab("Featured")} className={`px-4 py-2 font-mono font-bold text-[10px] uppercase tracking-widest border-b-2 transition-all duration-300 ${activePortfolioTab === 'Featured' ? 'border-primary text-white' : 'border-transparent text-white/40 hover:text-white'}`}>Featured</button>
+            <button onClick={() => setActivePortfolioTab("Social Posts")} className={`px-4 py-2 font-mono font-bold text-[10px] uppercase tracking-widest border-b-2 transition-all duration-300 ${activePortfolioTab === 'Social Posts' ? 'border-primary text-white' : 'border-transparent text-white/40 hover:text-white'}`}>Social Posts</button>
+            <button onClick={() => setActivePortfolioTab("Short-Form")} className={`px-4 py-2 font-mono font-bold text-[10px] uppercase tracking-widest border-b-2 transition-all duration-300 ${activePortfolioTab === 'Short-Form' ? 'border-primary text-white' : 'border-transparent text-white/40 hover:text-white'}`}>Short-Form</button>
+            <button onClick={() => setActivePortfolioTab("UGC")} className={`px-4 py-2 font-mono font-bold text-[10px] uppercase tracking-widest border-b-2 transition-all duration-300 ${activePortfolioTab === 'UGC' ? 'border-primary text-white' : 'border-transparent text-white/40 hover:text-white'}`}>UGC</button>
           </div>
 
-          {/* Work Grid - Bento Style */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Work Grid - Asymmetrical Editorial Layout */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-y-16 gap-x-8">
             
-            {/* Box 1: Social Media Posts */}
+            {/* Row 1: Featured Project (Span 8) + Text (Span 4) */}
             {(activePortfolioTab === 'Featured' || activePortfolioTab === 'Social Posts') && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }} 
-              whileInView={{ opacity: 1, y: 0 }} 
-              viewport={{ once: true, margin: "-50px" }} 
-              transition={{ duration: 0.5 }} 
-              className="h-full"
-            >
-              <SpotlightCard className="p-8 h-full">
-               <div className="flex justify-between items-center mb-8">
-                 <div className="flex items-center gap-3 text-white">
-                   <div className="p-2 rounded-lg bg-surface-container border border-white/10"><Image className="w-4 h-4 text-on-surface-variant" /></div>
-                   <span className="font-bold font-sans text-lg md:text-xl">Social Media Posts</span>
-                 </div>
-                 
-               </div>
-               <div className="grid grid-cols-2 gap-4">
-                  <div className="rounded-xl overflow-hidden relative group/img aspect-square border border-white/5"><img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=400&h=400" className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-700 opacity-80 hover:opacity-100" alt="Post" /></div>
-                  <div className="rounded-xl overflow-hidden relative group/img aspect-square border border-white/5"><img src="https://images.unsplash.com/photo-1601042879364-f3947d3f9c16?auto=format&fit=crop&q=80&w=400&h=400" className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-700 opacity-80 hover:opacity-100" alt="Post" /></div>
-                  <div className="rounded-xl overflow-hidden relative group/img aspect-square border border-white/5"><img src="https://images.unsplash.com/photo-1504270997636-07ddfbd48948?auto=format&fit=crop&q=80&w=400&h=400" className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-700 opacity-80 hover:opacity-100" alt="Post" /></div>
-                  <div className="rounded-xl overflow-hidden relative group/img aspect-square border border-white/5"><img src="https://images.unsplash.com/photo-1516259762381-22954d7d3ad2?auto=format&fit=crop&q=80&w=400&h=400" className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-700 opacity-80 hover:opacity-100" alt="Post" /></div>
-               </div>
-              </SpotlightCard>
-            </motion.div>
-            )}
-            
-            {/* Box 2: Short-Form Videos */}
-            {(activePortfolioTab === 'Featured' || activePortfolioTab === 'Short-Form') && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }} 
-              whileInView={{ opacity: 1, y: 0 }} 
-              viewport={{ once: true, margin: "-50px" }} 
-              transition={{ duration: 0.5, delay: 0.1 }} 
-              className="h-full"
-            >
-              <SpotlightCard className="p-8 h-full">
-               <div className="flex justify-between items-center mb-8">
-                 <div className="flex items-center gap-3 text-white">
-                   <div className="p-2 rounded-lg bg-surface-container border border-white/10"><Video className="w-4 h-4 text-on-surface-variant" /></div>
-                   <span className="font-bold font-sans text-lg md:text-xl">Short-Form Videos</span>
-                 </div>
-                 
-               </div>
-               <div className="grid grid-cols-2 gap-4 h-[350px]">
-                  <div className="rounded-xl overflow-hidden relative group/vid h-full border border-white/5 bg-black">
-                     <img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&q=80&w=400&h=711" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover/vid:scale-105 transition-transform duration-700 group-hover/vid:opacity-90" alt="Video" />
-                     <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center pl-0.5 group-hover/vid:bg-white group-hover/vid:text-black group-hover/vid:scale-110 transition-all cursor-pointer">
-                           <Play className="w-5 h-5 overflow-visible" fill="currentColor" />
-                        </div>
-                     </div>
-                  </div>
-                  <div className="rounded-xl overflow-hidden relative group/vid h-full border border-white/5 bg-black">
-                     <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=400&h=711" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover/vid:scale-105 transition-transform duration-700 group-hover/vid:opacity-90" alt="Video" />
-                     <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center pl-0.5 group-hover/vid:bg-white group-hover/vid:text-black group-hover/vid:scale-110 transition-all cursor-pointer">
-                           <Play className="w-5 h-5 overflow-visible" fill="currentColor" />
-                        </div>
-                     </div>
-                  </div>
-               </div>
-              </SpotlightCard>
-            </motion.div>
-            )}
-
-            {/* Box 3: Blog & SEO */}
-            {(activePortfolioTab === 'Featured') && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }} 
-              whileInView={{ opacity: 1, y: 0 }} 
-              viewport={{ once: true, margin: "-50px" }} 
-              transition={{ duration: 0.5, delay: 0.2 }} 
-              className="h-full"
-            >
-              <SpotlightCard className="p-8 h-full">
-               <div className="flex justify-between items-center mb-8">
-                 <div className="flex items-center gap-3 text-white">
-                   <div className="p-2 rounded-lg bg-surface-container border border-white/10"><MonitorPlay className="w-4 h-4 text-on-surface-variant" /></div>
-                   <span className="font-bold font-sans text-lg md:text-xl">Blog & SEO</span>
-                 </div>
-                 
-               </div>
-               <div className="grid grid-cols-2 gap-4 h-[350px]">
-                  <div className="rounded-xl overflow-hidden relative group/vid h-full flex flex-col bg-black border border-white/5">
-                     <div className="relative flex-grow min-h-[250px]">
-                        <img src="https://images.unsplash.com/photo-1616469829581-73993eb86b02?auto=format&fit=crop&q=80&w=400&h=711" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover/vid:opacity-90 transition-opacity" alt="Video Ad" />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-12 h-12 rounded-full bg-primary/80 backdrop-blur-md text-black flex items-center justify-center pl-0.5 group-hover/vid:scale-110 group-hover/vid:bg-primary transition-all cursor-pointer">
-                              <Play className="w-5 h-5 overflow-visible" fill="currentColor" />
-                          </div>
-                        </div>
-                     </div>
-                     <div className="h-[3px] bg-white/10 relative shrink-0">
-                         <div className="absolute top-0 left-0 h-full bg-primary w-1/3"></div>
-                     </div>
-                  </div>
-                  <div className="rounded-xl overflow-hidden relative group/vid h-full flex flex-col bg-black border border-white/5">
-                     <div className="relative flex-grow min-h-[250px]">
-                        <img src="https://images.unsplash.com/photo-1493723843671-1d655e66ac1c?auto=format&fit=crop&q=80&w=400&h=711" className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover/vid:opacity-90 transition-opacity" alt="Video Ad" />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                          <div className="w-12 h-12 rounded-full bg-primary/80 backdrop-blur-md text-black flex items-center justify-center pl-0.5 group-hover/vid:scale-110 group-hover/vid:bg-primary transition-all cursor-pointer">
-                              <Play className="w-5 h-5 overflow-visible" fill="currentColor" />
-                          </div>
-                        </div>
-                     </div>
-                     <div className="h-[3px] bg-white/10 relative shrink-0">
-                         <div className="absolute top-0 left-0 h-full bg-primary w-2/3"></div>
-                     </div>
-                  </div>
-               </div>
-              </SpotlightCard>
-            </motion.div>
-            )}
-
-            {/* Box 4: Social Media Posts */}
-            {(activePortfolioTab === 'Featured' || activePortfolioTab === 'Social Posts') && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }} 
-              whileInView={{ opacity: 1, y: 0 }} 
-              viewport={{ once: true, margin: "-50px" }} 
-              transition={{ duration: 0.5, delay: 0.3 }} 
-              className="h-full"
-            >
-              <SpotlightCard className="p-8 h-full">
-               <div className="flex justify-between items-center mb-8">
-                 <div className="flex items-center gap-3 text-white">
-                   <div className="p-2 rounded-lg bg-surface-container border border-white/10"><Layers className="w-4 h-4 text-on-surface-variant" /></div>
-                   <span className="font-bold font-sans text-lg md:text-xl">Social Media Posts</span>
-                 </div>
-                 
-               </div>
-               <div className="grid grid-cols-2 gap-4">
-                  <div className="rounded-xl overflow-hidden relative group/img aspect-[3/4] border border-white/5"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=400&h=533" className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-700 opacity-80 hover:opacity-100" alt="Ad" /></div>
-                  <div className="rounded-xl overflow-hidden relative group/img aspect-[3/4] border border-white/5"><img src="https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&q=80&w=400&h=533" className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-700 opacity-80 hover:opacity-100" alt="Ad" /></div>
-                  <div className="rounded-xl overflow-hidden relative group/img aspect-[3/4] border border-white/5"><img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=400&h=533" className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-700 opacity-80 hover:opacity-100" alt="Ad" /></div>
-                  <div className="rounded-xl overflow-hidden relative group/img aspect-[3/4] border border-white/5"><img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=400&h=533" className="w-full h-full object-cover group-hover/img:scale-105 transition-transform duration-700 opacity-80 hover:opacity-100" alt="Ad" /></div>
-               </div>
-              </SpotlightCard>
-            </motion.div>
-            )}
-
-            {/* Box 5: UGC (Span full width) */}
-            {(activePortfolioTab === 'Featured' || activePortfolioTab === 'UGC') && (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }} 
-              whileInView={{ opacity: 1, y: 0 }} 
-              viewport={{ once: true, margin: "-50px" }} 
-              transition={{ duration: 0.5 }} 
-              className="lg:col-span-2 h-full"
-            >
-              <SpotlightCard className="p-8 h-full">
-               <div className="flex justify-between items-center mb-8">
-                 <div className="flex items-center gap-3 text-white">
-                   <div className="p-2 rounded-lg bg-surface-container border border-white/10"><UserSquare2 className="w-4 h-4 text-on-surface-variant" /></div>
-                   <span className="font-bold font-sans text-lg md:text-xl">UGC Videos</span>
-                 </div>
-                 
-               </div>
-               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                 {[1,2,3,4].map((i) => (
-                    <div key={`ugc-${i}`} className="rounded-xl overflow-hidden relative group/vid aspect-[9/16] border border-white/5 bg-black">
-                         <img src={`https://images.unsplash.com/photo-${1551288049 + i * 100}?auto=format&fit=crop&q=80&w=400&h=711&sig=${i}`} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover/vid:opacity-90 group-hover/vid:scale-105 transition-all duration-700" alt="UGC" />
-                         <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white flex items-center justify-center pl-0.5 group-hover/vid:bg-white group-hover/vid:text-black group-hover/vid:scale-110 transition-all cursor-pointer">
-                               <Play className="w-4 h-4 overflow-visible" fill="currentColor" />
-                            </div>
-                         </div>
-                         <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-white/10">
-                            <div className={`h-full bg-secondary ${i === 1 ? 'w-1/4' : i === 2 ? 'w-1/2' : i === 3 ? 'w-3/4' : 'w-[90%]'}`}></div>
-                         </div>
+               <>
+                 <div className="md:col-span-8 group/img">
+                   <div className="overflow-hidden aspect-video bg-surface-container mb-4 rounded-2xl shadow-lg border border-white/5">
+                     <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1200" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105" alt="Post" />
+                   </div>
+                   <div className="flex justify-between items-start">
+                      <div>
+                        <h3 className="type-level-3 font-bold text-white mb-1">Social Media Campaign</h3>
+                        <p className="type-level-4 text-white/50">Instagram & Facebook</p>
                       </div>
+                      <div className="type-level-4 text-primary mt-1">+300% Engagement</div>
+                   </div>
+                 </div>
+                 <div className="md:col-span-4 flex flex-col justify-center border-t border-white/10 pt-8 mt-8 md:mt-0 md:border-t-0 md:border-l md:pt-0 md:pl-8">
+                    <h3 className="type-level-2 text-white mb-6">Built to stop the scroll.</h3>
+                    <p className="type-level-3 mb-8">We don't just make things look pretty. We engineer creative assets that hack attention and drive meaningful action.</p>
+                 </div>
+               </>
+            )}
+            
+            {/* Row 2: Short-Form (3 Columns) */}
+            {(activePortfolioTab === 'Featured' || activePortfolioTab === 'Short-Form') && (
+               <>
+                 {[1,2,3].map((i) => (
+                    <div key={i} className="md:col-span-4 group/vid">
+                       <div className="overflow-hidden aspect-[9/16] bg-surface-container relative mb-4 rounded-2xl shadow-lg border border-white/5">
+                          <img src={`https://images.unsplash.com/photo-${1551288049 + i * 100}?auto=format&fit=crop&q=80&w=600`} className="w-full h-full object-cover transition-transform duration-700 group-hover/vid:scale-105" alt="Video" />
+                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/vid:opacity-100 transition-opacity">
+                             <div className="w-16 h-16 rounded-full bg-black/50 backdrop-blur border border-white/20 text-white flex items-center justify-center pl-1">
+                                <Play className="w-6 h-6" fill="currentColor" />
+                             </div>
+                          </div>
+                       </div>
+                       <div>
+                          <h3 className="type-level-3 font-bold text-white mb-1">Short-Form Content</h3>
+                          <p className="type-level-4 text-white/50">TikTok & Reels</p>
+                       </div>
+                    </div>
                  ))}
-               </div>
-              </SpotlightCard>
-            </motion.div>
+               </>
+            )}
+
+            {/* Row 3: Blog / Editorial (Span 6 + Span 6) */}
+            {(activePortfolioTab === 'Featured') && (
+               <>
+                 <div className="md:col-span-6 group/img mt-8 pt-8">
+                   <div className="overflow-hidden aspect-[16/9] bg-surface-container mb-4 rounded-2xl shadow-lg border border-white/5">
+                     <img src="https://images.unsplash.com/photo-1616469829581-73993eb86b02?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105" alt="Blog" />
+                   </div>
+                   <h3 className="type-level-3 font-bold text-white mb-1">SEO & Editorial</h3>
+                   <p className="type-level-4 text-white/50">Long-form content</p>
+                 </div>
+                 <div className="md:col-span-6 group/img mt-8 pt-8">
+                   <div className="overflow-hidden aspect-[16/9] bg-surface-container mb-4 rounded-2xl shadow-lg border border-white/5">
+                     <img src="https://images.unsplash.com/photo-1493723843671-1d655e66ac1c?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105" alt="Blog" />
+                   </div>
+                   <h3 className="type-level-3 font-bold text-white mb-1">Industry Reports</h3>
+                   <p className="type-level-4 text-white/50">B2B Strategy</p>
+                 </div>
+               </>
             )}
           </div>
         </div>
@@ -669,19 +553,19 @@ export default function Home() {
           {/* Trust Bar */}
           <div className="grid-12 w-full">
             <div className="col-span-12 flex flex-wrap items-center justify-between gap-6 py-12 mt-16 border-y border-white/5 text-on-surface-variant type-level-4">
-               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary/50" /> Vetted Marketers</div>
-               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-tertiary/50" /> Fast Turnarounds</div>
-               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-secondary/50" /> Fully Managed</div>
-               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-primary/50" /> Fixed Pricing</div>
-               <div className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-tertiary/50" /> Cancel Anytime</div>
+               <div className="flex items-center gap-2">Vetted Marketers</div>
+               <div className="flex items-center gap-2">Fast Turnarounds</div>
+               <div className="flex items-center gap-2">Fully Managed</div>
+               <div className="flex items-center gap-2">Fixed Pricing</div>
+               <div className="flex items-center gap-2">Cancel Anytime</div>
             </div>
           </div>
 
           {/* Services & Pricing Block */}
-          <div className="mt-32 pt-16 border-t border-white/5 grid-12 w-full items-end mb-16">
+          <div className="py-24 md:py-32 border-t border-white/5 grid-12 w-full items-end mb-16">
             <div className="col-span-12 md:col-span-6 lg:col-span-7 pr-8">
-              <span className="type-level-4 text-primary block mb-6">Socialio Pricing Structure</span>
-              <h2 className="type-level-1 text-white">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-6 block">Socialio Pricing Structure</span>
+              <h2 className="type-level-1 text-white text-balance">
                 Flat-rate services.<br/>No surprises.
               </h2>
             </div>
@@ -723,17 +607,17 @@ export default function Home() {
               </div>
             </div>
 
-          {/* Minimal Guarantee Block (Task 7: Remove excessive rounded borders) */}
-          <div ref={guaranteeRef} className="mt-32 pt-16 border-t border-white/5 grid-12 w-full items-start">
+          {/* Minimal Guarantee Block */}
+          <div ref={guaranteeRef} className="py-24 md:py-32 border-t border-white/5 grid-12 w-full items-start">
              <div className="col-span-12 md:col-span-6 lg:col-span-5 pr-8">
-               <div className="type-level-4 text-primary mb-8">
+               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-6 block">
                  Ironclad Guarantee
-               </div>
-               <h3 className="type-level-2 text-white mb-6">
+               </span>
+               <h3 className="type-level-2 text-white mb-6 text-balance">
                  Results in 14 days.<br />
                  <span className="text-white/50">Or it's free.</span>
                </h3>
-               <p className="type-level-3 mb-8">
+               <p className="type-level-3 mb-8 max-w-prose">
                  We are so confident in our creative output that every new engagement comes with a 14-day absolute satisfaction guarantee. No friction, no endless email chains.
                </p>
                <div className="space-y-4">
@@ -749,33 +633,38 @@ export default function Home() {
              </div>
 
              <div className="col-span-12 md:col-span-6 lg:col-start-8 mt-16 md:mt-0">
-               <div className="relative aspect-square flex flex-col items-center justify-center border border-white/10 p-8">
-                  <span className="type-level-4 text-on-surface-variant mb-4">Sprint Day</span>
-                  <span className="type-level-1 text-white">{guaranteeDay}</span>
+               <div className="relative aspect-square flex flex-col items-center justify-center p-8 bg-surface-container rounded-3xl shadow-xl border border-white/5">
+                  <div className="absolute top-8 left-8 w-8 h-8 border-t-2 border-l-2 border-white/10 rounded-tl-lg"></div>
+                  <div className="absolute top-8 right-8 w-8 h-8 border-t-2 border-r-2 border-white/10 rounded-tr-lg"></div>
+                  <div className="absolute bottom-8 left-8 w-8 h-8 border-b-2 border-l-2 border-white/10 rounded-bl-lg"></div>
+                  <div className="absolute bottom-8 right-8 w-8 h-8 border-b-2 border-r-2 border-white/10 rounded-br-lg"></div>
+                  
+                  <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-4 block">[ Contract ]</span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/50 mb-2">Sprint Day</span>
+                  <span className="text-9xl font-display font-bold text-white tracking-tighter drop-shadow-2xl">{guaranteeDay}</span>
                   
                   <div className="mt-8 flex items-center gap-2">
-                     <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
-                     <span className="type-level-4 text-white">Guaranteed</span>
+                     <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Guaranteed</span>
                   </div>
                </div>
              </div>
           </div>
       </section>
 
-      {/* Quiet Section (Task 11) */}
+      {/* Quiet Section */}
       <section className="section-quiet">
          <div className="text-center">
-            <span className="type-level-4 text-white/50 mb-12 block">04 &mdash; Our Work</span>
-            <h2 className="type-level-1 text-white leading-none">We make things<br/>people actually<br/>notice.</h2>
+            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-white/50 mb-6 block">04 &mdash; Our Work</span>
+            <h2 className="type-level-1 text-white leading-none text-balance">We make things<br/>people actually<br/>notice.</h2>
          </div>
       </section>
 
       {/* FAQ Section */}
-      <section className="section-quiet bg-surface-container border-t border-white/5">
+      <section className="section-quiet bg-background border-t border-white/5">
         <div className="grid-12 w-full">
           <div className="col-span-12 lg:col-span-5 mb-16 lg:mb-0 pr-8">
-             <span className="type-level-4 text-primary mb-8 block">FAQ</span>
-            <h2 className="type-level-2 text-white leading-tight">Questions<br/>we get a lot.</h2>
+             <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-6 block">[ Information ]</span>
+            <h2 className="type-level-2 text-white leading-tight text-balance">Questions<br/>we get a lot.</h2>
           </div>
           <div className="col-span-12 lg:col-span-7 flex flex-col">
             {FAQS.map((faq, index) => (
@@ -798,20 +687,20 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Clean Minimal CTA (Task 6: Brutalist CTA) */}
-      <section className="section-quiet bg-background">
-        <div className="w-full max-w-7xl mx-auto px-6 text-center flex flex-col items-center">
-            <span className="type-level-4 text-primary mb-8 flex items-center gap-2 justify-center">
-               <span className="w-2 h-2 bg-primary rounded-full animate-ping"></span> Initialize Growth
-            </span>
-            <h2 className="type-level-1 text-white mb-12">
-              Ready to Dominate?
-            </h2>
-            <p className="type-level-3 max-w-2xl mx-auto mb-16">
-              Book a strategy call with our growth engineers. We'll audit your current setup and show you exactly where you're leaving money on the table.
-            </p>
-            <Link to="/contact" className="px-12 py-6 bg-white text-black type-level-4 hover:bg-primary hover:text-white transition-colors duration-300 inline-block">
-              Start The Audit &rarr;
+      {/* Clean Minimal CTA */}
+      <section className="py-32 bg-primary">
+        <div className="w-full max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between">
+            <div className="mb-12 md:mb-0">
+               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-black/50 mb-6 flex items-center gap-2">
+                  <span className="w-2 h-2 bg-black rounded-full"></span> Initialize Growth
+               </span>
+               <h2 className="type-level-1 text-black text-balance">
+                 Ready to Dominate?
+               </h2>
+            </div>
+            
+            <Link to="/contact" className="px-12 py-6 bg-black text-primary type-level-4 hover:bg-white hover:text-black transition-colors duration-300 inline-block border border-black group">
+              Start The Audit <span className="inline-block group-hover:translate-x-2 transition-transform duration-300">&rarr;</span>
             </Link>
         </div>
       </section>

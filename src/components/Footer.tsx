@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { servicesData } from "../data/services";
 import { Facebook, Linkedin, Instagram, Mail, ArrowRight, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
+import Logo from "./Logo";
 
 export default function Footer() {
   const socialCategories = servicesData.filter(s => s.category === "Social Media");
@@ -23,17 +24,17 @@ export default function Footer() {
             
             {/* Brand & Newsletter */}
             <div className="col-span-12 lg:col-span-5 pr-8">
-                <Link to="/" className="block mb-6"><img src="/logo.png" alt="Socialio" className="h-10 w-auto" /></Link>
+                <Link to="/" className="block mb-6"><Logo /></Link>
                 <p className="font-sans text-on-surface-variant max-w-sm mb-8">
                   Precision marketing for high-growth teams. We turn digital attention into enterprise value.
                 </p>
-                <div className="border border-white/10 p-6 mb-8 bg-background">
+                <div className="border-t border-white/10 pt-8 mb-8 bg-transparent mt-8">
                    <h5 className="font-bold text-white mb-2 text-sm font-sans flex items-center gap-2">
-                      <Mail className="w-4 h-4 text-primary" /> Join the Growth Newsletter
+                      <span className="w-2 h-2 bg-primary"></span> Join the Growth Newsletter
                    </h5>
                    <p className="text-xs text-on-surface-variant mb-4 font-sans">Actionable insights sent weekly.</p>
                    {submitted ? (
-                     <div className="flex items-center gap-2 text-primary font-bold text-sm bg-primary/10 px-4 py-3 rounded-lg">
+                     <div className="flex items-center gap-2 text-primary font-bold text-sm border-l-2 border-primary pl-4 py-2">
                        <CheckCircle2 className="w-5 h-5" /> You're in. Growth incoming.
                      </div>
                    ) : (
@@ -44,10 +45,10 @@ export default function Footer() {
                          value={email}
                          onChange={(e) => setEmail(e.target.value)}
                          onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                         className="bg-background border border-white/10 px-4 py-2 text-sm text-white focus:outline-none focus:border-primary flex-grow" 
+                         className="bg-transparent border-b border-white/20 px-2 py-2 text-sm text-white focus:outline-none focus:border-primary flex-grow" 
                        />
-                       <button onClick={handleSubmit} className="bg-white text-black px-6 py-2 hover:bg-gray-200 transition-colors font-bold type-level-4">
-                         <ArrowRight className="w-4 h-4" />
+                       <button onClick={handleSubmit} className="text-white hover:text-primary transition-colors font-bold type-level-4 flex items-center justify-center px-2">
+                         <ArrowRight className="w-5 h-5" />
                        </button>
                      </div>
                    )}
