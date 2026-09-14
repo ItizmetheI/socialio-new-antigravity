@@ -2,29 +2,26 @@ import { Link } from "react-router-dom";
 import { servicesData } from "../data/services";
 import React from "react";
 import PricingCard from "../components/PricingCard";
-import { BadgeCheck } from "lucide-react";
 import { motion } from "motion/react";
 
 export default function Pricing() {
   return (
     <>
-      {/* Removed decorative mesh gradient */}
-      
       <main className="pt-32 w-full">
         {/* Hero Section */}
-        <motion.section 
+        <motion.section
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="max-w-7xl mx-auto px-6 text-center mb-24"
+          className="max-w-7xl mx-auto px-6 mb-24"
         >
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/10 text-primary font-mono text-xs uppercase tracking-widest font-bold mb-8 shadow-inner shadow-primary/20">
-                <BadgeCheck className="w-4 h-4" /> Transparent Flat-Rate Economics
-            </div>
-            <h1 className="font-display text-5xl md:text-7xl font-bold tracking-tighter mb-8 text-white max-w-4xl mx-auto">
-              Build your <span className="font-bold text-white">marketing engine.</span>
+            <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-6">
+              <span className="w-2 h-2 rounded-full bg-[#ff6b4a]" /> Flat-rate, no retainers
+            </span>
+            <h1 className="hero-display font-bold text-4xl md:text-6xl tracking-tight mb-6 text-white max-w-3xl text-balance">
+              Build your <span className="italic text-primary">marketing engine.</span>
             </h1>
-            <p className="font-sans text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-on-surface-variant max-w-2xl leading-relaxed">
                 No retainers. No generic agency fluff. Select a service to configure your volume and see precise flat-rate pricing.
             </p>
         </motion.section>
