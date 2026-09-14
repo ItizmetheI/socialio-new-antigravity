@@ -1,15 +1,10 @@
 import { Link } from "react-router-dom";
 import React, { useEffect, useState, useRef } from "react";
-import { BarChart3, Route, MousePointerClick, Play, Sparkles, Image, Video, UserSquare2, ArrowUpRight, MonitorPlay, Layers, CheckCircle2, Activity, Star, ChevronDown, ArrowRight } from "lucide-react";
-import { motion, useInView } from "motion/react";
+import { Play, ArrowUpRight, Layers, CheckCircle2, ChevronDown, ArrowRight, Heart, MessageCircle } from "lucide-react";
+import { motion, useInView, useMotionValue, useSpring, useTransform, useScroll, type Variants } from "motion/react";
 import { servicesData } from "../data/services";
 import PricingCard from "../components/PricingCard";
 import StatsGraph from "../components/StatsGraph";
-import CustomPlayer from "../components/CustomPlayer";
-import { ActiveVideoProvider, useActiveVideo } from "../context/VideoContext";
-
-import SpotlightCard from "../components/SpotlightCard";
-import TextReveal from "../components/TextReveal";
 import Magnetic from "../components/Magnetic";
 
 function useAnimatedCounter(start: number, end: number, duration: number, suffix = "", inView = true) {
@@ -47,148 +42,190 @@ function Counter({ start, end, duration, suffix = "", inView = false }: { start:
 }
 
 
-const col1Items = [
-  { type: 'social', seed: '11', tag: 'Social Media' },
-  { type: 'video', url: 'https://streamable.com/a69bm3', label: 'Reel', tag: 'Video' },
-  { type: 'website', seed: 'w1', tag: 'Website' },
-  { type: 'blog', seed: 'b1', tag: 'Blog' },
-  { type: 'social', seed: '12', tag: 'Social Media' },
-  { type: 'video', url: 'https://streamable.com/30ffri', label: 'Short', tag: 'Video' },
-  { type: 'website', seed: 'w2', tag: 'Website' },
-];
-
-const col2Items = [
-  { type: 'video', url: 'https://streamable.com/e25yp1', label: 'Reel', tag: 'Video' },
-  { type: 'website', seed: 'w3', tag: 'Website' },
-  { type: 'blog', seed: 'b2', tag: 'Email' },
-  { type: 'social', seed: '13', tag: 'Social Media' },
-  { type: 'video', url: 'https://streamable.com/e3xzs4', label: 'Short', tag: 'Video' },
-  { type: 'social', seed: '14', tag: 'Social Media' },
-  { type: 'website', seed: 'w4', tag: 'Website' },
-];
-
-const col3Items = [
-  { type: 'website', seed: 'w5', tag: 'Website' },
-  { type: 'blog', seed: 'b3', tag: 'Blog' },
-  { type: 'social', seed: '15', tag: 'Social Media' },
-  { type: 'video', url: 'https://streamable.com/a69bm3', label: 'Reel', tag: 'Video' },
-  { type: 'website', seed: 'w6', tag: 'Website' },
-  { type: 'social', seed: '16', tag: 'Social Media' },
-  { type: 'video', url: 'https://streamable.com/30ffri', label: 'Short', tag: 'Video' },
-];
-
-interface CarouselCardProps {
-  item: any;
-  columnIndex: number;
+interface FeedCardData {
+  id: string;
+  state: "rec" | "live";
+  count: string;
+  caption: string;
+  handle: string;
+  likes: string;
+  scrubDuration: number;
+  gradient: string;
+  pos: string;
+  rotate: number;
+  z: number;
+  featured?: boolean;
 }
 
-const HoverOverlay = () => (
-  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-20">
-    <div className="bg-background border border-white/20 text-white px-4 py-2 text-[10px] uppercase tracking-[0.1em] flex items-center gap-2 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
-      View <ArrowUpRight className="w-3 h-3" />
+const feedCards: FeedCardData[] = [
+  {
+    id: "a",
+    state: "rec",
+    count: "2,451",
+    caption: "the pitch, unscripted",
+    handle: "Margo & Co · UGC",
+    likes: "301",
+    scrubDuration: 9,
+    gradient: "radial-gradient(120% 100% at 25% 15%, #6c4fa3 0%, #2c1f42 55%, #120c1c 100%)",
+    pos: "top-[2%] right-[4%] sm:top-[-2%]",
+    rotate: 4,
+    z: 20,
+  },
+  {
+    id: "b",
+    state: "live",
+    count: "128K",
+    caption: "day 1 of the audit",
+    handle: "Ferro Supply · TikTok",
+    likes: "14.2K",
+    scrubDuration: 6,
+    gradient: "radial-gradient(120% 100% at 75% 10%, #ff9169 0%, #d3512f 48%, #2c1109 100%)",
+    pos: "top-[22%] right-[34%] sm:top-[16%]",
+    rotate: -6,
+    z: 30,
+    featured: true,
+  },
+  {
+    id: "c",
+    state: "rec",
+    count: "8,204",
+    caption: "before / after",
+    handle: "Northloom · Reel",
+    likes: "920",
+    scrubDuration: 11,
+    gradient: "radial-gradient(120% 100% at 20% 90%, #4fc7c2 0%, #1c6b6c 48%, #0a1e1e 100%)",
+    pos: "top-[46%] right-[0%] sm:top-[44%]",
+    rotate: -3,
+    z: 10,
+  },
+  {
+    id: "d",
+    state: "rec",
+    count: "61.4K",
+    caption: "the sound",
+    handle: "Booking.co · UGC",
+    likes: "3,100",
+    scrubDuration: 8,
+    gradient: "radial-gradient(120% 100% at 80% 80%, #e2c1ff 0%, #8a5fc4 45%, #1f1330 100%)",
+    pos: "top-[60%] right-[36%] sm:top-[58%]",
+    rotate: 7,
+    z: 5,
+  },
+];
+
+// Rotate travels with the card via Motion's `custom`, so every card can share
+// one variants object instead of each computing its own transition inline.
+const feedContainerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.5 } },
+};
+
+const feedCardVariants: Variants = {
+  hidden: (rotate: number) => ({ opacity: 0, y: 50, rotate: rotate * 1.8 }),
+  visible: (rotate: number) => ({
+    opacity: 1,
+    y: 0,
+    rotate,
+    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
+  }),
+};
+
+const FeedCard: React.FC<{ card: FeedCardData; index: number }> = ({ card, index }) => (
+  <motion.div
+    custom={card.rotate}
+    variants={feedCardVariants}
+    whileHover={{ y: -6, scale: 1.03, transition: { duration: 0.25 } }}
+    className={`absolute w-[124px] sm:w-[150px] lg:w-[172px] aspect-[9/16] rounded-2xl overflow-hidden border border-white/15 shadow-[0_24px_48px_-16px_rgba(0,0,0,0.65)] flex flex-col justify-between cursor-pointer ${card.pos} ${card.featured ? "outline outline-2 outline-primary outline-offset-2 animate-feed-pulse" : ""}`}
+    style={{ zIndex: card.z }}
+  >
+    <div className="absolute inset-0" style={{ background: card.gradient }} />
+    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-black/30" />
+
+    <div className="relative z-10 flex items-start justify-between p-2.5 text-white">
+      <span className="flex items-center gap-1 text-[9px] font-bold tracking-wide bg-black/35 backdrop-blur-sm pl-1.5 pr-2 py-1 rounded-full">
+        <span className={`w-[5px] h-[5px] rounded-full bg-[#ff6b4a] ${card.state === "live" ? "animate-pulse" : ""}`} />
+        {card.state === "live" ? "LIVE" : "REC"}
+      </span>
+      <span className="text-[9px] font-semibold bg-black/35 backdrop-blur-sm px-2 py-1 rounded-full">{card.count}</span>
     </div>
-  </div>
+
+    <div className="relative z-10 flex items-end justify-between gap-1.5 px-2.5 pb-1.5 text-white">
+      <span className="text-[10px] font-bold leading-snug max-w-[74%]">
+        {card.caption}
+        <span className="block text-[8.5px] font-medium text-white/65 mt-0.5">{card.handle}</span>
+      </span>
+      <span className="flex flex-col items-center gap-1.5 shrink-0">
+        <span className="flex flex-col items-center gap-0.5">
+          <Heart className="w-3.5 h-3.5 fill-white" />
+          <span className="text-[8px] font-semibold tabular-nums">{card.likes}</span>
+        </span>
+        <MessageCircle className="w-3.5 h-3.5" />
+      </span>
+    </div>
+
+    <div className="relative z-10 h-[2px] mx-2.5 mb-2 rounded-full bg-white/20 overflow-hidden">
+      <div
+        className="h-full w-full bg-white origin-left animate-reel-scrub"
+        style={{ animationDuration: `${card.scrubDuration}s`, animationDelay: `${index * 0.6}s` }}
+      />
+    </div>
+  </motion.div>
 );
 
-const CarouselCard: React.FC<CarouselCardProps> = ({ item, columnIndex }) => {
-  if (item.type === 'social') {
-    return (
-      <div className="w-full aspect-square bg-[#111] shrink-0 relative group cursor-pointer shadow-2xl transition-transform duration-300 hover:-translate-y-2 rounded-2xl overflow-hidden">
-        <HoverOverlay />
-        <div className="absolute inset-0 flex flex-col p-4 pt-6">
-          <div className="flex items-center gap-2 mb-2 relative z-10">
-            <div className="text-[10px] font-bold text-white uppercase tracking-widest drop-shadow-md">[ Social ]</div>
-          </div>
-          <div className="absolute inset-0 z-0">
-             <img src={`https://picsum.photos/seed/${item.seed}/200/200`} alt="" className="w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-700" />
-          </div>
-        </div>
-      </div>
-    );
-  }
+// The cluster tilts toward the cursor (spring-smoothed) and drifts away as the
+// hero scrolls out of view — the two places Motion actually earns its keep
+// over plain CSS: physics-based response to input, and scroll-linked motion.
+const FeedCluster: React.FC = () => {
+  const clusterRef = useRef<HTMLDivElement>(null);
+  const pointerX = useMotionValue(0);
+  const pointerY = useMotionValue(0);
+  const springConfig = { stiffness: 150, damping: 20, mass: 0.5 };
+  const rotateX = useSpring(useTransform(pointerY, [-0.5, 0.5], [8, -8]), springConfig);
+  const rotateY = useSpring(useTransform(pointerX, [-0.5, 0.5], [-8, 8]), springConfig);
 
-  if (item.type === 'video') {
-    return (
-      <div className="w-full aspect-[9/16] bg-[#1a1a1a] shrink-0 relative group overflow-hidden shadow-2xl rounded-2xl">
-        <div className="absolute inset-x-0 bottom-0 top-1/2 bg-gradient-to-t from-black/40 to-transparent pointer-events-none z-10 opacity-50 group-hover:opacity-20 transition-opacity" />
-        
-        {/* We use CustomPlayer with pointer events auto when playing */}
-        <div className="absolute inset-0 -z-0">
-           <CustomPlayer url={item.url} playing={false} loop={true} muted={true} columnIndex={columnIndex} />
-        </div>
-      </div>
-    );
-  }
+  const { scrollYProgress } = useScroll({ target: clusterRef, offset: ["start start", "end start"] });
+  const scrollDrift = useTransform(scrollYProgress, [0, 1], [0, 72]);
+  const scrollFade = useTransform(scrollYProgress, [0, 1], [1, 0.35]);
 
-  if (item.type === 'website') {
-    return (
-      <div className="w-full aspect-video bg-[#222] shrink-0 relative group cursor-pointer transition-transform duration-300 hover:-translate-y-2 flex flex-col overflow-hidden shadow-2xl rounded-2xl">
-        <HoverOverlay />
-        <div className="h-6 bg-white/5 flex items-center px-4 border-b border-white/5 relative z-10">
-           <div className="text-[10px] uppercase tracking-widest text-white/50 font-bold">Browser</div>
-        </div>
-        <div className="flex-grow overflow-hidden relative">
-          <img src={`https://picsum.photos/seed/${item.seed}/300/170`} alt="" className="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700" />
-        </div>
-      </div>
-    );
-  }
-
-  if (item.type === 'blog') {
-    return (
-      <div className="w-full h-[220px] bg-white shrink-0 relative group cursor-pointer transition-transform duration-300 hover:-translate-y-2 flex flex-col overflow-hidden shadow-2xl rounded-2xl">
-        <HoverOverlay />
-        <div className="h-[100px] relative overflow-hidden">
-          <img src={`https://picsum.photos/seed/${item.seed}/200/100`} alt="" className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-        </div>
-        <div className="p-5 flex flex-col flex-grow">
-           <h4 className="text-black font-bold text-sm mb-1 line-clamp-2 leading-tight">How to scale your operations effortlessly</h4>
-           <p className="text-gray-600 text-xs line-clamp-3 leading-relaxed mt-2">Discover the proven frameworks that top-tier companies use to automate their workflows and increase productivity by 300% without adding headcount.</p>
-        </div>
-      </div>
-    );
-  }
-
-  return null;
-}
-
-function HeroCarousel() {
-  const { playingColumnIndex } = useActiveVideo();
+  const handlePointerMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    pointerX.set((e.clientX - rect.left) / rect.width - 0.5);
+    pointerY.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+  const handlePointerLeave = () => {
+    pointerX.set(0);
+    pointerY.set(0);
+  };
 
   return (
-    <div className="absolute inset-0 h-full gap-8 z-20 flex justify-center overflow-hidden [mask-image:linear-gradient(to_bottom,transparent_0%,black_30%,black_70%,transparent_100%)] group/carousel pointer-events-none">
-      {/* Column 1 - Slide Up */}
-      <div 
-        className={`w-full max-w-[280px] flex flex-col gap-8 pb-8 animate-slide-up hover:[animation-play-state:paused] pointer-events-auto ${playingColumnIndex === 1 ? '[animation-play-state:paused]' : ''}`}
-        style={{ animationDuration: '45s' }}
+    <div
+      ref={clusterRef}
+      onMouseMove={handlePointerMove}
+      onMouseLeave={handlePointerLeave}
+      style={{ perspective: 1200 }}
+      className="relative h-[420px] sm:h-[480px] lg:h-[540px]"
+    >
+      <span
+        className="absolute z-0 right-[-4%] bottom-[-4%] font-bold text-transparent text-[18vw] sm:text-[10vw] lg:text-[6.5vw] leading-none select-none pointer-events-none hero-display"
+        style={{ WebkitTextStroke: "1px rgba(245,242,239,0.08)" }}
+        aria-hidden="true"
       >
-        {[...col1Items, ...col1Items, ...col1Items].map((item, i) => (
-            <CarouselCard key={`col1-${i}`} item={item} columnIndex={1} />
-        ))}
-      </div>
-      
-      {/* Column 2 - Slide Down */}
-      <div 
-        className={`w-full max-w-[280px] flex flex-col gap-8 pb-8 animate-slide-down hover:[animation-play-state:paused] pointer-events-auto ${playingColumnIndex === 2 ? '[animation-play-state:paused]' : ''}`} 
-        style={{ animationDuration: '60s' }}
+        FYP
+      </span>
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={feedContainerVariants}
+        style={{ rotateX, rotateY, y: scrollDrift, opacity: scrollFade }}
+        className="absolute inset-0"
       >
-        {[...col2Items, ...col2Items, ...col2Items].map((item, i) => (
-            <CarouselCard key={`col2-${i}`} item={item} columnIndex={2} />
+        {feedCards.map((card, i) => (
+          <FeedCard key={card.id} card={card} index={i} />
         ))}
-      </div>
-
-      {/* Column 3 - Slide Up */}
-      <div 
-        className={`w-full max-w-[280px] hidden md:flex flex-col gap-8 pb-8 animate-slide-up hover:[animation-play-state:paused] pointer-events-auto ${playingColumnIndex === 3 ? '[animation-play-state:paused]' : ''}`} 
-        style={{ animationDuration: '50s' }}
-      >
-        {[...col3Items, ...col3Items, ...col3Items].map((item, i) => (
-            <CarouselCard key={`col3-${i}`} item={item} columnIndex={3} />
-        ))}
-      </div>
+      </motion.div>
     </div>
   );
-}
+};
 
 const FAQS = [
   { question: "How fast will I receive my content?", answer: "Most orders are delivered within 3 to 5 business days. Short-form video and UGC orders may take slightly longer depending on creator availability, but we always communicate timelines upfront." },
@@ -207,91 +244,72 @@ export default function Home() {
   const [activeSection, setActiveSection] = useState(servicesData[0].id);
   const [activePortfolioTab, setActivePortfolioTab] = useState("Featured");
   const guaranteeRef = useRef<HTMLDivElement>(null);
-  const [guaranteeDay, setGuaranteeDay] = useState(0);
+  const isGuaranteeInView = useInView(guaranteeRef, { once: true, amount: 0.5 });
   const [openFaq, setOpenFaq] = useState<number | null>(null);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          let day = 0;
-          const interval = setInterval(() => {
-            day++;
-            setGuaranteeDay(day);
-            if (day >= 14) clearInterval(interval);
-          }, 80);
-        }
-      },
-      { threshold: 0.5 }
-    );
-    if (guaranteeRef.current) {
-      observer.observe(guaranteeRef.current);
-    }
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <>
-      {/* High-Impact Asymmetric Hero Section */}
-      <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 min-h-[90vh] flex flex-col justify-center border-b border-white/5 overflow-hidden">
+      {/* Hero — Feed Collision: headline the video columns interrupt, staged as a real scroll, not a bento grid */}
+      <section className="relative pt-32 pb-24 md:pt-44 md:pb-28 overflow-hidden border-b border-white/5 bg-background">
+
         {/* Subtle grid background for agency feel */}
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay z-0 pointer-events-none"></div>
         <div className="absolute inset-0 bg-background bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] z-0 pointer-events-none"></div>
+        {/* Rationed glow — one soft lilac wash, not a wall of purple */}
+        <div className="absolute -top-40 -left-40 w-[560px] h-[560px] rounded-full bg-primary/10 blur-[120px] z-0 pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto w-full px-6 grid grid-cols-1 lg:grid-cols-12 items-center relative z-10 gap-12">
-            
-          <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+        <div className="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-14 lg:gap-8 items-center">
+
+          {/* Left — headline */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="lg:col-span-6 flex flex-col items-start text-left lg:pr-12"
+            transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            <div className="flex items-center gap-3 mb-8 bg-surface-container/50 backdrop-blur-md border border-white/10 px-4 py-2 rounded-full shadow-xl">
-              <div className="flex text-primary gap-0.5">
-                <Star className="w-3.5 h-3.5 fill-primary" /><Star className="w-3.5 h-3.5 fill-primary" /><Star className="w-3.5 h-3.5 fill-primary" /><Star className="w-3.5 h-3.5 fill-primary" /><Star className="w-3.5 h-3.5 fill-primary" />
-              </div>
-              <div className="text-[10px] font-mono font-bold text-white uppercase tracking-[0.15em] border-l border-white/20 pl-3">
-                Proven by 200+ Scaling Brands
-              </div>
-            </div>
-
-            <div className="type-level-1 text-white mb-6 tracking-tighter leading-[0.95] text-[12vw] sm:text-[8vw] lg:text-[6vw] drop-shadow-2xl text-balance">
-              <TextReveal>Stop Guessing.</TextReveal><br/>
-              <span className="text-primary drop-shadow-[0_0_15px_rgba(221,183,255,0.3)]">
-                <TextReveal>Start Scaling.</TextReveal>
+            <div className="inline-flex items-center gap-2 mb-7 text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff6b4a] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ff6b4a]" />
               </span>
+              86 campaigns in production right now
             </div>
 
-            <p className="type-level-3 max-w-prose mb-12 text-on-surface-variant text-lg sm:text-xl leading-relaxed">
-              From scroll-stopping social content to ranking-ready blog posts — we handle your entire content operation so you can focus on running the business.
+            <h1 className="hero-display font-bold text-white mb-6 leading-[0.96] tracking-tight text-[13vw] sm:text-[7.5vw] lg:text-[4.6vw] text-balance">
+              Stop posting.<br />
+              Start <span className="italic text-primary">scrolling</span> them.
+            </h1>
+
+            <p className="text-on-surface-variant text-lg sm:text-xl leading-relaxed max-w-lg mb-10">
+              Socialio turns your product into the feed people can't swipe past — scripted, shot, edited, and scheduled by a team that lives in the app, not a deck.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-start gap-6 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-10">
               <Magnetic>
-                <Link to="/pricing" className="bg-primary text-background px-10 py-5 rounded-full font-black text-base w-full sm:w-auto hover:bg-white hover:scale-105 transition-all duration-300 shadow-[0_0_40px_rgba(221,183,255,0.3)] text-center relative group block">
-                   <span className="relative z-10 flex items-center justify-center gap-2">View Our Pricing <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" /></span>
+                <Link to="/pricing" className="bg-white text-background px-8 py-4 rounded-lg font-bold text-sm hover:bg-primary transition-all duration-300 flex items-center justify-center gap-2 group">
+                  See This Week's Drops <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Magnetic>
               <Magnetic>
-                <button className="bg-surface-container border border-white/10 text-white px-10 py-5 rounded-full font-bold text-base w-full sm:w-auto hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-md">
-                   <Play className="w-5 h-5 text-primary" /> See How It Works
+                <button className="border border-white/15 text-white px-8 py-4 rounded-lg font-bold text-sm hover:bg-white/5 transition-all duration-300 flex items-center justify-center gap-2">
+                  <Play className="w-4 h-4 text-primary" fill="currentColor" /> Watch The Reel
                 </button>
               </Magnetic>
             </div>
-          </motion.div>
-        </div>
 
-        {/* 3-Column Premium Bleed Carousel */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1.5, delay: 0.5 }}
-          className="absolute right-0 top-32 bottom-0 w-full lg:w-[48vw] hidden lg:block pointer-events-none z-0"
-        >
-           <ActiveVideoProvider>
-             <HeroCarousel />
-           </ActiveVideoProvider>
-        </motion.div>
+            <div className="flex items-center gap-3">
+              <div className="flex -space-x-2">
+                <span className="w-8 h-8 rounded-full border-2 border-background flex items-center justify-center text-[10px] font-bold text-white" style={{ background: "linear-gradient(135deg,#8a5fc4,#3a2b52)" }}>JM</span>
+                <span className="w-8 h-8 rounded-full border-2 border-background flex items-center justify-center text-[10px] font-bold text-white" style={{ background: "linear-gradient(135deg,#ff9169,#d3512f)" }}>RK</span>
+                <span className="w-8 h-8 rounded-full border-2 border-background flex items-center justify-center text-[10px] font-bold text-white" style={{ background: "linear-gradient(135deg,#4fc7c2,#1c6b6c)" }}>AT</span>
+              </div>
+              <p className="text-xs text-on-surface-variant"><span className="text-white font-bold">212 brands</span> currently in production</p>
+            </div>
+          </motion.div>
+
+          {/* Right — the feed the videos are colliding into */}
+          <FeedCluster />
+
+        </div>
       </section>
 
       {/* Compact Tabbed Capabilities Section */}
@@ -419,41 +437,39 @@ export default function Home() {
         </div>
       </section>
 
-      {/* How it Works - Editorial Split */}
-      <section className="section-quiet bg-background border-t border-white/5 relative">
-        <div className="grid-12 w-full relative z-10">
-          {/* Left Column: Title */}
-          <div className="col-span-12 lg:col-span-5 mb-16 lg:mb-0">
-            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-6 block">[ System ]</span>
-            <h2 className="type-level-2 text-white mb-8 lg:pr-8 text-balance">We simplified the agency model into a predictable assembly line.</h2>
-            <p className="type-level-3 lg:pr-12 max-w-prose">No endless email chains. No ambiguous deliverables. Just a structured sprint for growth built entirely around producing outcomes over output.</p>
+      {/* How it Works — an assembly line, staged as one, not three identical boxes */}
+      <section className="py-32 md:py-40 bg-background border-b border-white/5 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full relative z-10">
+
+          <div className="max-w-xl mb-20 md:mb-28">
+            <span className="hero-display italic text-primary text-base block mb-4">The Process</span>
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight text-balance leading-[1.05]">
+              We turned the agency model into an assembly line.
+            </h2>
+            <p className="text-on-surface-variant text-lg leading-relaxed">
+              No endless email chains. No ambiguous deliverables. Just a structured sprint built around outcomes, not hours billed.
+            </p>
           </div>
-          
-          {/* Right Column: Steps (Asymmetric Layout) */}
-          <div className="col-span-12 lg:col-span-6 lg:col-start-7 flex flex-col gap-6">
-             <div className="flex gap-8 items-start group bg-surface-container p-8 rounded-2xl border border-white/5 hover:border-white/10 transition-colors shadow-sm">
-               <div className="type-level-4 text-white/30 pt-1 shrink-0 group-hover:text-primary transition-colors">01</div>
-               <div className="flex-grow">
-                 <h3 className="type-level-3 font-bold text-white mb-4">Subscribe & Onboard</h3>
-                 <p className="type-level-3 text-sm">Select your plan, complete our focused alignment questionnaire, and get access to your dedicated Slack channel within hours.</p>
-               </div>
-             </div>
-             
-             <div className="flex gap-8 items-start group bg-surface-container p-8 rounded-2xl border border-white/5 hover:border-white/10 transition-colors shadow-sm">
-               <div className="type-level-4 text-white/30 pt-1 shrink-0 group-hover:text-tertiary transition-colors">02</div>
-               <div className="flex-grow">
-                 <h3 className="type-level-3 font-bold text-white mb-4">Submit Briefs</h3>
-                 <p className="type-level-3 text-sm">Use your kanban board to request as many creatives or campaigns as you need. We dissect the brief and get straight to work.</p>
-               </div>
-             </div>
-             
-             <div className="flex gap-8 items-start group bg-surface-container p-8 rounded-2xl border border-white/5 hover:border-white/10 transition-colors shadow-sm">
-               <div className="type-level-4 text-white/30 pt-1 shrink-0 group-hover:text-secondary transition-colors">03</div>
-               <div className="flex-grow">
-                 <h3 className="type-level-3 font-bold text-white mb-4">Review & Scale</h3>
-                 <p className="type-level-3 text-sm">Receive your first batch in days. Provide feedback seamlessly. Once approved, we launch, measure, and scale the winners.</p>
-               </div>
-             </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-16">
+            {[
+              { n: "01", title: "Subscribe & onboard", body: "Select your plan, complete our focused alignment questionnaire, and get access to your dedicated Slack channel within hours." },
+              { n: "02", title: "Submit briefs", body: "Use your kanban board to request as many creatives or campaigns as you need. We dissect the brief and get straight to work." },
+              { n: "03", title: "Review & scale", body: "Receive your first batch in days. Give feedback in one place. Once approved, we launch, measure, and scale the winners." },
+            ].map((step, i) => (
+              <motion.div
+                key={step.n}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-80px" }}
+                transition={{ duration: 0.5, delay: i * 0.12 }}
+                className={`relative pl-6 border-l border-white/10 ${i === 1 ? "md:mt-16" : i === 2 ? "md:mt-8" : ""}`}
+              >
+                <span className="hero-display block text-7xl font-bold text-white/10 leading-none mb-6">{step.n}</span>
+                <h3 className="text-xl font-bold text-white mb-3">{step.title}</h3>
+                <p className="text-on-surface-variant text-[15px] leading-relaxed max-w-xs">{step.body}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
@@ -481,27 +497,28 @@ export default function Home() {
             <button onClick={() => setActivePortfolioTab("UGC")} className={`px-4 py-2 font-mono font-bold text-[10px] uppercase tracking-widest border-b-2 transition-all duration-300 ${activePortfolioTab === 'UGC' ? 'border-primary text-white' : 'border-transparent text-white/40 hover:text-white'}`}>UGC</button>
           </div>
 
-          {/* Work Grid - Asymmetrical Editorial Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-y-16 gap-x-8">
+          {/* Work Grid - Bento Architecture */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
             
             {/* Row 1: Featured Project (Span 8) + Text (Span 4) */}
             {(activePortfolioTab === 'Featured' || activePortfolioTab === 'Social Posts') && (
                <>
-                 <div className="md:col-span-8 group/img">
-                   <div className="overflow-hidden aspect-video bg-surface-container mb-4 rounded-2xl shadow-lg border border-white/5">
-                     <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1200" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105" alt="Post" />
+                 <div className="md:col-span-8 bg-surface-container border border-white/10 p-2 md:p-6 rounded-2xl flex flex-col group/img">
+                   <div className="overflow-hidden bg-surface-container-highest rounded-xl border border-white/5 relative aspect-[16/9] mb-6">
+                     <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1200" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105 opacity-90" alt="Post" />
                    </div>
-                   <div className="flex justify-between items-start">
+                   <div className="flex justify-between items-start px-2">
                       <div>
                         <h3 className="type-level-3 font-bold text-white mb-1">Social Media Campaign</h3>
                         <p className="type-level-4 text-white/50">Instagram & Facebook</p>
                       </div>
-                      <div className="type-level-4 text-primary mt-1">+300% Engagement</div>
+                      <div className="type-level-4 text-primary mt-1 px-3 py-1 bg-primary/10 rounded-full">+300% Engagement</div>
                    </div>
                  </div>
-                 <div className="md:col-span-4 flex flex-col justify-center border-t border-white/10 pt-8 mt-8 md:mt-0 md:border-t-0 md:border-l md:pt-0 md:pl-8">
+                 
+                 <div className="md:col-span-4 bg-surface-container border border-white/10 p-8 rounded-2xl flex flex-col justify-center">
                     <h3 className="type-level-2 text-white mb-6">Built to stop the scroll.</h3>
-                    <p className="type-level-3 mb-8">We don't just make things look pretty. We engineer creative assets that hack attention and drive meaningful action.</p>
+                    <p className="type-level-3 text-on-surface-variant">We don't just make things look pretty. We engineer creative assets that hack attention and drive meaningful action.</p>
                  </div>
                </>
             )}
@@ -510,16 +527,16 @@ export default function Home() {
             {(activePortfolioTab === 'Featured' || activePortfolioTab === 'Short-Form') && (
                <>
                  {[1,2,3].map((i) => (
-                    <div key={i} className="md:col-span-4 group/vid">
-                       <div className="overflow-hidden aspect-[9/16] bg-surface-container relative mb-4 rounded-2xl shadow-lg border border-white/5">
-                          <img src={`https://images.unsplash.com/photo-${1551288049 + i * 100}?auto=format&fit=crop&q=80&w=600`} className="w-full h-full object-cover transition-transform duration-700 group-hover/vid:scale-105" alt="Video" />
-                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/vid:opacity-100 transition-opacity">
-                             <div className="w-16 h-16 rounded-full bg-black/50 backdrop-blur border border-white/20 text-white flex items-center justify-center pl-1">
+                    <div key={i} className="md:col-span-4 bg-surface-container border border-white/10 p-2 md:p-6 rounded-2xl flex flex-col group/vid">
+                       <div className="overflow-hidden bg-surface-container-highest rounded-xl border border-white/5 relative aspect-[4/5] mb-6">
+                          <img src={`https://images.unsplash.com/photo-${1551288049 + i * 100}?auto=format&fit=crop&q=80&w=600`} className="w-full h-full object-cover transition-transform duration-700 group-hover/vid:scale-105 opacity-80" alt="Video" />
+                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/vid:opacity-100 transition-opacity bg-background/20 backdrop-blur-sm">
+                             <div className="w-16 h-16 rounded-full bg-surface-container border border-white/20 text-white flex items-center justify-center pl-1">
                                 <Play className="w-6 h-6" fill="currentColor" />
                              </div>
                           </div>
                        </div>
-                       <div>
+                       <div className="px-2">
                           <h3 className="type-level-3 font-bold text-white mb-1">Short-Form Content</h3>
                           <p className="type-level-4 text-white/50">TikTok & Reels</p>
                        </div>
@@ -531,19 +548,23 @@ export default function Home() {
             {/* Row 3: Blog / Editorial (Span 6 + Span 6) */}
             {(activePortfolioTab === 'Featured') && (
                <>
-                 <div className="md:col-span-6 group/img mt-8 pt-8">
-                   <div className="overflow-hidden aspect-[16/9] bg-surface-container mb-4 rounded-2xl shadow-lg border border-white/5">
-                     <img src="https://images.unsplash.com/photo-1616469829581-73993eb86b02?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105" alt="Blog" />
+                 <div className="md:col-span-6 bg-surface-container border border-white/10 p-2 md:p-6 rounded-2xl flex flex-col group/img">
+                   <div className="overflow-hidden bg-surface-container-highest rounded-xl border border-white/5 relative aspect-[16/9] mb-6">
+                     <img src="https://images.unsplash.com/photo-1616469829581-73993eb86b02?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105 opacity-90" alt="Blog" />
                    </div>
-                   <h3 className="type-level-3 font-bold text-white mb-1">SEO & Editorial</h3>
-                   <p className="type-level-4 text-white/50">Long-form content</p>
+                   <div className="px-2">
+                     <h3 className="type-level-3 font-bold text-white mb-1">SEO & Editorial</h3>
+                     <p className="type-level-4 text-white/50">Long-form content</p>
+                   </div>
                  </div>
-                 <div className="md:col-span-6 group/img mt-8 pt-8">
-                   <div className="overflow-hidden aspect-[16/9] bg-surface-container mb-4 rounded-2xl shadow-lg border border-white/5">
-                     <img src="https://images.unsplash.com/photo-1493723843671-1d655e66ac1c?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105" alt="Blog" />
+                 <div className="md:col-span-6 bg-surface-container border border-white/10 p-2 md:p-6 rounded-2xl flex flex-col group/img">
+                   <div className="overflow-hidden bg-surface-container-highest rounded-xl border border-white/5 relative aspect-[16/9] mb-6">
+                     <img src="https://images.unsplash.com/photo-1493723843671-1d655e66ac1c?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105 opacity-90" alt="Blog" />
                    </div>
-                   <h3 className="type-level-3 font-bold text-white mb-1">Industry Reports</h3>
-                   <p className="type-level-4 text-white/50">B2B Strategy</p>
+                   <div className="px-2">
+                     <h3 className="type-level-3 font-bold text-white mb-1">Industry Reports</h3>
+                     <p className="type-level-4 text-white/50">B2B Strategy</p>
+                   </div>
                  </div>
                </>
             )}
@@ -641,7 +662,9 @@ export default function Home() {
                   
                   <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-4 block">[ Contract ]</span>
                   <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/50 mb-2">Sprint Day</span>
-                  <span className="text-9xl font-display font-bold text-white tracking-tighter drop-shadow-2xl">{guaranteeDay}</span>
+                  <span className="text-9xl font-display font-bold text-white tracking-tighter drop-shadow-2xl">
+                    <Counter start={0} end={14} duration={1200} inView={isGuaranteeInView} />
+                  </span>
                   
                   <div className="mt-8 flex items-center gap-2">
                      <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Guaranteed</span>

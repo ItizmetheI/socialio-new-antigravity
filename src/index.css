@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -134,6 +135,11 @@
     font-family: var(--font-mono);
   }
 
+  /* Scoped to the Home hero only — not the site-wide --font-display token */
+  .hero-display {
+    font-family: "Bricolage Grotesque", var(--font-sans);
+  }
+
   /* GPU Acceleration for blurs to prevent lag */
   [class*="blur-"] {
     will-change: transform;
@@ -156,10 +162,6 @@ body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-.material-symbols-outlined {
-    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
 }
 
 .marquee-track {
@@ -205,6 +207,25 @@ body {
 
 .timeline-line {
     background: linear-gradient(to bottom, transparent, rgba(221, 183, 255, 0.3), transparent);
+}
+
+@keyframes reel-scrub {
+    0% { transform: scaleX(0.05); }
+    100% { transform: scaleX(1); }
+}
+.animate-reel-scrub {
+    animation-name: reel-scrub;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    transform-origin: left;
+}
+
+@keyframes feed-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(221, 183, 255, 0.35); }
+    50% { box-shadow: 0 0 0 8px rgba(221, 183, 255, 0); }
+}
+.animate-feed-pulse {
+    animation: feed-pulse 2.4s ease-out infinite;
 }
 
 
