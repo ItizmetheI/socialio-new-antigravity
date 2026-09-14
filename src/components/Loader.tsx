@@ -28,9 +28,9 @@ export default function Loader({ onComplete }: LoaderProps) {
           className="fixed inset-0 z-[10000] bg-background flex flex-col items-center justify-center pointer-events-none"
         >
           <div className="flex flex-col items-center">
-            <motion.img 
-              src="https://iili.io/nq7rnqB.png" 
-              alt="Socialio Loading" 
+            <motion.img
+              src="/logo.png"
+              alt="Socialio Loading"
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
