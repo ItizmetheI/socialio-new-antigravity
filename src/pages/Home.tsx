@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import React, { useEffect, useState, useRef } from "react";
-import { Play, ArrowUpRight, Layers, CheckCircle2, ChevronDown, ArrowRight, Heart, MessageCircle } from "lucide-react";
+import { Play, ArrowUpRight, CheckCircle2, ChevronDown, ArrowRight, Heart, MessageCircle } from "lucide-react";
 import { motion, useInView, useMotionValue, useSpring, useTransform, useScroll, type Variants } from "motion/react";
 import { servicesData } from "../data/services";
 import PricingCard from "../components/PricingCard";
@@ -227,6 +227,51 @@ const FeedCluster: React.FC = () => {
   );
 };
 
+interface PortfolioItemData {
+  id: string;
+  category: "Social Posts" | "Short-Form" | "UGC";
+  title: string;
+  meta: string;
+  gradient: string;
+  aspect: string;
+  stat?: string;
+  playable?: boolean;
+}
+
+// Same gradient-tile language as the hero's feed cards — until real client
+// footage is hosted (needs Supabase Storage access), an honest placeholder
+// beats a hotlinked stock photo captioned to look like something it isn't.
+const portfolioItems: PortfolioItemData[] = [
+  { id: "social", category: "Social Posts", title: "Social Media Campaign", meta: "Instagram & Facebook", gradient: "radial-gradient(120% 100% at 20% 15%, #6c4fa3 0%, #241a38 60%, #100c18 100%)", aspect: "aspect-[16/9]", stat: "+300% Engagement" },
+  { id: "short-1", category: "Short-Form", title: "The unboxing hook", meta: "TikTok · Reel", gradient: "radial-gradient(120% 100% at 75% 15%, #ff9169 0%, #a83e22 55%, #24100a 100%)", aspect: "aspect-[4/5]", playable: true },
+  { id: "short-2", category: "Short-Form", title: "Before / after cut", meta: "Reels · 0:18", gradient: "radial-gradient(120% 100% at 25% 85%, #4fc7c2 0%, #1c5f60 55%, #0a1e1e 100%)", aspect: "aspect-[4/5]", playable: true },
+  { id: "short-3", category: "Short-Form", title: "Founder POV", meta: "TikTok · 0:24", gradient: "radial-gradient(120% 100% at 80% 80%, #e2c1ff 0%, #6f4a99 55%, #1f1330 100%)", aspect: "aspect-[4/5]", playable: true },
+  { id: "ugc-1", category: "UGC", title: "Unboxing, unscripted", meta: "Creator-shot · Raw", gradient: "radial-gradient(120% 100% at 30% 20%, #ffd166 0%, #a86a1c 55%, #241804 100%)", aspect: "aspect-[16/9]", playable: true },
+  { id: "ugc-2", category: "UGC", title: "A day in the studio", meta: "Creator-shot · Raw", gradient: "radial-gradient(120% 100% at 70% 80%, #7fb8ff 0%, #2f5c94 55%, #0c1a2e 100%)", aspect: "aspect-[16/9]", playable: true },
+];
+
+const PortfolioTile: React.FC<{ item: PortfolioItemData; className?: string }> = ({ item, className = "" }) => (
+  <div className={`bg-surface-container border border-white/10 p-2 md:p-6 rounded-2xl flex flex-col group/tile ${className}`}>
+    <div className={`overflow-hidden rounded-xl border border-white/5 relative mb-6 ${item.aspect}`}>
+      <div className="absolute inset-0 transition-transform duration-700 group-hover/tile:scale-105" style={{ background: item.gradient }} />
+      {item.playable && (
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/tile:opacity-100 transition-opacity bg-black/20 backdrop-blur-sm">
+          <div className="w-16 h-16 rounded-full bg-black/40 border border-white/20 text-white flex items-center justify-center pl-1 backdrop-blur-md">
+            <Play className="w-6 h-6" fill="currentColor" />
+          </div>
+        </div>
+      )}
+    </div>
+    <div className="flex justify-between items-start px-2">
+      <div>
+        <h3 className="text-base font-bold text-white mb-1">{item.title}</h3>
+        <p className="text-xs text-white/50 uppercase tracking-wide font-bold">{item.meta}</p>
+      </div>
+      {item.stat && <div className="text-xs font-bold text-primary mt-1 px-3 py-1 bg-primary/10 rounded-full whitespace-nowrap">{item.stat}</div>}
+    </div>
+  </div>
+);
+
 const FAQS = [
   { question: "How fast will I receive my content?", answer: "Most orders are delivered within 3 to 5 business days. Short-form video and UGC orders may take slightly longer depending on creator availability, but we always communicate timelines upfront." },
   { question: "Do I need to sign a long-term contract?", answer: "No. All plans are month-to-month. You can pause or cancel anytime with no penalties and no awkward conversations." },
@@ -342,7 +387,6 @@ export default function Home() {
                   transition={{ duration: 0.4 }}
                   className="bg-background rounded-2xl border border-white/10 p-8 md:p-12 shadow-2xl relative overflow-hidden"
                 >
-                  <div className="absolute top-0 right-0 p-8 opacity-5"><Layers className="w-48 h-48" /></div>
                   <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-6 block relative z-10">{service.category}</span>
                   <h4 className="type-level-1 text-white mb-6 leading-tight relative z-10 text-balance">{service.title}</h4>
                   <p className="type-level-3 text-white/70 mb-12 max-w-prose relative z-10">{service.description}</p>
@@ -476,96 +520,53 @@ export default function Home() {
 
       {/* Proof of Execution (Our Work) */}
       <section className="py-24 md:py-32 bg-background border-y border-white/5 relative overflow-hidden">
-        
+
         <div className="max-w-7xl mx-auto px-6">
           {/* Section Header - Left Aligned */}
           <div className="mb-16 flex flex-col items-start text-left border-b border-white/10 pb-16">
-            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-6 block">[ Evidence Collection ]</span>
-            <h2 className="font-display text-5xl md:text-6xl font-bold text-white mb-8 tracking-tighter text-balance">
-              High-Converting Creatives.
+            <span className="hero-display italic text-primary text-base block mb-4">Evidence Collection</span>
+            <h2 className="text-5xl md:text-6xl font-bold text-white mb-8 tracking-tight text-balance">
+              High-converting creatives.
             </h2>
-            <p className="max-w-prose text-on-surface-variant font-sans text-lg md:text-xl leading-relaxed">
+            <p className="max-w-prose text-on-surface-variant text-lg md:text-xl leading-relaxed">
               We design assets built specifically to capture attention, reduce friction, and scale your revenue. See what we can do for you.
             </p>
           </div>
 
           {/* Filter Tabs - Left Aligned */}
           <div className="flex flex-wrap justify-start gap-4 mb-16">
-            <button onClick={() => setActivePortfolioTab("Featured")} className={`px-4 py-2 font-mono font-bold text-[10px] uppercase tracking-widest border-b-2 transition-all duration-300 ${activePortfolioTab === 'Featured' ? 'border-primary text-white' : 'border-transparent text-white/40 hover:text-white'}`}>Featured</button>
-            <button onClick={() => setActivePortfolioTab("Social Posts")} className={`px-4 py-2 font-mono font-bold text-[10px] uppercase tracking-widest border-b-2 transition-all duration-300 ${activePortfolioTab === 'Social Posts' ? 'border-primary text-white' : 'border-transparent text-white/40 hover:text-white'}`}>Social Posts</button>
-            <button onClick={() => setActivePortfolioTab("Short-Form")} className={`px-4 py-2 font-mono font-bold text-[10px] uppercase tracking-widest border-b-2 transition-all duration-300 ${activePortfolioTab === 'Short-Form' ? 'border-primary text-white' : 'border-transparent text-white/40 hover:text-white'}`}>Short-Form</button>
-            <button onClick={() => setActivePortfolioTab("UGC")} className={`px-4 py-2 font-mono font-bold text-[10px] uppercase tracking-widest border-b-2 transition-all duration-300 ${activePortfolioTab === 'UGC' ? 'border-primary text-white' : 'border-transparent text-white/40 hover:text-white'}`}>UGC</button>
+            <button onClick={() => setActivePortfolioTab("Featured")} className={`px-4 py-2 font-bold text-[10px] uppercase tracking-widest border-b-2 transition-all duration-300 ${activePortfolioTab === 'Featured' ? 'border-primary text-white' : 'border-transparent text-white/40 hover:text-white'}`}>Featured</button>
+            <button onClick={() => setActivePortfolioTab("Social Posts")} className={`px-4 py-2 font-bold text-[10px] uppercase tracking-widest border-b-2 transition-all duration-300 ${activePortfolioTab === 'Social Posts' ? 'border-primary text-white' : 'border-transparent text-white/40 hover:text-white'}`}>Social Posts</button>
+            <button onClick={() => setActivePortfolioTab("Short-Form")} className={`px-4 py-2 font-bold text-[10px] uppercase tracking-widest border-b-2 transition-all duration-300 ${activePortfolioTab === 'Short-Form' ? 'border-primary text-white' : 'border-transparent text-white/40 hover:text-white'}`}>Short-Form</button>
+            <button onClick={() => setActivePortfolioTab("UGC")} className={`px-4 py-2 font-bold text-[10px] uppercase tracking-widest border-b-2 transition-all duration-300 ${activePortfolioTab === 'UGC' ? 'border-primary text-white' : 'border-transparent text-white/40 hover:text-white'}`}>UGC</button>
           </div>
 
-          {/* Work Grid - Bento Architecture */}
+          {/* Work Grid — same gradient-tile language as the hero feed, not stock photos standing in for client work */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-            
-            {/* Row 1: Featured Project (Span 8) + Text (Span 4) */}
+
             {(activePortfolioTab === 'Featured' || activePortfolioTab === 'Social Posts') && (
                <>
-                 <div className="md:col-span-8 bg-surface-container border border-white/10 p-2 md:p-6 rounded-2xl flex flex-col group/img">
-                   <div className="overflow-hidden bg-surface-container-highest rounded-xl border border-white/5 relative aspect-[16/9] mb-6">
-                     <img src="https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&q=80&w=1200" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105 opacity-90" alt="Post" />
-                   </div>
-                   <div className="flex justify-between items-start px-2">
-                      <div>
-                        <h3 className="type-level-3 font-bold text-white mb-1">Social Media Campaign</h3>
-                        <p className="type-level-4 text-white/50">Instagram & Facebook</p>
-                      </div>
-                      <div className="type-level-4 text-primary mt-1 px-3 py-1 bg-primary/10 rounded-full">+300% Engagement</div>
-                   </div>
-                 </div>
-                 
+                 <PortfolioTile item={portfolioItems.find(p => p.id === "social")!} className="md:col-span-8" />
                  <div className="md:col-span-4 bg-surface-container border border-white/10 p-8 rounded-2xl flex flex-col justify-center">
-                    <h3 className="type-level-2 text-white mb-6">Built to stop the scroll.</h3>
-                    <p className="type-level-3 text-on-surface-variant">We don't just make things look pretty. We engineer creative assets that hack attention and drive meaningful action.</p>
+                    <h3 className="text-2xl font-bold text-white mb-6">Built to stop the scroll.</h3>
+                    <p className="text-on-surface-variant leading-relaxed">We don't just make things look pretty. We engineer creative assets that hack attention and drive meaningful action.</p>
                  </div>
                </>
             )}
-            
-            {/* Row 2: Short-Form (3 Columns) */}
+
             {(activePortfolioTab === 'Featured' || activePortfolioTab === 'Short-Form') && (
                <>
-                 {[1,2,3].map((i) => (
-                    <div key={i} className="md:col-span-4 bg-surface-container border border-white/10 p-2 md:p-6 rounded-2xl flex flex-col group/vid">
-                       <div className="overflow-hidden bg-surface-container-highest rounded-xl border border-white/5 relative aspect-[4/5] mb-6">
-                          <img src={`https://images.unsplash.com/photo-${1551288049 + i * 100}?auto=format&fit=crop&q=80&w=600`} className="w-full h-full object-cover transition-transform duration-700 group-hover/vid:scale-105 opacity-80" alt="Video" />
-                          <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/vid:opacity-100 transition-opacity bg-background/20 backdrop-blur-sm">
-                             <div className="w-16 h-16 rounded-full bg-surface-container border border-white/20 text-white flex items-center justify-center pl-1">
-                                <Play className="w-6 h-6" fill="currentColor" />
-                             </div>
-                          </div>
-                       </div>
-                       <div className="px-2">
-                          <h3 className="type-level-3 font-bold text-white mb-1">Short-Form Content</h3>
-                          <p className="type-level-4 text-white/50">TikTok & Reels</p>
-                       </div>
-                    </div>
+                 {portfolioItems.filter(p => p.category === "Short-Form").map((item) => (
+                    <PortfolioTile key={item.id} item={item} className="md:col-span-4" />
                  ))}
                </>
             )}
 
-            {/* Row 3: Blog / Editorial (Span 6 + Span 6) */}
-            {(activePortfolioTab === 'Featured') && (
+            {(activePortfolioTab === 'Featured' || activePortfolioTab === 'UGC') && (
                <>
-                 <div className="md:col-span-6 bg-surface-container border border-white/10 p-2 md:p-6 rounded-2xl flex flex-col group/img">
-                   <div className="overflow-hidden bg-surface-container-highest rounded-xl border border-white/5 relative aspect-[16/9] mb-6">
-                     <img src="https://images.unsplash.com/photo-1616469829581-73993eb86b02?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105 opacity-90" alt="Blog" />
-                   </div>
-                   <div className="px-2">
-                     <h3 className="type-level-3 font-bold text-white mb-1">SEO & Editorial</h3>
-                     <p className="type-level-4 text-white/50">Long-form content</p>
-                   </div>
-                 </div>
-                 <div className="md:col-span-6 bg-surface-container border border-white/10 p-2 md:p-6 rounded-2xl flex flex-col group/img">
-                   <div className="overflow-hidden bg-surface-container-highest rounded-xl border border-white/5 relative aspect-[16/9] mb-6">
-                     <img src="https://images.unsplash.com/photo-1493723843671-1d655e66ac1c?auto=format&fit=crop&q=80&w=800" className="w-full h-full object-cover transition-transform duration-700 group-hover/img:scale-105 opacity-90" alt="Blog" />
-                   </div>
-                   <div className="px-2">
-                     <h3 className="type-level-3 font-bold text-white mb-1">Industry Reports</h3>
-                     <p className="type-level-4 text-white/50">B2B Strategy</p>
-                   </div>
-                 </div>
+                 {portfolioItems.filter(p => p.category === "UGC").map((item) => (
+                    <PortfolioTile key={item.id} item={item} className="md:col-span-6" />
+                 ))}
                </>
             )}
           </div>
@@ -710,21 +711,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Clean Minimal CTA */}
-      <section className="py-32 bg-primary">
-        <div className="w-full max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between">
-            <div className="mb-12 md:mb-0">
-               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-black/50 mb-6 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-black rounded-full"></span> Initialize Growth
-               </span>
-               <h2 className="type-level-1 text-black text-balance">
-                 Ready to Dominate?
-               </h2>
-            </div>
-            
-            <Link to="/contact" className="px-12 py-6 bg-black text-primary type-level-4 hover:bg-white hover:text-black transition-colors duration-300 inline-block border border-black group">
-              Start The Audit <span className="inline-block group-hover:translate-x-2 transition-transform duration-300">&rarr;</span>
+      {/* CTA — closes on the same "posting vs. scrolling" line the hero opened with, not a generic purple-flood CTA */}
+      <section className="py-28 md:py-36 bg-background border-t border-white/5 relative overflow-hidden">
+        <div className="absolute -bottom-40 -right-40 w-[560px] h-[560px] rounded-full bg-[#ff6b4a]/10 blur-[120px] z-0 pointer-events-none" />
+        <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
+          <div>
+            <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-6">
+              <span className="w-2 h-2 rounded-full bg-[#ff6b4a]" /> Now booking for next month
+            </span>
+            <h2 className="hero-display font-bold text-white text-4xl md:text-6xl leading-[1.05] tracking-tight text-balance max-w-xl">
+              Your competitors are still posting.<br />
+              <span className="italic text-primary">You could be scrolling them.</span>
+            </h2>
+          </div>
+
+          <Magnetic>
+            <Link to="/contact" className="shrink-0 px-10 py-5 bg-white text-background rounded-lg font-bold text-sm hover:bg-primary transition-all duration-300 flex items-center gap-2 group">
+              Start The Audit <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
+          </Magnetic>
         </div>
       </section>
     </>
