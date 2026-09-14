@@ -6,6 +6,13 @@ import { motion, useInView } from "motion/react";
 import { useCart } from "../context/CartContext";
 import CustomPlayer from "../components/CustomPlayer";
 
+const faqs = [
+  { question: "How quickly will I receive my first delivery?", answer: "Within 3 to 5 business days of completing your onboarding brief." },
+  { question: "How many revisions do I get?", answer: "As many as you need until you're happy. We don't cap revisions." },
+  { question: "Can I upgrade or downgrade my volume?", answer: "Yes. You can change your tier at the start of any new billing cycle." },
+  { question: "Is there a contract?", answer: "No contracts. Cancel or pause anytime." },
+];
+
 export default function ServiceDetail() {
   const { id } = useParams<{ id: string }>();
   const service = servicesData.find((s) => s.id === id);
@@ -53,13 +60,6 @@ export default function ServiceDetail() {
     });
     setIsCartOpen(true);
   };
-
-  const faqs = [
-    { question: "How quickly will I receive my first delivery?", answer: "Within 3 to 5 business days of completing your onboarding brief." },
-    { question: "How many revisions do I get?", answer: "As many as you need until you're happy. We don't cap revisions." },
-    { question: "Can I upgrade or downgrade my volume?", answer: "Yes. You can change your tier at the start of any new billing cycle." },
-    { question: "Is there a contract?", answer: "No contracts. Cancel or pause anytime." },
-  ];
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden pt-32 pb-24 text-on-surface">

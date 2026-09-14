@@ -1,34 +1,25 @@
 import { useState } from "react";
 import { ArrowUpRight } from "lucide-react";
 
+const tabs = [
+  "All",
+  "Social Media Posts",
+  "Short-Form Videos",
+  "UGC Videos",
+  "Blog Content",
+  "SEO & Backlinks"
+];
+
+// 16 placeholder cards, categories distributed evenly and aspect ratios mixed
+const portfolioItems = Array.from({ length: 16 }).map((_, i) => ({
+  id: i,
+  category: tabs[(i % 5) + 1], // skip "All"
+  aspect: ["aspect-square", "aspect-video", "aspect-[9/16]"][i % 3],
+  imageUrl: `https://picsum.photos/seed/${i + 100}/800/1000`
+}));
+
 export default function Examples() {
   const [activeTab, setActiveTab] = useState("All");
-
-  const tabs = [
-    "All",
-    "Social Media Posts",
-    "Short-Form Videos",
-    "UGC Videos",
-    "Blog Content",
-    "SEO & Backlinks"
-  ];
-
-  // Generate 16 placeholder cards
-  const portfolioItems = Array.from({ length: 16 }).map((_, i) => {
-    // Distribute categories evenly
-    const catIndex = i % 5;
-    const category = tabs[catIndex + 1]; // Skip "All"
-    // Mix aspect ratios
-    const aspectRatios = ["aspect-square", "aspect-video", "aspect-[9/16]"];
-    const aspect = aspectRatios[i % 3];
-
-    return {
-      id: i,
-      category,
-      aspect,
-      imageUrl: `https://picsum.photos/seed/${i + 100}/800/1000`
-    };
-  });
 
   const filteredItems = activeTab === "All" ? portfolioItems : portfolioItems.filter(item => item.category === activeTab);
 

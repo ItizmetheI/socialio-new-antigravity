@@ -2,64 +2,64 @@ import { motion } from "motion/react";
 import { ArrowUpRight, Calendar, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export default function Blog() {
-  const posts = [
-    {
-      id: 1,
-      title: "Why Your CAC is Rising (And How to Fix It)",
-      excerpt: "A deep dive into the macroeconomic shifts affecting paid acquisition and 3 frameworks to build resilience into your ad accounts.",
-      category: "Paid Acquisition",
-      date: "Oct 12, 2023",
-      readTime: "6 min read",
-      image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    },
-    {
-      id: 2,
-      title: "The Zero-Click Content Strategy for LinkedIn",
-      excerpt: "Stop trying to pull people off platform. Learn how to optimize for in-feed consumption that drives high-intent inbound leads.",
-      category: "Content Marketing",
-      date: "Oct 05, 2023",
-      readTime: "4 min read",
-      image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    },
-    {
-      id: 3,
-      title: "Pricing Architecture: Creating Logical Upsell Paths",
-      excerpt: "How to restructure your pricing tiers to naturally push users to higher LTV plans without relying on aggressive sales tactics.",
-      category: "Product Led Growth",
-      date: "Sep 28, 2023",
-      readTime: "8 min read",
-      image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    },
-    {
-      id: 4,
-      title: "Deconstructing the Modern B2B Landing Page",
-      excerpt: "We analyzed 100 top-performing B2B SaaS landing pages. Here are the 5 common elements they all share.",
-      category: "CRO",
-      date: "Sep 15, 2023",
-      readTime: "5 min read",
-      image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    },
-    {
-      id: 5,
-      title: "Stop Using Attribution Models (Do This Instead)",
-      excerpt: "Software attribution is fundamentally broken. Why you need to move to Marketing Mix Modeling and qualitative feedback.",
-      category: "Analytics",
-      date: "Sep 02, 2023",
-      readTime: "7 min read",
-      image: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    },
-    {
-      id: 6,
-      title: "Onboarding Tear-Down: Notion vs Airtable",
-      excerpt: "A step-by-step analysis of how two PLG giants activate new users and the lessons you can apply to your SaaS.",
-      category: "Product Led Growth",
-      date: "Aug 20, 2023",
-      readTime: "10 min read",
-      image: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
-    }
-  ];
+const posts = [
+  {
+    id: 1,
+    title: "Why Your CAC is Rising (And How to Fix It)",
+    excerpt: "A deep dive into the macroeconomic shifts affecting paid acquisition and 3 frameworks to build resilience into your ad accounts.",
+    category: "Paid Acquisition",
+    date: "Oct 12, 2023",
+    readTime: "6 min read",
+    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    id: 2,
+    title: "The Zero-Click Content Strategy for LinkedIn",
+    excerpt: "Stop trying to pull people off platform. Learn how to optimize for in-feed consumption that drives high-intent inbound leads.",
+    category: "Content Marketing",
+    date: "Oct 05, 2023",
+    readTime: "4 min read",
+    image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    id: 3,
+    title: "Pricing Architecture: Creating Logical Upsell Paths",
+    excerpt: "How to restructure your pricing tiers to naturally push users to higher LTV plans without relying on aggressive sales tactics.",
+    category: "Product Led Growth",
+    date: "Sep 28, 2023",
+    readTime: "8 min read",
+    image: "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    id: 4,
+    title: "Deconstructing the Modern B2B Landing Page",
+    excerpt: "We analyzed 100 top-performing B2B SaaS landing pages. Here are the 5 common elements they all share.",
+    category: "CRO",
+    date: "Sep 15, 2023",
+    readTime: "5 min read",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    id: 5,
+    title: "Stop Using Attribution Models (Do This Instead)",
+    excerpt: "Software attribution is fundamentally broken. Why you need to move to Marketing Mix Modeling and qualitative feedback.",
+    category: "Analytics",
+    date: "Sep 02, 2023",
+    readTime: "7 min read",
+    image: "https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+  },
+  {
+    id: 6,
+    title: "Onboarding Tear-Down: Notion vs Airtable",
+    excerpt: "A step-by-step analysis of how two PLG giants activate new users and the lessons you can apply to your SaaS.",
+    category: "Product Led Growth",
+    date: "Aug 20, 2023",
+    readTime: "10 min read",
+    image: "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"
+  }
+];
 
+export default function Blog() {
   return (
     <div className="pt-32 pb-24 relative min-h-screen">
       <div className="max-w-container-max mx-auto px-margin-desktop relative z-10 flex flex-col items-center">

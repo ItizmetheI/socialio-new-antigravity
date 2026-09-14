@@ -4,12 +4,9 @@ import { motion, AnimatePresence } from "motion/react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-export default function CaseStudies() {
-  const [activeFilter, setActiveFilter] = useState("All");
-  
-  const filters = ["All", "SEO", "Social Media", "Paid Ads"];
+const filters = ["All", "SEO", "Social Media", "Paid Ads"];
 
-  const caseStudies = [
+const caseStudies = [
     {
       id: "01",
       category: "Paid Ads",
@@ -74,10 +71,13 @@ export default function CaseStudies() {
       deliverables: ["PMax Structure", "Search Arbitrage", "CRO"],
       description: "A legacy enterprise provider couldn't scale their search campaigns. We restructured their entire Google Ads account, introduced Performance Max selectively, and applied aggressive conversion rate optimization to their landers."
     }
-  ];
+];
 
-  const filteredStudies = activeFilter === "All" 
-    ? caseStudies 
+export default function CaseStudies() {
+  const [activeFilter, setActiveFilter] = useState("All");
+
+  const filteredStudies = activeFilter === "All"
+    ? caseStudies
     : caseStudies.filter(study => study.category === activeFilter);
 
   return (

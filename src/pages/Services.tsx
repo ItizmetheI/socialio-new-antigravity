@@ -17,16 +17,16 @@ import {
 import { servicesData } from "../data/services";
 import { motion } from "motion/react";
 
-export default function Services() {
-  const iconMap: Record<string, any> = {
-    "social-media-posts": { icon: <PenTool className="w-6 h-6" />, bg: "bg-blue-500/10", text: "text-blue-500" },
-    "short-form-videos": { icon: <MonitorPlay className="w-6 h-6" />, bg: "bg-purple-500/10", text: "text-purple-500" },
-    "instagram-growth": { icon: <Instagram className="w-6 h-6" />, bg: "bg-pink-500/10", text: "text-pink-500" },
-    "ugc-content": { icon: <Video className="w-6 h-6" />, bg: "bg-orange-500/10", text: "text-orange-500" },
-    "seo-blog-posts": { icon: <Search className="w-6 h-6" />, bg: "bg-emerald-500/10", text: "text-emerald-500" },
-    "seo-backlinks": { icon: <LinkIcon className="w-6 h-6" />, bg: "bg-teal-500/10", text: "text-teal-500" },
-  };
+const iconMap: Record<string, any> = {
+  "social-media-posts": { icon: <PenTool className="w-6 h-6" />, bg: "bg-blue-500/10", text: "text-blue-500" },
+  "short-form-videos": { icon: <MonitorPlay className="w-6 h-6" />, bg: "bg-purple-500/10", text: "text-purple-500" },
+  "instagram-growth": { icon: <Instagram className="w-6 h-6" />, bg: "bg-pink-500/10", text: "text-pink-500" },
+  "ugc-content": { icon: <Video className="w-6 h-6" />, bg: "bg-orange-500/10", text: "text-orange-500" },
+  "seo-blog-posts": { icon: <Search className="w-6 h-6" />, bg: "bg-emerald-500/10", text: "text-emerald-500" },
+  "seo-backlinks": { icon: <LinkIcon className="w-6 h-6" />, bg: "bg-teal-500/10", text: "text-teal-500" },
+};
 
+export default function Services() {
   return (
     <div className="min-h-screen bg-background relative selection:bg-primary/30 text-surface-container-highest">
       

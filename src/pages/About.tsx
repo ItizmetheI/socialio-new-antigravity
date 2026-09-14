@@ -2,52 +2,52 @@ import { motion } from "motion/react";
 import { Zap, ShieldCheck, BarChart3, Users, Globe, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
+const values = [
+  {
+    icon: <Zap className="w-6 h-6 text-primary" />,
+    title: "Velocity Over Perfection",
+    description: "We operate in sprints, not quarters. Growth requires testing, and testing requires speed. Your first batch of content is live within 7 days."
+  },
+  {
+    icon: <ShieldCheck className="w-6 h-6 text-primary" />,
+    title: "Radical Transparency",
+    description: "Flat-rate pricing, no hidden fees, and a real-time Kanban board where you can track every deliverable, campaign, and metric 24/7."
+  },
+  {
+    icon: <BarChart3 className="w-6 h-6 text-primary" />,
+    title: "Data-Driven Outcomes",
+    description: "We hate vanity metrics. We track CAC, ROAS, and bottom-line revenue. If a strategy isn't performing, we pivot ruthlessly."
+  }
+];
+
+const team = [
+  {
+    name: "Alex Rivera",
+    role: "Lead Growth Engineer",
+    image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop",
+    bio: "Ex-Shopify growth lead. Obsessed with conversion funnels and technical SEO."
+  },
+  {
+    name: "Jamie Chen",
+    role: "Creative Director",
+    image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
+    bio: "Award-winning designer with 10+ years shaping premium DTC brands and narratives."
+  },
+  {
+    name: "Marcus Thorne",
+    role: "Performance Marketing",
+    image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop",
+    bio: "Managed $50M+ in Meta/Google spend. Specializes in rapid creative testing."
+  },
+  {
+    name: "Elena Rostova",
+    role: "Content Strategist",
+    image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop",
+    bio: "Master of organic algorithmic growth. Built multiple TikTok channels past 1M."
+  }
+];
+
 export default function About() {
-  const values = [
-    {
-      icon: <Zap className="w-6 h-6 text-primary" />,
-      title: "Velocity Over Perfection",
-      description: "We operate in sprints, not quarters. Growth requires testing, and testing requires speed. Your first batch of content is live within 7 days."
-    },
-    {
-      icon: <ShieldCheck className="w-6 h-6 text-primary" />,
-      title: "Radical Transparency",
-      description: "Flat-rate pricing, no hidden fees, and a real-time Kanban board where you can track every deliverable, campaign, and metric 24/7."
-    },
-    {
-      icon: <BarChart3 className="w-6 h-6 text-primary" />,
-      title: "Data-Driven Outcomes",
-      description: "We hate vanity metrics. We track CAC, ROAS, and bottom-line revenue. If a strategy isn't performing, we pivot ruthlessly."
-    }
-  ];
-
-  const team = [
-    {
-      name: "Alex Rivera",
-      role: "Lead Growth Engineer",
-      image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&h=400&fit=crop",
-      bio: "Ex-Shopify growth lead. Obsessed with conversion funnels and technical SEO."
-    },
-    {
-      name: "Jamie Chen",
-      role: "Creative Director",
-      image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=400&fit=crop",
-      bio: "Award-winning designer with 10+ years shaping premium DTC brands and narratives."
-    },
-    {
-      name: "Marcus Thorne",
-      role: "Performance Marketing",
-      image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop",
-      bio: "Managed $50M+ in Meta/Google spend. Specializes in rapid creative testing."
-    },
-    {
-      name: "Elena Rostova",
-      role: "Content Strategist",
-      image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&h=400&fit=crop",
-      bio: "Master of organic algorithmic growth. Built multiple TikTok channels past 1M."
-    }
-  ];
-
   return (
     <div className="pt-32 pb-24 relative overflow-hidden bg-background min-h-screen text-on-surface">
 

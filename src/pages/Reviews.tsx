@@ -1,10 +1,7 @@
 import { Star, CheckCircle, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 
-export default function Reviews() {
-  const [filterType, setFilterType] = useState("All");
-
-  const reviews = [
+const reviews = [
     {
       name: "Alex M.",
       company: "SaaS Growth Co",
@@ -167,10 +164,14 @@ export default function Reviews() {
        rating: 5,
        verified: true
     }
-  ];
+];
+
+const filterOptions = ["All", "E-Commerce", "SaaS", "Local Business", "Agency", "Creator"];
+
+export default function Reviews() {
+  const [filterType, setFilterType] = useState("All");
 
   const filteredReviews = filterType === "All" ? reviews : reviews.filter(r => r.type === filterType);
-  const filterOptions = ["All", "E-Commerce", "SaaS", "Local Business", "Agency", "Creator"];
 
   return (
     <div className="min-h-screen pt-32 pb-24 px-6 max-w-7xl mx-auto text-on-surface">

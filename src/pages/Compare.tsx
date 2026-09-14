@@ -1,6 +1,14 @@
 import { Check, X } from "lucide-react";
 import { Link } from "react-router-dom";
 
+const comparisonRows = [
+  { label: "Cost", kb: "Predictable flat rate", inhouse: "$80k+ purely salary", agency: "Expensive retainers & % ad spend" },
+  { label: "Speed to Launch", kb: "Days", inhouse: "Months (Hiring pipelines)", agency: "Weeks (Onboarding & pitch decks)" },
+  { label: "Expertise", kb: "Full team of specialists", inhouse: "Usually a generalist", agency: "Variable (Depends on who is assigned)" },
+  { label: "Contracts", kb: "Pause entirely anytime", inhouse: "Severance packages", agency: "6-12 month lock-ins" },
+  { label: "Quality Guarantees", kb: "Refund capabilities on first batch", inhouse: "None", agency: "Rarely offered" },
+];
+
 export default function Compare() {
   return (
     <div className="min-h-screen pt-32 pb-24 px-6 max-w-7xl mx-auto text-on-surface">
@@ -26,13 +34,7 @@ export default function Compare() {
             </tr>
           </thead>
           <tbody className="font-sans">
-            {[
-              { label: "Cost", kb: "Predictable flat rate", inhouse: "$80k+ purely salary", agency: "Expensive retainers & % ad spend" },
-              { label: "Speed to Launch", kb: "Days", inhouse: "Months (Hiring pipelines)", agency: "Weeks (Onboarding & pitch decks)" },
-              { label: "Expertise", kb: "Full team of specialists", inhouse: "Usually a generalist", agency: "Variable (Depends on who is assigned)" },
-              { label: "Contracts", kb: "Pause entirely anytime", inhouse: "Severance packages", agency: "6-12 month lock-ins" },
-              { label: "Quality Guarantees", kb: "Refund capabilities on first batch", inhouse: "None", agency: "Rarely offered" },
-            ].map((row, i) => (
+            {comparisonRows.map((row, i) => (
               <tr key={i} className="border-b border-white/5">
                 <td className="p-6 font-bold text-white">{row.label}</td>
                 <td className="p-6 text-primary bg-white/5 border-x border-white/10 font-bold">
