@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import { 
-  Sparkles,
+import {
   ArrowRight,
   CheckCircle2,
   TrendingUp,
@@ -38,20 +37,19 @@ export default function Services() {
       <main className="pt-32 max-w-7xl mx-auto px-6 mb-24 relative z-10 text-on-surface">
         
         {/* Header Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="mb-16 md:mb-24 text-center max-w-3xl mx-auto"
+          className="mb-16 md:mb-24 max-w-2xl"
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-sm text-sm font-medium text-on-surface-variant mb-6">
-            <Sparkles className="w-4 h-4 text-primary" />
-            Simple, Transparent Pricing
-          </div>
-          <h1 className="font-display text-5xl md:text-6xl font-bold tracking-tighter mb-6 text-white text-balance">
-            Everything you need to grow, <span className="text-white">productized.</span>
+          <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-6">
+            <span className="w-2 h-2 rounded-full bg-[#ff6b4a]" /> Simple, transparent pricing
+          </span>
+          <h1 className="hero-display font-bold text-5xl md:text-6xl tracking-tight mb-6 text-white text-balance">
+            Everything you need to grow, <span className="italic text-primary">productized.</span>
           </h1>
-          <p className="font-sans text-on-surface-variant text-lg md:text-xl leading-relaxed">
+          <p className="text-on-surface-variant text-lg md:text-xl leading-relaxed max-w-xl">
             Pick the services you need, choose your volume, and we'll handle the rest. Dedicated teams, high-quality deliverables, and zero long-term contracts.
           </p>
         </motion.div>

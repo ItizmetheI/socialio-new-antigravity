@@ -87,29 +87,31 @@ export default function CaseStudies() {
 
 
       <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col items-center">
-        
+
         {/* Header Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mb-16"
+          className="max-w-2xl mb-16 self-start text-left"
         >
-          <div className="inline-block px-4 py-1.5 bg-primary/10 border border-primary/20 rounded-full font-mono text-[10px] text-primary mb-6 uppercase tracking-widest font-bold">Proof of Work</div>
-          <h1 className="font-display text-5xl md:text-6xl lg:text-7xl tracking-tighter mb-6 text-white font-bold leading-tight">
-            Real impact.<br className="hidden md:block"/> No vanity metrics.
+          <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-6">
+            <span className="w-2 h-2 rounded-full bg-[#ff6b4a]" /> Proof of Work
+          </span>
+          <h1 className="hero-display font-bold text-5xl md:text-6xl lg:text-7xl tracking-tight mb-6 text-white leading-[1.02] text-balance">
+            Real impact. <span className="italic text-primary">No vanity metrics.</span>
           </h1>
-          <p className="font-sans text-xl text-on-surface-variant max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-on-surface-variant max-w-xl leading-relaxed">
             Dive into the data behind our most successful campaigns. We don't just chase likes; we build compounding revenue systems.
           </p>
         </motion.div>
 
         {/* Filters */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="flex flex-wrap justify-center gap-2 mb-16"
+          className="flex flex-wrap justify-start gap-2 mb-16 w-full"
         >
           {filters.map(filter => (
             <button

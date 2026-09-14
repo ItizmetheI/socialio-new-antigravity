@@ -65,19 +65,19 @@ export default function Blog() {
       <div className="max-w-container-max mx-auto px-margin-desktop relative z-10 flex flex-col items-center">
         
         {/* Header Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center max-w-3xl mb-20"
+          className="max-w-2xl mb-20 self-start text-left"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/20 bg-primary/10 text-primary-fixed-dim text-label-md mb-6">
-            Insights & Tactics
-          </div>
-          <h1 className="text-display-xl font-display-xl mb-6 text-white pb-2">
-            The Growth Log
+          <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-6">
+            <span className="w-2 h-2 rounded-full bg-[#ff6b4a]" /> Insights & Tactics
+          </span>
+          <h1 className="hero-display font-bold text-5xl md:text-6xl mb-6 text-white tracking-tight text-balance">
+            The <span className="italic text-primary">Growth Log</span>.
           </h1>
-          <p className="text-body-lg text-on-surface-variant max-w-2xl mx-auto">
+          <p className="text-xl text-on-surface-variant max-w-lg leading-relaxed">
             No fluff. Just tactical teardowns, frameworks, and actionable essays on how to scale revenue in tough markets.
           </p>
         </motion.div>

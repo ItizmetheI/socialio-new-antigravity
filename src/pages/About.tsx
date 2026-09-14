@@ -55,17 +55,19 @@ export default function About() {
       <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col items-center">
         
         {/* Section 1 - Hero */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-center max-w-4xl mb-24 pt-10"
+          className="max-w-3xl mb-24 pt-10 self-start text-left"
         >
-          <div className="inline-block px-4 py-1.5 bg-white/5 border border-white/10 rounded-full font-mono text-[10px] text-white/70 mb-8 uppercase tracking-widest font-bold">About Socialio</div>
-          <h1 className="font-display text-5xl md:text-7xl tracking-tighter mb-8 text-white font-bold leading-tight">
-            The growth engineers <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">behind the scenes.</span>
+          <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-6">
+            <span className="w-2 h-2 rounded-full bg-[#ff6b4a]" /> About Socialio
+          </span>
+          <h1 className="hero-display font-bold text-5xl md:text-7xl tracking-tight mb-8 text-white leading-[1.02] text-balance">
+            The growth engineers <span className="italic text-primary">behind the scenes.</span>
           </h1>
-          <p className="font-sans text-xl text-on-surface-variant max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl text-on-surface-variant max-w-2xl leading-relaxed">
             We are an elite, productized growth team. Built for scale, engineered for precision, and utterly intolerant of bloated retainer models.
           </p>
         </motion.div>
