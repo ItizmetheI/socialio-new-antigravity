@@ -24,7 +24,7 @@ export default function Footer() {
             
             {/* Brand & Newsletter */}
             <div className="col-span-12 lg:col-span-5 pr-8">
-                <Link to="/" className="block mb-6"><Logo /></Link>
+                <Logo className="mb-6" />
                 <p className="font-sans text-on-surface-variant max-w-sm mb-8">
                   Precision marketing for high-growth teams. We turn digital attention into enterprise value.
                 </p>
