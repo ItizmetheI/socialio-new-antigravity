@@ -13,9 +13,11 @@ export default function Compare() {
   return (
     <div className="min-h-screen pt-32 pb-24 px-6 max-w-7xl mx-auto text-on-surface">
       <div className="text-center mb-16">
-        <div className="font-mono text-xs uppercase tracking-widest text-primary mb-4 font-bold">The Alternative</div>
-        <h1 className="font-display text-5xl md:text-6xl font-bold text-white mb-6 tracking-tighter">Why Choose Socialio?</h1>
-        <p className="font-sans text-xl text-on-surface-variant max-w-2xl mx-auto">
+        <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-4">
+          <span className="w-2 h-2 rounded-full bg-[#ff6b4a]" /> The Alternative
+        </span>
+        <h1 className="hero-display font-bold text-5xl md:text-6xl text-white mb-6 tracking-tight">Why choose <span className="italic text-primary">Socialio?</span></h1>
+        <p className="text-xl text-on-surface-variant max-w-2xl mx-auto">
           See how our productized model stacks up against the old ways of scaling marketing.
         </p>
       </div>

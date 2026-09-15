@@ -176,9 +176,12 @@ export default function Reviews() {
   return (
     <div className="min-h-screen pt-32 pb-24 px-6 max-w-7xl mx-auto text-on-surface">
       <div className="text-center mb-16">
-        <h1 className="font-display text-5xl md:text-6xl font-bold text-white mb-6 tracking-tighter">Client Reviews</h1>
-        <p className="font-sans text-xl text-on-surface-variant max-w-2xl mx-auto mb-8">
-          Trusted by incredible businesses to drive real, measurable growth. 
+        <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-4">
+          <span className="w-2 h-2 rounded-full bg-[#ff6b4a]" /> Client Reviews
+        </span>
+        <h1 className="hero-display font-bold text-5xl md:text-6xl text-white mb-6 tracking-tight">What clients <span className="italic text-primary">actually say.</span></h1>
+        <p className="text-xl text-on-surface-variant max-w-2xl mx-auto mb-8">
+          Trusted by incredible businesses to drive real, measurable growth.
         </p>
 
         <div className="bg-surface-container border border-white/10 rounded-2xl p-6 max-w-2xl mx-auto mb-10 flex flex-col items-center">
