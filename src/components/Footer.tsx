@@ -99,15 +99,11 @@ export default function Footer() {
 
         {/* Bottom Section */}
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6 px-4">
-            <div className="flex flex-wrap items-center gap-4 text-xs font-mono uppercase tracking-widest text-on-surface-variant">
-               <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-emerald-400" /> Secure Checkout</span>
-               <span className="flex items-center gap-1"><CheckCircle2 className="w-3 h-3 text-emerald-400" /> Vetted Agency</span>
-            </div>
-            
+            <span className="text-xs text-on-surface-variant font-sans">© {new Date().getFullYear()} Socialio. All rights reserved.</span>
+
             <div className="flex flex-wrap items-center gap-6 text-xs text-on-surface-variant font-sans">
                 <Link to="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
                 <Link to="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
-                <span>© {new Date().getFullYear()} Socialio. All rights reserved.</span>
             </div>
         </div>
       </div>

@@ -313,14 +313,6 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center gap-2 mb-7 text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff6b4a] opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#ff6b4a]" />
-              </span>
-              86 campaigns in production right now
-            </div>
-
             <h1 className="hero-display font-bold text-white mb-6 leading-[0.96] tracking-tight text-[13vw] sm:text-[7.5vw] lg:text-[4.6vw] text-balance">
               Stop posting.<br />
               Start <span className="italic text-primary">scrolling</span> them.
