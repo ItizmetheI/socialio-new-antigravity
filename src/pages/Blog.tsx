@@ -71,9 +71,6 @@ export default function Blog() {
           transition={{ duration: 0.6 }}
           className="max-w-2xl mb-20 self-start text-left"
         >
-          <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-6">
-            <span className="w-2 h-2 rounded-full bg-[#ff6b4a]" /> Insights & Tactics
-          </span>
           <h1 className="hero-display font-bold text-5xl md:text-6xl mb-6 text-white tracking-tight text-balance">
             The <span className="italic text-primary">Growth Log</span>.
           </h1>

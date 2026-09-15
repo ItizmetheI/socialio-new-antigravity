@@ -20,9 +20,6 @@ export default function Industries() {
         transition={{ duration: 0.8 }}
         className="text-center mb-20"
       >
-        <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-4">
-          <span className="w-2 h-2 rounded-full bg-[#ff6b4a]" /> By Industry
-        </span>
         <h1 className="hero-display font-bold text-5xl md:text-6xl text-white mb-6 tracking-tight">Built for <span className="italic text-primary">your industry.</span></h1>
         <p className="text-xl text-on-surface-variant max-w-2xl mx-auto">
           We've driven results across verticals. Here's how we approach each one.

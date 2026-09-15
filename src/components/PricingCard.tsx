@@ -24,8 +24,8 @@ export default function PricingCard({ service }: React.PropsWithChildren<{ servi
   return (
     <div className={`group flex flex-col bg-surface-container border ${service.popular ? 'border-primary shadow-[0_0_30px_rgba(221,183,255,0.15)]' : 'border-white/5'} p-8 transition-colors relative text-left h-full rounded-2xl hover:border-white/20 shadow-xl`}>
       {service.popular && (
-          <div className="absolute top-8 right-8 flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#ff6b4a]" /> Most Booked
+          <div className="absolute top-8 right-8 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-bold uppercase tracking-wide text-primary">
+            Most Booked
           </div>
       )}
       <div className="type-level-4 text-primary mb-4">{service.category}</div>

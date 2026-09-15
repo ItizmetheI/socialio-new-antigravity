@@ -95,9 +95,6 @@ export default function CaseStudies() {
           transition={{ duration: 0.6 }}
           className="max-w-2xl mb-16 self-start text-left"
         >
-          <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-6">
-            <span className="w-2 h-2 rounded-full bg-[#ff6b4a]" /> Proof of Work
-          </span>
           <h1 className="hero-display font-bold text-5xl md:text-6xl lg:text-7xl tracking-tight mb-6 text-white leading-[1.02] text-balance">
             Real impact. <span className="italic text-primary">No vanity metrics.</span>
           </h1>

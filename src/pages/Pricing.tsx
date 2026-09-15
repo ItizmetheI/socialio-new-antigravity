@@ -15,9 +15,6 @@ export default function Pricing() {
           transition={{ duration: 0.8 }}
           className="max-w-7xl mx-auto px-6 mb-24"
         >
-            <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-6">
-              <span className="w-2 h-2 rounded-full bg-[#ff6b4a]" /> Flat-rate, no retainers
-            </span>
             <h1 className="hero-display font-bold text-4xl md:text-6xl tracking-tight mb-6 text-white max-w-3xl text-balance">
               Build your <span className="italic text-primary">marketing engine.</span>
             </h1>

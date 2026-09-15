@@ -721,13 +721,11 @@ export default function Home() {
         <div className="absolute -bottom-40 -right-40 w-[560px] h-[560px] rounded-full bg-[#ff6b4a]/10 blur-[120px] z-0 pointer-events-none" />
         <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
           <div>
-            <span className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.14em] text-on-surface-variant mb-6">
-              <span className="w-2 h-2 rounded-full bg-[#ff6b4a]" /> Now booking for next month
-            </span>
             <h2 className="hero-display font-bold text-white text-4xl md:text-6xl leading-[1.05] tracking-tight text-balance max-w-xl">
               Your competitors are still posting.<br />
               <span className="italic text-primary">You could be scrolling them.</span>
             </h2>
+            <p className="text-on-surface-variant text-sm font-bold mt-5">Now booking for next month.</p>
           </div>
 
           <Magnetic>
