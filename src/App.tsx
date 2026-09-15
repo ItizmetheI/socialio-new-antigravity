@@ -30,6 +30,10 @@ import ProposalView from './app/ProposalView';
 import RequestBoard from './app/RequestBoard';
 import RequestDetail from './app/RequestDetail';
 import Settings from './app/Settings';
+import OpsLayout from './ops/OpsLayout';
+import OpsBoard from './ops/OpsBoard';
+import ClientsList from './ops/ClientsList';
+import OpsRequestDetail from './ops/RequestDetail';
 
 import Compare from './pages/Compare';
 import Examples from './pages/Examples';
@@ -88,7 +92,7 @@ function isDashboardPath(pathname: string): boolean {
 
 // Dashboard routes (client portal + internal/admin ops) render their own
 // chrome instead of the marketing NavBar/Footer — see ClientLayout/OpsLayout.
-// /ops/* has no layout yet (Phase 3) so it still falls back to login.
+// /ops/admin/* has no pages yet (Phase 4) so it still falls back to the board.
 function DashboardRoutes() {
   return (
     <>
@@ -103,7 +107,12 @@ function DashboardRoutes() {
           <Route path="requests/:id" element={<RequestDetail />} />
           <Route path="settings" element={<Settings />} />
         </Route>
-        <Route path="/ops/*" element={<Navigate to="/app/login" replace />} />
+        <Route path="/ops" element={<OpsLayout />}>
+          <Route index element={<OpsBoard />} />
+          <Route path="clients" element={<ClientsList />} />
+          <Route path="requests/:id" element={<OpsRequestDetail />} />
+          <Route path="admin/*" element={<Navigate to="/ops" replace />} />
+        </Route>
       </Routes>
     </>
   );
