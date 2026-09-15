@@ -86,6 +86,7 @@ Deno.serve(async (req: Request) => {
   }
 
   let resolvedOrgId = orgId ?? null;
+  let createdNewOrg = false;
   if (role === "client" && !resolvedOrgId) {
     const { data: newOrg, error: orgError } = await adminClient
       .from("organizations")
@@ -96,6 +97,7 @@ Deno.serve(async (req: Request) => {
       return jsonResponse({ error: orgError?.message ?? "Failed to create organization" }, 500);
     }
     resolvedOrgId = newOrg.id;
+    createdNewOrg = true;
   }
 
   const { data: invited, error: inviteError } = await adminClient.auth.admin.inviteUserByEmail(email, {
@@ -106,6 +108,13 @@ Deno.serve(async (req: Request) => {
     },
   });
   if (inviteError || !invited.user) {
+    // Roll back the org we just created for this call — otherwise a failed
+    // invite (bad email, rate limit) leaves an orphan org with no client,
+    // and every retry creates another duplicate. Never delete an org that
+    // was passed in as an existing orgId — that one isn't ours to remove.
+    if (createdNewOrg && resolvedOrgId) {
+      await adminClient.from("organizations").delete().eq("id", resolvedOrgId);
+    }
     return jsonResponse({ error: inviteError?.message ?? "Invite failed" }, 500);
   }
 
