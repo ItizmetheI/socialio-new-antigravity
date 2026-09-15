@@ -7,3 +7,8 @@ coverage/
 .env*
 !.env.example
 .gstack/
+
+# Supabase CLI local state (project link cache, version info) — machine-local,
+# not shared config
+supabase/.temp/
+supabase/.branches/
