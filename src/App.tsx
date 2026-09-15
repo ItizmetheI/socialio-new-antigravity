@@ -24,6 +24,12 @@ import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './lib/auth/AuthContext';
 import Login from './app/Login';
 import SetPassword from './lib/auth/SetPassword';
+import ClientLayout from './app/ClientLayout';
+import DashboardHome from './app/DashboardHome';
+import ProposalView from './app/ProposalView';
+import RequestBoard from './app/RequestBoard';
+import RequestDetail from './app/RequestDetail';
+import Settings from './app/Settings';
 
 import Compare from './pages/Compare';
 import Examples from './pages/Examples';
@@ -81,8 +87,8 @@ function isDashboardPath(pathname: string): boolean {
 }
 
 // Dashboard routes (client portal + internal/admin ops) render their own
-// chrome instead of the marketing NavBar/Footer — see ClientLayout/OpsLayout
-// once Phases 2-3 land. Until then, unbuilt sub-routes fall back to login.
+// chrome instead of the marketing NavBar/Footer — see ClientLayout/OpsLayout.
+// /ops/* has no layout yet (Phase 3) so it still falls back to login.
 function DashboardRoutes() {
   return (
     <>
@@ -90,7 +96,13 @@ function DashboardRoutes() {
       <Routes>
         <Route path="/app/login" element={<Login />} />
         <Route path="/set-password" element={<SetPassword />} />
-        <Route path="/app/*" element={<Navigate to="/app/login" replace />} />
+        <Route path="/app" element={<ClientLayout />}>
+          <Route index element={<DashboardHome />} />
+          <Route path="proposal" element={<ProposalView />} />
+          <Route path="requests" element={<RequestBoard />} />
+          <Route path="requests/:id" element={<RequestDetail />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
         <Route path="/ops/*" element={<Navigate to="/app/login" replace />} />
       </Routes>
     </>
