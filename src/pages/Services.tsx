@@ -16,13 +16,16 @@ import {
 import { servicesData } from "../data/services";
 import { motion } from "motion/react";
 
+// One consistent neutral badge treatment (not a rainbow of per-category
+// colored circles) — the icon aids scanning, the color system stays to
+// the site's own two accents rather than six arbitrary Tailwind hues.
 const iconMap: Record<string, any> = {
-  "social-media-posts": { icon: <PenTool className="w-6 h-6" />, bg: "bg-blue-500/10", text: "text-blue-500" },
-  "short-form-videos": { icon: <MonitorPlay className="w-6 h-6" />, bg: "bg-purple-500/10", text: "text-purple-500" },
-  "instagram-growth": { icon: <Instagram className="w-6 h-6" />, bg: "bg-pink-500/10", text: "text-pink-500" },
-  "ugc-content": { icon: <Video className="w-6 h-6" />, bg: "bg-orange-500/10", text: "text-orange-500" },
-  "seo-blog-posts": { icon: <Search className="w-6 h-6" />, bg: "bg-emerald-500/10", text: "text-emerald-500" },
-  "seo-backlinks": { icon: <LinkIcon className="w-6 h-6" />, bg: "bg-teal-500/10", text: "text-teal-500" },
+  "social-media-posts": { icon: <PenTool className="w-6 h-6" /> },
+  "short-form-videos": { icon: <MonitorPlay className="w-6 h-6" /> },
+  "instagram-growth": { icon: <Instagram className="w-6 h-6" /> },
+  "ugc-content": { icon: <Video className="w-6 h-6" /> },
+  "seo-blog-posts": { icon: <Search className="w-6 h-6" /> },
+  "seo-backlinks": { icon: <LinkIcon className="w-6 h-6" /> },
 };
 
 export default function Services() {
@@ -57,7 +60,7 @@ export default function Services() {
         {/* Services Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {servicesData.map((service, i) => {
-             const styling = iconMap[service.id] || { icon: <Tag className="w-6 h-6" />, bg: "bg-gray-500/10", text: "text-gray-500" };
+             const styling = iconMap[service.id] || { icon: <Tag className="w-6 h-6" /> };
              
              return (
                <motion.div
@@ -73,7 +76,7 @@ export default function Services() {
                  >
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 mb-6">
                        <div className="flex gap-5">
-                         <div className={`w-14 h-14 shrink-0 rounded-2xl flex items-center justify-center transition-colors ${styling.bg} ${styling.text} group-hover:scale-110 duration-300`}>
+                         <div className="w-14 h-14 shrink-0 rounded-2xl flex items-center justify-center border border-white/10 bg-white/5 text-primary transition-transform group-hover:scale-110 duration-300">
                             {styling.icon}
                          </div>
                          <div>
@@ -95,7 +98,7 @@ export default function Services() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 mt-8 mb-8 pb-8 border-b border-white/5">
                       {service.features.slice(0, 4).map((feature, j) => (
                         <div key={j} className="flex items-start gap-3">
-                          <CheckCircle2 className={`w-4 h-4 shrink-0 mt-1 ${styling.text}`} />
+                          <CheckCircle2 className="w-4 h-4 shrink-0 mt-1 text-primary" />
                           <span className="font-sans text-sm text-on-surface-variant transition-colors">{feature}</span>
                         </div>
                       ))}
