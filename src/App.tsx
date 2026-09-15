@@ -34,6 +34,10 @@ import OpsLayout from './ops/OpsLayout';
 import OpsBoard from './ops/OpsBoard';
 import ClientsList from './ops/ClientsList';
 import OpsRequestDetail from './ops/RequestDetail';
+import OrgsAdmin from './ops/admin/OrgsAdmin';
+import ProposalBuilder from './ops/admin/ProposalBuilder';
+import UsersAdmin from './ops/admin/UsersAdmin';
+import RequireRole from './lib/auth/RequireRole';
 
 import Compare from './pages/Compare';
 import Examples from './pages/Examples';
@@ -92,7 +96,6 @@ function isDashboardPath(pathname: string): boolean {
 
 // Dashboard routes (client portal + internal/admin ops) render their own
 // chrome instead of the marketing NavBar/Footer — see ClientLayout/OpsLayout.
-// /ops/admin/* has no pages yet (Phase 4) so it still falls back to the board.
 function DashboardRoutes() {
   return (
     <>
@@ -111,7 +114,30 @@ function DashboardRoutes() {
           <Route index element={<OpsBoard />} />
           <Route path="clients" element={<ClientsList />} />
           <Route path="requests/:id" element={<OpsRequestDetail />} />
-          <Route path="admin/*" element={<Navigate to="/ops" replace />} />
+          <Route
+            path="admin/orgs"
+            element={
+              <RequireRole roles={['admin']}>
+                <OrgsAdmin />
+              </RequireRole>
+            }
+          />
+          <Route
+            path="admin/proposals"
+            element={
+              <RequireRole roles={['admin']}>
+                <ProposalBuilder />
+              </RequireRole>
+            }
+          />
+          <Route
+            path="admin/users"
+            element={
+              <RequireRole roles={['admin']}>
+                <UsersAdmin />
+              </RequireRole>
+            }
+          />
         </Route>
       </Routes>
     </>
