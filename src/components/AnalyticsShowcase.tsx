@@ -143,13 +143,20 @@ export default function AnalyticsShowcase() {
   );
 }
 
+const SLIDER_TRACK_WIDTH = 200;
+const SLIDER_INITIAL_VALUE = 75;
+
 function DraggableSlider() {
-  const [value, setValue] = useState(75);
-  const dragX = useMotionValue(0);
+  const [value, setValue] = useState(SLIDER_INITIAL_VALUE);
+  // Must start in sync with `value` above — the fill bar and the "%" label
+  // both read from `value`, but the thumb's position on the track reads
+  // from `dragX` alone. Leaving this at 0 previously meant the thumb sat
+  // at the left edge while the fill bar and label both showed 75%.
+  const dragX = useMotionValue((SLIDER_TRACK_WIDTH * SLIDER_INITIAL_VALUE) / 100);
 
   useEffect(() => {
     return dragX.on("change", (v) => {
-      const percentage = Math.max(0, Math.min(100, (v / 200) * 100));
+      const percentage = Math.max(0, Math.min(100, (v / SLIDER_TRACK_WIDTH) * 100));
       setValue(Math.round(percentage));
     });
   }, [dragX]);
@@ -160,7 +167,7 @@ function DraggableSlider() {
         <motion.div style={{ width: `${value}%` }} className="absolute top-0 left-0 h-full bg-primary rounded-full" />
         <motion.div
           drag="x"
-          dragConstraints={{ left: 0, right: 200 }}
+          dragConstraints={{ left: 0, right: SLIDER_TRACK_WIDTH }}
           dragElastic={0}
           dragMomentum={false}
           style={{ x: dragX }}

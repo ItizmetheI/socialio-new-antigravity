@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform, useSpring } from "motion/react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
 import { Heart, MessageCircle, Share2, Bookmark } from "lucide-react";
 import Magnetic from "./Magnetic";
@@ -16,7 +16,13 @@ export default function DeviceScrollShowcase() {
     offset: ["start start", "end end"],
   });
 
-  const smoothProgress = useSpring(scrollYProgress, { damping: 25, stiffness: 80, mass: 0.5 });
+  // No extra spring here: the site already wraps everything in <ReactLenis
+  // root> (App.tsx), which smooths scroll physics itself. Layering a second
+  // spring on top of Lenis's own smoothing double-smooths the signal and
+  // makes the whole sequence lag noticeably behind the actual scroll input.
+  // Home.tsx's FeedCluster already proves raw scrollYProgress + useTransform
+  // tracks correctly under this site's Lenis setup — same pattern here.
+  const smoothProgress = scrollYProgress;
 
   // 1. Entrance (0 - 0.15)
   const phoneRotateX = useTransform(smoothProgress, [0, 0.15], [45, 0]);
