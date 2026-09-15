@@ -9,7 +9,7 @@ export default function Terms() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-display-xl font-display-xl mb-6 text-white pb-2">
+          <h1 className="hero-display font-bold text-4xl md:text-5xl tracking-tight mb-6 text-white pb-2">
             Terms of Service
           </h1>
           <p className="text-on-surface-variant mb-12">Last updated: October 2023</p>

@@ -408,7 +408,7 @@ export default function Home() {
                   <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6 mt-auto pt-8 border-t border-white/10 relative z-10">
                     <div className="text-left flex items-baseline gap-3">
                       <span className="type-level-4 text-white/50">Starting at</span>
-                      <div className="font-display font-bold text-3xl text-white">${service.sliderSteps[0].price}</div>
+                      <div className="hero-display font-bold text-3xl text-white">${service.sliderSteps[0].price}</div>
                     </div>
                     <Link to={`/service/${service.id}`} className="sm:ml-auto px-8 py-4 bg-primary text-background hover:bg-white transition-colors duration-300 rounded-xl font-bold text-sm flex justify-center items-center gap-2">
                       Explore Framework <ArrowUpRight className="w-4 h-4" />
@@ -432,7 +432,7 @@ export default function Home() {
             <div className="flex gap-16 md:gap-32 items-center px-6 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-700 marquee-track whitespace-nowrap">
                 {/* Duplicated for seamless scrolling effect */}
                 {[1, 2].map((group) => (
-                  <div key={group} className="flex gap-16 md:gap-32 items-center text-white font-display tracking-tighter shrink-0 text-xl md:text-3xl font-bold">
+                  <div key={group} className="flex gap-16 md:gap-32 items-center text-white hero-display tracking-tighter shrink-0 text-xl md:text-3xl font-bold">
                       <span>Lumio Skincare</span>
                       <span>The Fit Club</span>
                       <span>Roast & Co.</span>
@@ -449,30 +449,32 @@ export default function Home() {
       <section id="stats-section" ref={statsRef} className="py-24 md:py-32 bg-background relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold text-white tracking-tight text-balance">Outcomes Over Output.</h2>
+            <h2 className="hero-display font-bold text-3xl md:text-5xl text-white tracking-tight text-balance">
+              <span className="italic text-primary">Outcomes</span> over output.
+            </h2>
           </div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Quick Stats Stack */}
             <div className="flex flex-col gap-12 lg:col-span-1 justify-center">
               <div className="flex flex-col justify-center">
                  <div className="font-mono text-[10px] uppercase tracking-widest text-primary mb-2 font-bold">[ Evidence 01 ]</div>
                  <div className="text-on-surface-variant text-sm mb-1">Pieces of Content Delivered</div>
-                 <div className="text-white font-display text-5xl md:text-6xl font-bold tracking-tighter">
+                 <div className="text-white hero-display text-5xl md:text-6xl font-bold tracking-tighter">
                    <Counter start={0} end={8415} duration={1500} suffix="+" inView={isInView} />
                  </div>
               </div>
               <div className="flex flex-col justify-center">
-                 <div className="font-mono text-[10px] uppercase tracking-widest text-tertiary mb-2 font-bold">[ Evidence 02 ]</div>
+                 <div className="font-mono text-[10px] uppercase tracking-widest text-primary mb-2 font-bold">[ Evidence 02 ]</div>
                  <div className="text-on-surface-variant text-sm mb-1">Active Campaigns</div>
-                 <div className="text-white font-display text-5xl md:text-6xl font-bold tracking-tighter">
+                 <div className="text-white hero-display text-5xl md:text-6xl font-bold tracking-tighter">
                    <Counter start={0} end={86} duration={2000} inView={isInView} />
                  </div>
               </div>
               <div className="flex flex-col justify-center">
-                 <div className="font-mono text-[10px] uppercase tracking-widest text-secondary mb-2 font-bold">[ Evidence 03 ]</div>
+                 <div className="font-mono text-[10px] uppercase tracking-widest text-primary mb-2 font-bold">[ Evidence 03 ]</div>
                  <div className="text-on-surface-variant text-sm mb-1">Client Retention Rate</div>
-                 <div className="text-white font-display text-5xl md:text-6xl font-bold tracking-tighter">
+                 <div className="text-white hero-display text-5xl md:text-6xl font-bold tracking-tighter">
                    <Counter start={0} end={94} duration={2000} suffix="%" inView={isInView} />
                  </div>
               </div>
@@ -668,7 +670,7 @@ export default function Home() {
                   
                   <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-4 block">[ Contract ]</span>
                   <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/50 mb-2">Sprint Day</span>
-                  <span className="text-9xl font-display font-bold text-white tracking-tighter drop-shadow-2xl">
+                  <span className="text-9xl hero-display font-bold text-white tracking-tighter drop-shadow-2xl">
                     <Counter start={0} end={14} duration={1200} inView={isGuaranteeInView} />
                   </span>
                   

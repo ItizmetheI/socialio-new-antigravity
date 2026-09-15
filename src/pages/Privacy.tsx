@@ -9,7 +9,7 @@ export default function Privacy() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-display-xl font-display-xl mb-6 text-white pb-2">
+          <h1 className="hero-display font-bold text-4xl md:text-5xl tracking-tight mb-6 text-white pb-2">
             Privacy Policy
           </h1>
           <p className="text-on-surface-variant mb-12">Last updated: October 2023</p>
@@ -18,7 +18,7 @@ export default function Privacy() {
             <section>
               <h2 className="text-xl font-bold text-white mb-4">1. Information We Collect</h2>
               <p className="mb-4">
-                We collect information that you provide directly to us when using our services or contacting us. This may include your name, email address, company details, and anySocialioer information you choose to provide.
+                We collect information that you provide directly to us when using our services or contacting us. This may include your name, email address, company details, and any other information you choose to provide.
               </p>
             </section>
             

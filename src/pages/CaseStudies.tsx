@@ -159,7 +159,7 @@ export default function CaseStudies() {
                       <Target className="w-4 h-4" /> {study.tag}
                     </div>
 
-                    <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-6 leading-tight group-hover:text-primary transition-colors">
+                    <h2 className="hero-display text-3xl md:text-4xl font-bold text-white mb-6 leading-tight group-hover:text-primary transition-colors">
                       {study.headline}
                     </h2>
 
@@ -171,7 +171,7 @@ export default function CaseStudies() {
                       {study.metrics.map((metric, i) => (
                         <div key={i} className="flex flex-col">
                           <span className="font-mono text-xs text-on-surface-variant uppercase tracking-widest mb-2">{metric.label}</span>
-                          <span className="font-display text-3xl font-bold text-white mb-1">{metric.value}</span>
+                          <span className="hero-display text-3xl font-bold text-white mb-1">{metric.value}</span>
                           <span className="font-sans text-xs text-primary bg-primary/10 w-fit px-2 py-0.5 rounded">{metric.detail}</span>
                         </div>
                       ))}

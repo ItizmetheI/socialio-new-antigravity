@@ -31,9 +31,9 @@ export default function NavBar() {
   }, [pathname]);
 
   const isActive = (path: string) => {
-    return pathname === path 
-      ? "text-primary font-bold pb-1 font-label-md text-label-md" 
-      : "text-on-surface/70 font-body-md hover:text-primary transition-colors duration-300 font-label-md text-label-md";
+    return pathname === path
+      ? "text-primary font-bold pb-1 text-sm"
+      : "text-on-surface/70 hover:text-primary transition-colors duration-300 text-sm";
   };
 
   const isMobileActive = (path: string) => {
@@ -124,7 +124,7 @@ export default function NavBar() {
                          onClick={() => setActiveDropdown(null)}
                          className="group block"
                        >
-                         <h5 className="font-display font-bold text-white group-hover:text-primary transition-colors mb-2 flex items-center gap-2">
+                         <h5 className="hero-display font-bold text-white group-hover:text-primary transition-colors mb-2 flex items-center gap-2">
                            <MonitorPlay className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
                            {service.title}
                          </h5>
@@ -137,19 +137,19 @@ export default function NavBar() {
                {activeDropdown === 'company' && (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
                    <Link to="/about" onClick={() => setActiveDropdown(null)} className="group bg-background p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-colors shadow-sm">
-                      <h3 className="font-display text-lg font-bold text-white mb-2">About Us</h3>
+                      <h3 className="hero-display text-lg font-bold text-white mb-2">About Us</h3>
                       <p className="text-sm text-on-surface-variant font-sans">Learn about our mission to productize the marketing agency model.</p>
                    </Link>
                    <Link to="/industries" onClick={() => setActiveDropdown(null)} className="group bg-background p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-colors shadow-sm">
-                      <h3 className="font-display text-lg font-bold text-white mb-2">Industries We Serve</h3>
+                      <h3 className="hero-display text-lg font-bold text-white mb-2">Industries We Serve</h3>
                       <p className="text-sm text-on-surface-variant font-sans">See how we drive scale in SaaS, E-com, Health, and more.</p>
                    </Link>
                    <Link to="/reviews" onClick={() => setActiveDropdown(null)} className="group bg-background p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-colors shadow-sm">
-                      <h3 className="font-display text-lg font-bold text-white mb-2">Client Reviews</h3>
+                      <h3 className="hero-display text-lg font-bold text-white mb-2">Client Reviews</h3>
                       <p className="text-sm text-on-surface-variant font-sans">Read verified reviews from companies successfully scaling with us.</p>
                    </Link>
                    <Link to="/compare" onClick={() => setActiveDropdown(null)} className="group bg-background p-6 rounded-2xl border border-white/5 hover:border-white/20 transition-colors shadow-sm">
-                      <h3 className="font-display text-lg font-bold text-white mb-2">Compare The Alternative</h3>
+                      <h3 className="hero-display text-lg font-bold text-white mb-2">Compare The Alternative</h3>
                       <p className="text-sm text-on-surface-variant font-sans">See why hiring us beats traditional agencies and in-house roles.</p>
                    </Link>
                 </div>

@@ -23,13 +23,13 @@ export default function Compare() {
         <table className="w-full text-left border-collapse min-w-[800px]">
           <thead>
             <tr className="border-b border-white/10">
-              <th className="p-6 font-display text-xl w-1/4">Feature</th>
-              <th className="p-6 font-display text-xl w-1/4 text-white bg-white/5 rounded-t-3xl border-x border-t border-white/10 relative">
+              <th className="p-6 hero-display text-xl w-1/4">Feature</th>
+              <th className="p-6 hero-display text-xl w-1/4 text-white bg-white/5 rounded-t-3xl border-x border-t border-white/10 relative">
                  <div className="absolute top-0 left-0 w-full h-1 bg-primary"></div>
                  Socialio
               </th>
-              <th className="p-6 font-display text-xl w-1/4">In-House Hire</th>
-              <th className="p-6 font-display text-xl w-1/4">Traditional Agency</th>
+              <th className="p-6 hero-display text-xl w-1/4">In-House Hire</th>
+              <th className="p-6 hero-display text-xl w-1/4">Traditional Agency</th>
             </tr>
           </thead>
           <tbody className="font-sans">
@@ -58,7 +58,7 @@ export default function Compare() {
       </div>
 
       <div className="mt-24 max-w-3xl mx-auto text-center bg-surface-container border border-white/10 p-12 rounded-3xl">
-        <h2 className="font-display text-4xl font-bold text-white mb-4">Ready to stop overpaying?</h2>
+        <h2 className="hero-display text-4xl font-bold text-white mb-4">Ready to stop overpaying?</h2>
         <p className="font-sans text-on-surface-variant text-lg mb-8">Flat-rate. No lock-ins. Cancel anytime.</p>
         <Link to="/contact" className="inline-block px-8 py-4 bg-white text-background font-mono text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors duration-300 rounded shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(215,183,255,0.3)]">
           Book a Strategy Call

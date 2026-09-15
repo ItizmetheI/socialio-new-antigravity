@@ -38,7 +38,7 @@ export default function Contact() {
           className="flex flex-col gap-10 lg:sticky lg:top-32"
         >
           <div>
-            <h1 className="font-display text-5xl md:text-6xl tracking-tighter mb-6 text-white font-bold">
+            <h1 className="hero-display text-5xl md:text-6xl tracking-tighter mb-6 text-white font-bold">
               Let's talk growth.
             </h1>
             <p className="font-sans text-xl text-on-surface-variant max-w-md leading-relaxed">
@@ -77,15 +77,15 @@ export default function Contact() {
 
           <div className="bg-surface-container border border-white/10 rounded-3xl p-8 flex flex-col gap-6 shadow-2xl mt-4">
              <div className="border-b border-white/5 pb-6">
-               <div className="font-display text-4xl text-white font-bold mb-2">200+</div>
+               <div className="hero-display text-4xl text-white font-bold mb-2">200+</div>
                <div className="font-mono text-xs uppercase tracking-widest text-primary">Brands Served</div>
              </div>
              <div className="border-b border-white/5 pb-6">
-               <div className="font-display text-4xl text-white font-bold mb-2">4.9<span className="text-primary ml-1">★</span></div>
+               <div className="hero-display text-4xl text-white font-bold mb-2">4.9<span className="text-primary ml-1">★</span></div>
                <div className="font-mono text-xs uppercase tracking-widest text-primary">Rating</div>
              </div>
              <div>
-               <div className="font-display text-4xl text-white font-bold mb-2">14-Day</div>
+               <div className="hero-display text-4xl text-white font-bold mb-2">14-Day</div>
                <div className="font-mono text-xs uppercase tracking-widest text-primary">Guarantee</div>
              </div>
           </div>
@@ -107,7 +107,7 @@ export default function Contact() {
                <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6">
                  <CheckCircle2 className="w-10 h-10 text-primary" />
                </div>
-               <h3 className="font-display text-3xl font-bold text-white mb-4">Message sent.</h3>
+               <h3 className="hero-display text-3xl font-bold text-white mb-4">Message sent.</h3>
                <p className="font-sans text-on-surface-variant text-lg">We'll be in touch within 24 hours.</p>
             </motion.div>
           ) : (

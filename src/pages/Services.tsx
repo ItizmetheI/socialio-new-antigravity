@@ -78,7 +78,7 @@ export default function Services() {
                          </div>
                          <div>
                            <div className="font-mono text-[10px] text-primary uppercase tracking-widest font-bold mb-1">{service.category}</div>
-                           <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-2">{service.title}</h3>
+                           <h3 className="hero-display text-2xl md:text-3xl font-bold text-white mb-2">{service.title}</h3>
                            <div className="flex items-baseline gap-1">
                               <span className="text-on-surface-variant font-medium text-xs">Starts at</span>
                               <span className="font-sans text-2xl font-black tracking-tight text-white">${service.sliderSteps[0].price}</span>
@@ -130,7 +130,7 @@ export default function Services() {
         >
 
            <div className="relative z-10 max-w-xl">
-             <h3 className="font-display text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">Not sure where to start?</h3>
+             <h3 className="hero-display text-3xl md:text-4xl font-bold text-white mb-4 tracking-tight">Not sure where to start?</h3>
              <p className="font-sans text-lg text-on-surface-variant leading-relaxed">Book a free discovery call with our growth team. We'll audit your current setup and recommend the exact services you need to hit your goals.</p>
            </div>
            

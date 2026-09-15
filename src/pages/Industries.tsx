@@ -46,7 +46,7 @@ export default function Industries() {
                 </div>
               )}
             </div>
-            <h3 className="font-display text-2xl font-bold text-white mb-4">{ind.name}</h3>
+            <h3 className="hero-display text-2xl font-bold text-white mb-4">{ind.name}</h3>
             <p className="font-sans text-on-surface-variant text-lg leading-relaxed">{ind.desc}</p>
           </motion.div>
         ))}
@@ -59,7 +59,7 @@ export default function Industries() {
         transition={{ duration: 0.6 }}
         className="bg-surface-container border border-white/10 rounded-3xl p-12 text-center"
       >
-         <h2 className="font-display text-2xl md:text-3xl font-bold text-white mb-4">Don't see your industry?</h2>
+         <h2 className="hero-display text-2xl md:text-3xl font-bold text-white mb-4">Don't see your industry?</h2>
          <p className="font-sans text-on-surface-variant text-lg max-w-xl mx-auto mb-8">
            We've worked with brands across 30+ niches.
          </p>

@@ -17,7 +17,7 @@ export default function StatsGraph() {
       
       <div className="flex justify-between items-center mb-6 relative z-10">
         <div>
-          <h3 className="font-display font-bold text-lg text-white">Content Output Over Time</h3>
+          <h3 className="hero-display font-bold text-lg text-white">Content Output Over Time</h3>
           <p className="text-on-surface-variant text-xs">Cumulative pieces delivered across all active clients</p>
         </div>
         <div className="font-mono text-white text-[10px] uppercase tracking-widest font-bold border border-white/20 px-2 py-1">

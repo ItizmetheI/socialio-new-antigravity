@@ -182,7 +182,7 @@ export default function Reviews() {
         </p>
 
         <div className="bg-surface-container border border-white/10 rounded-2xl p-6 max-w-2xl mx-auto mb-10 flex flex-col items-center">
-            <h2 className="text-white font-display text-2xl font-bold mb-2">4.9 / 5 average</h2>
+            <h2 className="text-white hero-display text-2xl font-bold mb-2">4.9 / 5 average</h2>
             <div className="flex items-center gap-1 mb-2">
                <Star className="w-6 h-6 fill-primary text-primary" />
                <Star className="w-6 h-6 fill-primary text-primary" />
@@ -217,7 +217,7 @@ export default function Reviews() {
             <p className="font-sans text-on-surface-variant leading-relaxed text-lg mb-8">"{review.text}"</p>
             <div className="flex items-center justify-between border-t border-white/5 pt-6">
               <div>
-                <div className="font-bold text-white mb-1 font-display">{review.name}</div>
+                <div className="font-bold text-white mb-1 hero-display">{review.name}</div>
                 <div className="flex items-center gap-2">
                   <div className="text-xs text-on-surface-variant font-mono uppercase tracking-widest">{review.company}</div>
                   <div className="text-[10px] bg-white/10 text-white rounded px-1.5 py-0.5">{review.type}</div>

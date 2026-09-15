@@ -80,11 +80,11 @@ export default function About() {
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
           <div className="absolute bottom-10 left-10 flex gap-6">
             <div className="bg-black/60 backdrop-blur-md px-6 py-4 rounded-2xl border border-[#ffffff1a] flex flex-col">
-               <span className="font-display text-3xl font-bold text-[#fff] mb-1">HQ</span>
+               <span className="hero-display text-3xl font-bold text-[#fff] mb-1">HQ</span>
                <span className="font-mono text-xs text-primary uppercase tracking-widest">New York City</span>
             </div>
             <div className="bg-black/60 backdrop-blur-md px-6 py-4 rounded-2xl border border-[#ffffff1a] flex flex-col hidden sm:flex">
-               <span className="font-display text-3xl font-bold text-[#fff] mb-1">Remote</span>
+               <span className="hero-display text-3xl font-bold text-[#fff] mb-1">Remote</span>
                <span className="font-mono text-xs text-primary uppercase tracking-widest">Global Talent</span>
             </div>
           </div>
@@ -93,7 +93,7 @@ export default function About() {
         {/* Section 2 - Narrative */}
         <div className="w-full grid lg:grid-cols-2 gap-16 md:gap-24 mb-32 items-center">
           <div>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">We killed the traditional agency model.</h2>
+            <h2 className="hero-display text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">We killed the traditional agency model.</h2>
             <div className="space-y-6 font-sans text-on-surface-variant text-lg leading-relaxed">
               <p>
                 We started Socialio out of pure frustration. Founders were paying massive retainers for "strategy documents" and endless scoping calls, but what they actually needed was execution. They needed videos to post, ads to launch, and copy to publish.
@@ -110,17 +110,17 @@ export default function About() {
           <div className="grid grid-cols-2 gap-4">
              <div className="bg-surface-container border border-white/5 p-8 rounded-[2rem] hover:border-primary/30 transition-colors flex flex-col justify-center items-center text-center translate-y-8 shadow-2xl">
                 <Globe className="w-8 h-8 text-white mb-4" />
-                <div className="font-display text-4xl text-white font-bold mb-2">12</div>
+                <div className="hero-display text-4xl text-white font-bold mb-2">12</div>
                 <div className="font-mono text-[10px] uppercase tracking-widest text-primary">Countries Served</div>
              </div>
              <div className="bg-gradient-to-br from-primary/20 to-purple-500/10 border border-primary/20 p-8 rounded-[2rem] flex flex-col justify-center items-center text-center shadow-2xl">
                 <Users className="w-8 h-8 text-primary mb-4" />
-                <div className="font-display text-4xl text-white font-bold mb-2">200+</div>
+                <div className="hero-display text-4xl text-white font-bold mb-2">200+</div>
                 <div className="font-mono text-[10px] uppercase tracking-widest text-primary">Happy Brands</div>
              </div>
              <div className="col-span-2 bg-surface-container border border-white/5 p-8 rounded-[2rem] hover:border-white/20 transition-colors flex items-center justify-between shadow-2xl mt-4">
                 <div>
-                  <div className="font-display text-4xl text-white font-bold mb-1">$50M+</div>
+                  <div className="hero-display text-4xl text-white font-bold mb-1">$50M+</div>
                   <div className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant">Ad Spend Managed</div>
                 </div>
                 <div className="w-16 h-16 rounded-full border-4 border-primary border-t-transparent animate-spin flex items-center justify-center">
@@ -133,7 +133,7 @@ export default function About() {
         {/* Section 3 - Core Values */}
         <div className="w-full mb-40">
           <div className="text-center mb-16">
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6">Our Operating System</h2>
+            <h2 className="hero-display text-4xl md:text-5xl font-bold text-white mb-6">Our Operating System</h2>
             <p className="text-on-surface-variant font-sans text-lg max-w-2xl mx-auto">The principles that dictate how we hire, build, and scale your brand.</p>
           </div>
           
@@ -150,7 +150,7 @@ export default function About() {
                 <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mb-8 border border-white/10">
                   {value.icon}
                 </div>
-                <h3 className="font-display text-2xl font-bold text-white mb-4">{value.title}</h3>
+                <h3 className="hero-display text-2xl font-bold text-white mb-4">{value.title}</h3>
                 <p className="font-sans text-on-surface-variant leading-relaxed text-sm">
                   {value.description}
                 </p>
@@ -163,7 +163,7 @@ export default function About() {
         <div className="w-full mb-32">
            <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-8">
              <div>
-               <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-6">The Architects</h2>
+               <h2 className="hero-display text-4xl md:text-5xl font-bold text-white mb-6">The Architects</h2>
                <p className="text-on-surface-variant font-sans text-lg max-w-xl">
                  Senior talent only. We don't bait-and-switch you by selling with an executive and delivering with a junior intern.
                </p>
@@ -191,7 +191,7 @@ export default function About() {
                      />
                      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
-                  <h3 className="font-display text-xl font-bold text-on-surface mb-1 group-hover:text-primary transition-colors">{member.name}</h3>
+                  <h3 className="hero-display text-xl font-bold text-on-surface mb-1 group-hover:text-primary transition-colors">{member.name}</h3>
                   <div className="font-mono text-xs text-on-surface-variant uppercase tracking-widest mb-3">{member.role}</div>
                   <p className="font-sans text-sm text-on-surface-variant/80 border-l border-white/10 pl-3">
                     {member.bio}
@@ -206,7 +206,7 @@ export default function About() {
           <div className="absolute inset-0 bg-gradient-to-r from-primary to-purple-500 rounded-[3rem] blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500" />
           <div className="relative bg-surface-container border border-white/10 p-12 md:p-20 rounded-[3rem] text-center overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px]" />
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-8 relative z-10">Stop managing freelancers. <br />Start scaling.</h2>
+            <h2 className="hero-display text-4xl md:text-5xl font-bold text-white mb-8 relative z-10">Stop managing freelancers. <br />Start scaling.</h2>
             <p className="font-sans text-on-surface-variant text-lg max-w-xl mx-auto mb-10 relative z-10">
               One subscription. One dedicated team. Boundless growth. Hop on a 15-minute discovery call to explore the model.
             </p>

@@ -14,6 +14,7 @@
   --color-primary-fixed: #f0dbff;
   --color-on-secondary-fixed: #001a42;
   --color-primary: #ddb7ff;
+  --color-primary-hover: #c99aff;
   --color-surface-container: #100a16;
   --color-on-secondary-container: #e6ecff;
   --color-surface-bright: #262626;
@@ -128,6 +129,7 @@
   --color-outline-variant: #ddd6e3;
 
   --color-primary: #842bd2;
+  --color-primary-hover: #6f1eb8;
   --color-on-primary: #ffffff;
   --color-primary-container: #f0dbff;
   --color-on-primary-container: #400071;
@@ -190,7 +192,28 @@
     justify-content: center;
   }
 
-  /* Typography Hierarchy (Task 3) */
+  /* Typography Hierarchy — the site's type scale.
+     Two axes, used together everywhere a heading or emphasis moment appears:
+
+     1. Font family: `.hero-display` (Bricolage Grotesque) for every heading
+        that should read as a deliberate display moment — page H1s, section
+        H2/H3s, stat/price numbers, card titles. Plain `font-sans` (Plus
+        Jakarta Sans, the body font) for everything else. `font-display` was
+        a dead alias for `font-sans` (same font, no visual distinction) that
+        had crept into ~50 headings across 11 files — normalized to
+        `hero-display` so headings actually read as headings.
+     2. Size/weight: `.type-level-1..4` below for the four recurring roles
+        (hero headline, section headline, body copy, mono/uppercase label).
+        Prefer these over ad hoc `text-4xl md:text-6xl font-bold` repeated
+        per page; reach for an explicit Tailwind size only when a heading
+        genuinely needs to sit outside these four roles.
+
+     Never reach for `text-headline-*`/`text-body-*`/`text-caption`/
+     `text-label-*`/`text-display-*` — those were aspirational names with a
+     `font-*` family mapping below but no matching size ever defined, so
+     every use of them rendered at whatever size the browser defaulted to
+     (they've all been converted to real Tailwind sizes as they were found).
+  */
   .type-level-1 {
     font-size: clamp(48px, 8vw, 110px);
     line-height: 0.9;

@@ -92,16 +92,16 @@ export default function Blog() {
              </div>
              <div className="w-full md:w-1/2 p-4 md:p-8 flex flex-col justify-center">
                 <div className="flex gap-4 items-center mb-4">
-                  <span className="px-3 py-1 bg-surface-container rounded-full text-caption text-primary">{posts[0].category}</span>
+                  <span className="px-3 py-1 bg-surface-container rounded-full text-xs text-primary">{posts[0].category}</span>
                 </div>
-                <h2 className="text-headline-md font-headline-md text-white mb-4 group-hover:text-primary transition-colors pr-8">
+                <h2 className="hero-display text-2xl md:text-3xl font-bold text-white mb-4 group-hover:text-primary transition-colors pr-8">
                   {posts[0].title}
                 </h2>
-                <p className="text-body-md text-on-surface-variant mb-8 line-clamp-3">
+                <p className="text-base text-on-surface-variant mb-8 line-clamp-3">
                   {posts[0].excerpt}
                 </p>
                 <div className="flex items-center justify-between mt-auto">
-                   <div className="flex items-center gap-4 text-caption text-on-surface-variant font-medium">
+                   <div className="flex items-center gap-4 text-xs text-on-surface-variant font-medium">
                      <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4"/> {posts[0].date}</span>
                      <span className="flex items-center gap-1.5"><Clock className="w-4 h-4"/> {posts[0].readTime}</span>
                    </div>
@@ -127,7 +127,7 @@ export default function Blog() {
                 <div className="aspect-[16/10] overflow-hidden relative">
                   <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                   <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1 bg-background/80 backdrop-blur-md rounded-full text-caption text-white font-medium border border-white/10">
+                    <span className="px-3 py-1 bg-background/80 backdrop-blur-md rounded-full text-xs text-white font-medium border border-white/10">
                       {post.category}
                     </span>
                   </div>
@@ -136,7 +136,7 @@ export default function Blog() {
                   <h3 className="text-xl font-bold text-white mb-3 group-hover:text-primary transition-colors leading-tight">
                     {post.title}
                   </h3>
-                  <p className="text-caption text-on-surface-variant mb-6 flex-grow line-clamp-3">
+                  <p className="text-sm text-on-surface-variant mb-6 flex-grow line-clamp-3">
                     {post.excerpt}
                   </p>
                   <div className="flex items-center justify-between border-t border-white/5 pt-4 mt-auto">
@@ -161,8 +161,8 @@ export default function Blog() {
 
           
           <div className="flex-1 relative z-10 text-center md:text-left">
-            <h3 className="text-headline-md font-headline-md text-white mb-4">Get the weekly playbook</h3>
-            <p className="text-body-md text-on-surface-variant">Join 500+ founders and brand owners getting our best growth frameworks sent directly to their inbox every Tuesday.</p>
+            <h3 className="hero-display text-2xl md:text-3xl font-bold text-white mb-4">Get the weekly playbook</h3>
+            <p className="text-base text-on-surface-variant">Join 500+ founders and brand owners getting our best growth frameworks sent directly to their inbox every Tuesday.</p>
           </div>
           
           <div className="w-full md:w-auto flex-shrink-0 relative z-10">

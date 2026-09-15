@@ -26,7 +26,7 @@ export default function ServiceDetail() {
     return (
       <div className="min-h-screen flex items-center justify-center pt-32 pb-24 text-center">
         <div className="max-w-md mx-auto">
-          <h1 className="font-display text-4xl font-bold text-white mb-6">Service Not Found</h1>
+          <h1 className="hero-display text-4xl font-bold text-white mb-6">Service Not Found</h1>
           <p className="font-sans text-on-surface-variant mb-8">We couldn't find the service you're looking for.</p>
           <Link to="/services" className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors font-bold text-sm inline-flex items-center gap-2">
             <ArrowLeft className="w-4 h-4" /> Back to Services
@@ -83,13 +83,13 @@ export default function ServiceDetail() {
             {/* Title + description */}
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
               <div className="font-mono text-xs text-primary uppercase tracking-widest font-bold mb-4">{service.category}</div>
-              <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-6 text-white leading-tight">{service.title}</h1>
+              <h1 className="hero-display text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter mb-6 text-white leading-tight">{service.title}</h1>
               <p className="font-sans text-xl text-on-surface-variant leading-relaxed max-w-2xl">{service.longDescription}</p>
             </motion.div>
 
             {/* What's Included */}
             <div>
-              <h2 className="font-display text-2xl font-bold text-white mb-6">What's included</h2>
+              <h2 className="hero-display text-2xl font-bold text-white mb-6">What's included</h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {service.features.map((feature: string, idx: number) => (
                   <motion.div
@@ -110,7 +110,7 @@ export default function ServiceDetail() {
             {/* Proof stats */}
             {service.proofs && service.proofs.length > 0 && (
               <div ref={proofRef}>
-                <h2 className="font-display text-2xl font-bold text-white mb-6">By the numbers</h2>
+                <h2 className="hero-display text-2xl font-bold text-white mb-6">By the numbers</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {service.proofs.map((proof: any, idx: number) => (
                     <motion.div
@@ -137,7 +137,7 @@ export default function ServiceDetail() {
             {/* Process steps */}
             {service.process && service.process.length > 0 && (
               <div>
-                <h2 className="font-display text-2xl font-bold text-white mb-8">How we do it</h2>
+                <h2 className="hero-display text-2xl font-bold text-white mb-8">How we do it</h2>
                 <div className="flex flex-col gap-4">
                   {service.process.map((step: any, idx: number) => (
                     <motion.div
@@ -148,7 +148,7 @@ export default function ServiceDetail() {
                       transition={{ duration: 0.45, delay: idx * 0.1 }}
                       className="flex items-start gap-5 bg-surface-container border border-white/5 rounded-2xl p-6 hover:border-white/15 transition-colors"
                     >
-                      <div className="w-10 h-10 rounded-full flex items-center justify-center font-display font-bold text-sm shrink-0 bg-primary/15 text-primary">
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center hero-display font-bold text-sm shrink-0 bg-primary/15 text-primary">
                         {idx + 1}
                       </div>
                       <div>
@@ -163,7 +163,7 @@ export default function ServiceDetail() {
 
             {/* Getting Started 3-step */}
             <div>
-              <h2 className="font-display text-2xl font-bold text-white mb-8 text-center">Getting started</h2>
+              <h2 className="hero-display text-2xl font-bold text-white mb-8 text-center">Getting started</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
                 <div className="hidden md:block absolute top-7 left-[18%] right-[18%] h-px bg-white/10" />
                 {[
@@ -172,7 +172,7 @@ export default function ServiceDetail() {
                   { n: "3", title: "Review & Repeat", body: "Receive content, request revisions, approve. We repeat the cycle every month like clockwork." },
                 ].map((s, i) => (
                   <div key={i} className="flex flex-col items-center text-center">
-                    <div className="w-14 h-14 bg-background border border-white/10 rounded-full flex items-center justify-center font-display text-xl font-bold text-white mb-4 relative z-10">{s.n}</div>
+                    <div className="w-14 h-14 bg-background border border-white/10 rounded-full flex items-center justify-center hero-display text-xl font-bold text-white mb-4 relative z-10">{s.n}</div>
                     <h3 className="font-bold text-white mb-2 font-sans">{s.title}</h3>
                     <p className="text-sm text-on-surface-variant font-sans">{s.body}</p>
                   </div>
@@ -183,7 +183,7 @@ export default function ServiceDetail() {
             {/* First 7 Days */}
             <div className="bg-surface-container border border-white/5 rounded-3xl p-8 relative overflow-hidden">
 
-              <h2 className="font-display text-2xl font-bold text-white mb-2">Your first 7 days</h2>
+              <h2 className="hero-display text-2xl font-bold text-white mb-2">Your first 7 days</h2>
               <p className="text-on-surface-variant font-sans mb-8 text-sm">What happens right after you check out.</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {[
@@ -202,7 +202,7 @@ export default function ServiceDetail() {
 
             {/* Add-ons */}
             <div>
-              <h2 className="font-display text-2xl font-bold text-white mb-6">Recommended add-ons</h2>
+              <h2 className="hero-display text-2xl font-bold text-white mb-6">Recommended add-ons</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {addOnsData.map((addon: any) => (
                   <div key={addon.id} className="bg-surface-container border border-white/5 rounded-2xl p-6 flex flex-col justify-between hover:border-white/15 transition-colors">
@@ -221,7 +221,7 @@ export default function ServiceDetail() {
 
             {/* FAQ */}
             <div>
-              <h2 className="font-display text-2xl font-bold text-white mb-8">FAQ</h2>
+              <h2 className="hero-display text-2xl font-bold text-white mb-8">FAQ</h2>
               <div className="flex flex-col">
                 {faqs.map((faq, index) => (
                   <div key={index} className="border-b border-white/5">
@@ -229,7 +229,7 @@ export default function ServiceDetail() {
                       onClick={() => setOpenFaq(openFaq === index ? null : index)}
                       className="w-full py-6 flex items-center justify-between text-left group"
                     >
-                      <span className="font-display font-bold text-white text-lg group-hover:text-primary transition-colors pr-8">{faq.question}</span>
+                      <span className="hero-display font-bold text-white text-lg group-hover:text-primary transition-colors pr-8">{faq.question}</span>
                       <ChevronDown className={`w-5 h-5 text-on-surface-variant shrink-0 transition-transform duration-300 ${openFaq === index ? "rotate-180" : ""}`} />
                     </button>
                     <div className={`overflow-hidden transition-all duration-300 ${openFaq === index ? "max-h-96 opacity-100 mb-6" : "max-h-0 opacity-0"}`}>
@@ -243,7 +243,7 @@ export default function ServiceDetail() {
             {/* Bottom CTA */}
             <div className="w-full text-center bg-surface-container border border-white/10 p-12 rounded-3xl relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent -z-10" />
-              <h2 className="font-display text-3xl md:text-4xl font-bold text-white mb-4">Ready to get started with {service.title}?</h2>
+              <h2 className="hero-display text-3xl md:text-4xl font-bold text-white mb-4">Ready to get started with {service.title}?</h2>
               <p className="text-on-surface-variant font-sans mb-8 max-w-md mx-auto">Book a free call. We'll walk you through exactly what we'd do for your brand.</p>
               <Link to="/contact" className="inline-block px-8 py-4 bg-white text-background font-mono text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors duration-300 rounded">
                 Book a Free Strategy Call
@@ -292,19 +292,19 @@ export default function ServiceDetail() {
                 </div>
               )}
 
-              <h3 className="font-display text-xl font-bold text-white mb-1">Configure Your Plan</h3>
+              <h3 className="hero-display text-xl font-bold text-white mb-1">Configure Your Plan</h3>
               <p className="text-xs text-on-surface-variant font-sans mb-6">Slide to select your monthly volume.</p>
 
               <div className="bg-background/60 border border-white/5 rounded-2xl p-6 mb-6">
                 <div className="flex justify-between items-end mb-6">
                   <div>
                     <div className="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest font-bold mb-1">Volume</div>
-                    <div className="font-display font-bold text-xl text-white">{currentStepInfo.label}</div>
+                    <div className="hero-display font-bold text-xl text-white">{currentStepInfo.label}</div>
                   </div>
                   <div className="text-right">
                     <div className="text-[10px] font-mono text-on-surface-variant uppercase tracking-widest font-bold mb-1">Price</div>
                     <div className="flex items-baseline gap-1">
-                      <span className="font-display font-bold text-4xl text-white">${currentStepInfo.price}</span>
+                      <span className="hero-display font-bold text-4xl text-white">${currentStepInfo.price}</span>
                       <span className="text-sm text-on-surface-variant">/mo</span>
                     </div>
                   </div>
@@ -358,7 +358,7 @@ export default function ServiceDetail() {
             {/* Recent Work Showcase */}
             <div className="bg-surface-container border border-white/10 rounded-3xl p-6 shadow-xl relative overflow-hidden">
 
-               <h3 className="font-display text-lg font-bold text-white mb-1">Recent Showcase</h3>
+               <h3 className="hero-display text-lg font-bold text-white mb-1">Recent Showcase</h3>
                <p className="text-xs text-on-surface-variant font-sans mb-5">A sample of recent deliverables from this service.</p>
                
                <div className="overflow-hidden [mask-image:linear-gradient(to_right,transparent_0%,black_10%,black_90%,transparent_100%)] group/marquee -mx-2 px-2">
