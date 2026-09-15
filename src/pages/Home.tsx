@@ -6,6 +6,8 @@ import { servicesData } from "../data/services";
 import PricingCard from "../components/PricingCard";
 import StatsGraph from "../components/StatsGraph";
 import Magnetic from "../components/Magnetic";
+import DeviceScrollShowcase from "../components/DeviceScrollShowcase";
+import AnalyticsShowcase from "../components/AnalyticsShowcase";
 
 function useAnimatedCounter(start: number, end: number, duration: number, suffix = "", inView = true) {
   const [value, setValue] = useState(start);
@@ -356,6 +358,9 @@ export default function Home() {
 
         </div>
       </section>
+
+      <DeviceScrollShowcase />
+      <AnalyticsShowcase />
 
       {/* Compact Tabbed Capabilities Section */}
       <section className="bg-surface-container py-24 md:py-32 border-y border-white/5 relative">
