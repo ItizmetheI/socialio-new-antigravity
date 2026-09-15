@@ -1,4 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import { TEST_MODE } from './testMode/flag';
+import { mockSupabaseClient } from './testMode/mockClient';
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || '';
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
@@ -9,11 +11,19 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 // placeholder so the app boots; real calls then fail gracefully with a normal { error }.
 const isConfigured = supabaseUrl.startsWith('http') && supabaseAnonKey.length > 0;
 
-if (!isConfigured) {
+if (!isConfigured && !TEST_MODE) {
   console.warn('Missing Supabase environment variables. Please check your .env file.');
 }
 
-export const supabase = createClient(
+const realClient = createClient(
   isConfigured ? supabaseUrl : 'https://placeholder.supabase.co',
   isConfigured ? supabaseAnonKey : 'placeholder-anon-key'
 );
+
+// TEST_MODE swaps in an in-memory fixture client (src/lib/testMode/) so the
+// dashboard can be clicked through before real Supabase credentials exist.
+// Every page still calls the same supabase.from(...)/storage/functions API —
+// only this one export changes.
+export const supabase: SupabaseClient = TEST_MODE
+  ? (mockSupabaseClient as unknown as SupabaseClient)
+  : realClient;

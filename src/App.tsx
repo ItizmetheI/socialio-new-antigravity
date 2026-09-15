@@ -38,6 +38,8 @@ import OrgsAdmin from './ops/admin/OrgsAdmin';
 import ProposalBuilder from './ops/admin/ProposalBuilder';
 import UsersAdmin from './ops/admin/UsersAdmin';
 import RequireRole from './lib/auth/RequireRole';
+import { TEST_MODE } from './lib/testMode/flag';
+import RoleSwitcher from './lib/testMode/RoleSwitcher';
 
 import Compare from './pages/Compare';
 import Examples from './pages/Examples';
@@ -100,6 +102,7 @@ function DashboardRoutes() {
   return (
     <>
       <ScrollToTop />
+      {TEST_MODE && <RoleSwitcher />}
       <Routes>
         <Route path="/app/login" element={<Login />} />
         <Route path="/set-password" element={<SetPassword />} />

@@ -2,6 +2,26 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "../supabase";
 import type { Profile } from "../database.types";
+import { TEST_MODE } from "../testMode/flag";
+import { TEST_IDENTITIES, getStoredTestIdentityKey, setStoredTestIdentityKey } from "../testMode/testAuth";
+
+function buildTestSessionAndProfile(): { session: Session; profile: Profile } | null {
+  const key = getStoredTestIdentityKey();
+  if (!key) return null;
+  const identity = TEST_IDENTITIES[key];
+  const session = {
+    user: { id: identity.id, email: identity.email },
+  } as Session;
+  const profile: Profile = {
+    id: identity.id,
+    org_id: identity.orgId,
+    role: identity.role,
+    full_name: identity.fullName,
+    is_active: true,
+    created_at: new Date().toISOString(),
+  };
+  return { session, profile };
+}
 
 interface AuthContextType {
   session: Session | null;
@@ -19,6 +39,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (TEST_MODE) {
+      const identity = buildTestSessionAndProfile();
+      setSession(identity?.session ?? null);
+      setProfile(identity?.profile ?? null);
+      setIsLoading(false);
+      return;
+    }
+
     let isMounted = true;
 
     const loadProfile = async (userId: string) => {
@@ -64,11 +92,26 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   }, []);
 
   const signIn = async (email: string, password: string) => {
+    if (TEST_MODE) {
+      // The role switcher (rendered only in test mode) is the real entry
+      // point — this just gives the login form itself something to do.
+      setStoredTestIdentityKey("client-approved");
+      const identity = buildTestSessionAndProfile();
+      setSession(identity?.session ?? null);
+      setProfile(identity?.profile ?? null);
+      return { error: null };
+    }
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     return { error: error?.message ?? null };
   };
 
   const signOut = async () => {
+    if (TEST_MODE) {
+      setStoredTestIdentityKey(null);
+      setSession(null);
+      setProfile(null);
+      return;
+    }
     await supabase.auth.signOut();
   };
 
