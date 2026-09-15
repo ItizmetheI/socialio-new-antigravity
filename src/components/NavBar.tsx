@@ -87,7 +87,7 @@ export default function NavBar() {
                 </span>
               )}
             </button>
-            <Link to="/contact" className="hidden md:inline-block border border-white/10 bg-transparent text-white px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-white/5 rounded-full">
+            <Link to="/app/login" className="hidden md:inline-block border border-white/10 bg-transparent text-white px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-white/5 rounded-full">
               Client Login
             </Link>
             <Link to="/contact" className="hidden md:inline-block bg-white text-black px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-gray-200 rounded-full">
@@ -167,7 +167,7 @@ export default function NavBar() {
               <Link to="/contact" className="text-center bg-primary text-background px-6 py-3 font-bold text-sm">
                 Get Started
               </Link>
-              <Link to="/contact" className="text-center border border-white/20 bg-transparent text-white px-6 py-3 font-bold text-sm">
+              <Link to="/app/login" className="text-center border border-white/20 bg-transparent text-white px-6 py-3 font-bold text-sm">
                 Client Login
               </Link>
            </div>

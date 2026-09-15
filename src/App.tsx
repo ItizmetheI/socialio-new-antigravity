@@ -21,6 +21,9 @@ import ServiceDetail from './pages/ServiceDetail';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 import { CartProvider } from './context/CartContext';
+import { AuthProvider } from './lib/auth/AuthContext';
+import Login from './app/Login';
+import SetPassword from './lib/auth/SetPassword';
 
 import Compare from './pages/Compare';
 import Examples from './pages/Examples';
@@ -71,25 +74,63 @@ function AnimatedRoutes() {
   );
 }
 
-export default function App() {
+const DASHBOARD_PATH_PREFIXES = ['/app', '/ops', '/set-password'];
+
+function isDashboardPath(pathname: string): boolean {
+  return DASHBOARD_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix));
+}
+
+// Dashboard routes (client portal + internal/admin ops) render their own
+// chrome instead of the marketing NavBar/Footer — see ClientLayout/OpsLayout
+// once Phases 2-3 land. Until then, unbuilt sub-routes fall back to login.
+function DashboardRoutes() {
+  return (
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/app/login" element={<Login />} />
+        <Route path="/set-password" element={<SetPassword />} />
+        <Route path="/app/*" element={<Navigate to="/app/login" replace />} />
+        <Route path="/ops/*" element={<Navigate to="/app/login" replace />} />
+      </Routes>
+    </>
+  );
+}
+
+function MarketingSite() {
   const [isLoading, setIsLoading] = useState(true);
 
   return (
+    <>
+      {isLoading && <Loader onComplete={() => setIsLoading(false)} />}
+      <ScrollToTop />
+      <div
+        className={`min-h-screen flex flex-col bg-background text-on-surface transition-colors duration-500 ${isLoading ? 'opacity-0' : 'opacity-100 transition-opacity duration-1000'}`}
+      >
+        <NavBar />
+        <main className="flex-grow">
+          <AnimatedRoutes />
+        </main>
+        <Footer />
+      </div>
+    </>
+  );
+}
+
+function AppShell() {
+  const { pathname } = useLocation();
+  return isDashboardPath(pathname) ? <DashboardRoutes /> : <MarketingSite />;
+}
+
+export default function App() {
+  return (
     <ReactLenis root>
       <BrowserRouter>
-        <CartProvider>
-          {isLoading && <Loader onComplete={() => setIsLoading(false)} />}
-          <ScrollToTop />
-          <div 
-            className={`min-h-screen flex flex-col bg-background text-on-surface transition-colors duration-500 ${isLoading ? 'opacity-0' : 'opacity-100 transition-opacity duration-1000'}`}
-          >
-            <NavBar />
-            <main className="flex-grow">
-              <AnimatedRoutes />
-            </main>
-            <Footer />
-          </div>
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <AppShell />
+          </CartProvider>
+        </AuthProvider>
       </BrowserRouter>
     </ReactLenis>
   );
