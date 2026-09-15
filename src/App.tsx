@@ -21,6 +21,7 @@ import ServiceDetail from './pages/ServiceDetail';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 import { CartProvider } from './context/CartContext';
+import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './lib/auth/AuthContext';
 import Login from './app/Login';
 import SetPassword from './lib/auth/SetPassword';
@@ -175,13 +176,15 @@ function AppShell() {
 export default function App() {
   return (
     <ReactLenis root>
-      <BrowserRouter>
-        <AuthProvider>
-          <CartProvider>
-            <AppShell />
-          </CartProvider>
-        </AuthProvider>
-      </BrowserRouter>
+      <ThemeProvider>
+        <BrowserRouter>
+          <AuthProvider>
+            <CartProvider>
+              <AppShell />
+            </CartProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </ThemeProvider>
     </ReactLenis>
   );
 }

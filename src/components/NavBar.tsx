@@ -5,6 +5,7 @@ import CartDrawer from "./CartDrawer";
 import { useState, useEffect } from "react";
 import { servicesData } from "../data/services";
 import Logo from "./Logo";
+import ThemeToggle from "./ThemeToggle";
 
 
 export default function NavBar() {
@@ -76,7 +77,10 @@ export default function NavBar() {
             <Link to="/pricing" className={isActive("/pricing")}>Pricing</Link>
           </div>
           <div className="flex items-center gap-4 md:gap-6">
-            <button 
+            <div className="hidden md:block">
+              <ThemeToggle />
+            </div>
+            <button
               onClick={() => setIsCartOpen(true)}
               className="relative text-on-surface-variant hover:text-primary transition-colors group"
             >
@@ -90,7 +94,7 @@ export default function NavBar() {
             <Link to="/app/login" className="hidden md:inline-block border border-white/10 bg-transparent text-white px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-white/5 rounded-full">
               Client Login
             </Link>
-            <Link to="/contact" className="hidden md:inline-block bg-white text-black px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-gray-200 rounded-full">
+            <Link to="/contact" className="hidden md:inline-block bg-white text-background px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-gray-200 rounded-full">
               Get Started
             </Link>
             <button 
@@ -170,6 +174,12 @@ export default function NavBar() {
               <Link to="/app/login" className="text-center border border-white/20 bg-transparent text-white px-6 py-3 font-bold text-sm">
                 Client Login
               </Link>
+
+              <div className="h-[1px] bg-white/10 my-2 w-full"></div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-bold text-on-surface-variant">Theme</span>
+                <ThemeToggle />
+              </div>
            </div>
         </div>
       </nav>

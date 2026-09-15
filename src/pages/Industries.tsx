@@ -63,7 +63,7 @@ export default function Industries() {
          <p className="font-sans text-on-surface-variant text-lg max-w-xl mx-auto mb-8">
            We've worked with brands across 30+ niches.
          </p>
-         <Link to="/contact" className="inline-block px-8 py-4 bg-white text-black font-mono text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors duration-300 rounded shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(215,183,255,0.3)]">
+         <Link to="/contact" className="inline-block px-8 py-4 bg-white text-background font-mono text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors duration-300 rounded shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(215,183,255,0.3)]">
             Contact Us
          </Link>
       </motion.div>

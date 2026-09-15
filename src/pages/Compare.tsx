@@ -60,7 +60,7 @@ export default function Compare() {
       <div className="mt-24 max-w-3xl mx-auto text-center bg-surface-container border border-white/10 p-12 rounded-3xl">
         <h2 className="font-display text-4xl font-bold text-white mb-4">Ready to stop overpaying?</h2>
         <p className="font-sans text-on-surface-variant text-lg mb-8">Flat-rate. No lock-ins. Cancel anytime.</p>
-        <Link to="/contact" className="inline-block px-8 py-4 bg-white text-black font-mono text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors duration-300 rounded shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(215,183,255,0.3)]">
+        <Link to="/contact" className="inline-block px-8 py-4 bg-white text-background font-mono text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors duration-300 rounded shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(215,183,255,0.3)]">
           Book a Strategy Call
         </Link>
       </div>

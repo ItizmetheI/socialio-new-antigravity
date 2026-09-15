@@ -140,7 +140,7 @@ export default function ProposalView() {
           <button
             onClick={() => respond("approved")}
             disabled={isResponding}
-            className="flex-1 py-4 bg-white text-black hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+            className="flex-1 py-4 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
           >
             Approve
           </button>

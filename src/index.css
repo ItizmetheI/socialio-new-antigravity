@@ -50,6 +50,7 @@
   --color-on-secondary-fixed-variant: #004395;
   --color-secondary-fixed: #d8e2ff;
   --color-inverse-on-surface: #313030;
+  --color-primary-rgb: 221, 183, 255;
 
   --radius-DEFAULT: 2px;
   --radius-lg: 4px;
@@ -83,6 +84,89 @@
   --default-font-family: var(--font-sans);
 
   /* Fallback sizes if not using full text utilities, but standard setup maps these differently. We'll use text- classes that combine these later */
+}
+
+/* Light theme — overrides the dark values above when the toggle (ThemeContext)
+   sets data-theme="light" on <html>. Deliberately NOT prefers-color-scheme-driven:
+   this site's brand identity is dark-first, so system preference is ignored and
+   the toggle is the only way in; default with no attribute stays dark.
+
+   --color-white and --color-black are the reason a toggle this late in the
+   project is safe at all: the vast majority of the codebase (296+ text-white,
+   199+ border-white/*, 81+ bg-white across 39 files) was authored against
+   literal Tailwind white/black rather than the semantic tokens above. Tailwind
+   v4 exposes white/black as real overridable CSS variables (verified against
+   the compiled output before relying on this), so redefining --color-white
+   here — swapping its role to "the ink color" — makes that entire existing
+   surface theme-correctly without touching those 39 files. --color-black is
+   deliberately left untouched (stays #000 in both themes): it's used
+   throughout as a fixed dark scrim behind photos/video (gradient overlays,
+   glassmorphic video controls) for guaranteed caption legibility regardless
+   of site theme, not as a page-background stand-in — flipping it would make
+   captions vanish into their own now-light scrim. The handful of white-on-a-
+   permanently-dark-scrim spots that would otherwise get swept up by the
+   --color-white redefinition (CustomPlayer controls, Home's FeedCard/
+   PortfolioTile video-thumbnail mockups, photo caption badges in About/
+   CaseStudies/Examples/ServiceDetail) were converted to fixed literals
+   (text-[#fff], bg-[#ffffff1a], etc.) that bypass the variable entirely,
+   before this override was added. */
+:root[data-theme="light"] {
+  --color-background: #faf8fc;
+  --color-on-background: #150f1c;
+  --color-surface: #ffffff;
+  --color-surface-container: #f2eef7;
+  --color-surface-container-high: #eae4f0;
+  --color-surface-container-highest: #e2dae9;
+  --color-surface-container-low: #f7f4fa;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-variant: #ebe6f0;
+  --color-surface-bright: #ffffff;
+  --color-surface-dim: #e6e0eb;
+  --color-on-surface: #150f1c;
+  --color-on-surface-variant: #5c5468;
+  --color-outline: #c9c1d1;
+  --color-outline-variant: #ddd6e3;
+
+  --color-primary: #842bd2;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #f0dbff;
+  --color-on-primary-container: #400071;
+  --color-primary-fixed: #f0dbff;
+  --color-primary-fixed-dim: #ddb7ff;
+  --color-on-primary-fixed: #2c0051;
+  --color-on-primary-fixed-variant: #6900b3;
+  --color-inverse-primary: #ddb7ff;
+  --color-inverse-surface: #150f1c;
+  --color-inverse-on-surface: #f2eef7;
+  --color-primary-rgb: 132, 43, 210;
+  --color-surface-tint: #842bd2;
+
+  --color-secondary: #0053b3;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #d8e2ff;
+  --color-on-secondary-container: #001a42;
+  --color-secondary-fixed: #d8e2ff;
+  --color-secondary-fixed-dim: #adc6ff;
+  --color-on-secondary-fixed: #001a42;
+  --color-on-secondary-fixed-variant: #004395;
+
+  --color-tertiary: #007a90;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #acedff;
+  --color-on-tertiary-container: #002f38;
+  --color-tertiary-fixed: #acedff;
+  --color-tertiary-fixed-dim: #4cd7f6;
+  --color-on-tertiary-fixed: #001f26;
+  --color-on-tertiary-fixed-variant: #004e5c;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #410002;
+
+  /* The role swap that makes the untouched 39-file surface theme-correctly.
+     --color-black is intentionally absent — see comment above. */
+  --color-white: #150f1c;
 }
 
 @layer utilities {

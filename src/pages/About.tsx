@@ -79,12 +79,12 @@ export default function About() {
           <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1600&h=800&fit=crop" alt="Team collaborating" className="absolute inset-0 w-full h-full object-cover mix-blend-luminosity opacity-40 focus:mix-blend-normal" />
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
           <div className="absolute bottom-10 left-10 flex gap-6">
-            <div className="bg-black/60 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/10 flex flex-col">
-               <span className="font-display text-3xl font-bold text-white mb-1">HQ</span>
+            <div className="bg-black/60 backdrop-blur-md px-6 py-4 rounded-2xl border border-[#ffffff1a] flex flex-col">
+               <span className="font-display text-3xl font-bold text-[#fff] mb-1">HQ</span>
                <span className="font-mono text-xs text-primary uppercase tracking-widest">New York City</span>
             </div>
-            <div className="bg-black/60 backdrop-blur-md px-6 py-4 rounded-2xl border border-white/10 flex flex-col hidden sm:flex">
-               <span className="font-display text-3xl font-bold text-white mb-1">Remote</span>
+            <div className="bg-black/60 backdrop-blur-md px-6 py-4 rounded-2xl border border-[#ffffff1a] flex flex-col hidden sm:flex">
+               <span className="font-display text-3xl font-bold text-[#fff] mb-1">Remote</span>
                <span className="font-mono text-xs text-primary uppercase tracking-widest">Global Talent</span>
             </div>
           </div>
@@ -191,7 +191,7 @@ export default function About() {
                      />
                      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
-                  <h3 className="font-display text-xl font-bold text-white mb-1 group-hover:text-primary transition-colors">{member.name}</h3>
+                  <h3 className="font-display text-xl font-bold text-on-surface mb-1 group-hover:text-primary transition-colors">{member.name}</h3>
                   <div className="font-mono text-xs text-on-surface-variant uppercase tracking-widest mb-3">{member.role}</div>
                   <p className="font-sans text-sm text-on-surface-variant/80 border-l border-white/10 pl-3">
                     {member.bio}
@@ -210,7 +210,7 @@ export default function About() {
             <p className="font-sans text-on-surface-variant text-lg max-w-xl mx-auto mb-10 relative z-10">
               One subscription. One dedicated team. Boundless growth. Hop on a 15-minute discovery call to explore the model.
             </p>
-            <Link to="/contact" className="relative z-10 inline-flex px-8 py-5 bg-white text-black font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-all duration-300 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(215,183,255,0.4)] hover:-translate-y-1 items-center gap-3">
+            <Link to="/contact" className="relative z-10 inline-flex px-8 py-5 bg-white text-background font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-all duration-300 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(215,183,255,0.4)] hover:-translate-y-1 items-center gap-3">
               Book Your Strategy Session <Zap className="w-4 h-4" />
             </Link>
           </div>

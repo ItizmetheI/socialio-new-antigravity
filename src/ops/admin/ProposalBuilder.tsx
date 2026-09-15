@@ -223,7 +223,7 @@ export default function ProposalBuilder() {
         type="button"
         onClick={handleSubmit}
         disabled={isSubmitting || !orgId || items.length === 0}
-        className="px-8 py-4 bg-white text-black hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+        className="px-8 py-4 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
       >
         {isSubmitting ? "Sending..." : "Send proposal"}
       </button>

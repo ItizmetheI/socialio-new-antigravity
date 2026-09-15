@@ -86,7 +86,7 @@ export default function CartDrawer() {
                 <Link 
                   to="/contact" 
                   onClick={() => setIsCartOpen(false)}
-                  className="w-full py-4 bg-white text-black hover:bg-primary hover:text-white font-sans text-sm font-bold transition-all flex justify-center items-center gap-2 rounded-xl"
+                  className="w-full py-4 bg-white text-background hover:bg-primary hover:text-white font-sans text-sm font-bold transition-all flex justify-center items-center gap-2 rounded-xl"
                 >
                   Proceed to Checkout <ArrowRight className="w-4 h-4" />
                 </Link>

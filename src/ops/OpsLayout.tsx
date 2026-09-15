@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { KanbanSquare, Users2, Building2, FileText, UserCog, LogOut } from "lucide-react";
 import Logo from "../components/Logo";
+import ThemeToggle from "../components/ThemeToggle";
 import { useAuth } from "../lib/auth/AuthContext";
 import RequireRole from "../lib/auth/RequireRole";
 
@@ -76,9 +77,12 @@ function OpsLayoutInner() {
           )}
         </nav>
         <div className="px-4 py-6 border-t border-white/10">
-          <div className="px-4 mb-3">
-            <div className="text-sm font-bold text-white truncate">{profile?.full_name ?? ""}</div>
-            <div className="text-xs text-on-surface-variant truncate capitalize">{profile?.role}</div>
+          <div className="flex items-center justify-between px-4 mb-3">
+            <div className="min-w-0">
+              <div className="text-sm font-bold text-white truncate">{profile?.full_name ?? ""}</div>
+              <div className="text-xs text-on-surface-variant truncate capitalize">{profile?.role}</div>
+            </div>
+            <ThemeToggle className="shrink-0" />
           </div>
           <button
             onClick={handleSignOut}

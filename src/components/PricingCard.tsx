@@ -79,7 +79,7 @@ export default function PricingCard({ service }: React.PropsWithChildren<{ servi
       <div className="mt-auto flex flex-col gap-4">
         <button 
            onClick={handleAddToCart}
-           className={`w-full py-3 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 ${service.popular ? 'bg-white text-black hover:bg-gray-200' : 'bg-transparent border border-white/10 text-white hover:bg-white/5'}`}
+           className={`w-full py-3 rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-2 ${service.popular ? 'bg-white text-background hover:bg-gray-200' : 'bg-transparent border border-white/10 text-white hover:bg-white/5'}`}
         >
           <ShoppingCart className="w-4 h-4" /> Add to Cart
         </button>

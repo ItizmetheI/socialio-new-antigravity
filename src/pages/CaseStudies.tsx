@@ -114,7 +114,7 @@ export default function CaseStudies() {
             <button
               key={filter}
               onClick={() => setActiveFilter(filter)}
-              className={`px-6 py-2.5 rounded-full font-mono text-xs uppercase tracking-widest transition-all duration-300 font-bold border ${activeFilter === filter ? 'bg-white text-black border-white shadow-[0_0_20px_rgba(255,255,255,0.2)]' : 'bg-transparent text-on-surface-variant border-white/10 hover:border-white/30 hover:text-white'}`}
+              className={`px-6 py-2.5 rounded-full font-mono text-xs uppercase tracking-widest transition-all duration-300 font-bold border ${activeFilter === filter ? 'bg-white text-background border-white shadow-[0_0_20px_rgba(255,255,255,0.2)]' : 'bg-transparent text-on-surface-variant border-white/10 hover:border-white/30 hover:text-white'}`}
             >
               {filter}
             </button>
@@ -140,15 +140,15 @@ export default function CaseStudies() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                     
                     <div className="absolute top-6 left-6 flex gap-2">
-                       <span className="backdrop-blur-md bg-black/50 border border-white/10 text-white font-mono text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full font-bold">
+                       <span className="backdrop-blur-md bg-black/50 border border-[#ffffff1a] text-[#fff] font-mono text-[10px] uppercase tracking-widest px-3 py-1.5 rounded-full font-bold">
                          {study.category}
                        </span>
                     </div>
 
                     <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
-                       <div className="flex items-center gap-3 bg-black/40 backdrop-blur-md p-2 pl-2 pr-4 rounded-full border border-white/10">
-                          <img src={study.logo} alt={study.industry} className="w-8 h-8 rounded-full border border-white/20" />
-                          <span className="font-sans text-sm font-bold text-white">{study.industry}</span>
+                       <div className="flex items-center gap-3 bg-black/40 backdrop-blur-md p-2 pl-2 pr-4 rounded-full border border-[#ffffff1a]">
+                          <img src={study.logo} alt={study.industry} className="w-8 h-8 rounded-full border border-[#ffffff33]" />
+                          <span className="font-sans text-sm font-bold text-[#fff]">{study.industry}</span>
                        </div>
                     </div>
                  </div>
@@ -186,7 +186,7 @@ export default function CaseStudies() {
                           ))}
                        </div>
                        
-                       <Link to="/contact" className="w-full sm:w-auto px-6 py-3 bg-white text-black font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-primary hover:text-white transition-colors duration-300 flex items-center justify-center gap-2 group/btn">
+                       <Link to="/contact" className="w-full sm:w-auto px-6 py-3 bg-white text-background font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-primary hover:text-white transition-colors duration-300 flex items-center justify-center gap-2 group/btn">
                          Discuss Similar Growth <ArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
                        </Link>
                     </div>

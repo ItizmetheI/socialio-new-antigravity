@@ -3,6 +3,7 @@ import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import { LayoutDashboard, FileText, KanbanSquare, Settings as SettingsIcon, LogOut } from "lucide-react";
 import Logo from "../components/Logo";
 import ErrorBanner from "../components/ErrorBanner";
+import ThemeToggle from "../components/ThemeToggle";
 import { useAuth } from "../lib/auth/AuthContext";
 import RequireRole from "../lib/auth/RequireRole";
 import { supabase } from "../lib/supabase";
@@ -82,9 +83,12 @@ function ClientLayoutInner() {
           ))}
         </nav>
         <div className="px-4 py-6 border-t border-white/10">
-          <div className="px-4 mb-3">
-            <div className="text-sm font-bold text-white truncate">{org?.name ?? "..."}</div>
-            <div className="text-xs text-on-surface-variant truncate">{profile.full_name ?? ""}</div>
+          <div className="flex items-center justify-between px-4 mb-3">
+            <div className="min-w-0">
+              <div className="text-sm font-bold text-white truncate">{org?.name ?? "..."}</div>
+              <div className="text-xs text-on-surface-variant truncate">{profile.full_name ?? ""}</div>
+            </div>
+            <ThemeToggle className="shrink-0" />
           </div>
           <button
             onClick={handleSignOut}

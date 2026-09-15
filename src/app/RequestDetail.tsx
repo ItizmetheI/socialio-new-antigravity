@@ -124,7 +124,7 @@ export default function RequestDetail() {
           <button
             type="submit"
             disabled={isPosting || !newComment.trim()}
-            className="self-end px-6 py-3 bg-white text-black hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+            className="self-end px-6 py-3 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
           >
             {isPosting ? "Posting..." : "Post comment"}
           </button>

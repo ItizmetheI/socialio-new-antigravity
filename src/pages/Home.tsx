@@ -143,7 +143,7 @@ const FeedCard: React.FC<{ card: FeedCardData; index: number }> = ({ card, index
     <div className="absolute inset-0" style={{ background: card.gradient }} />
     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-black/30" />
 
-    <div className="relative z-10 flex items-start justify-between p-2.5 text-white">
+    <div className="relative z-10 flex items-start justify-between p-2.5 text-[#fff]">
       <span className="flex items-center gap-1 text-[9px] font-bold tracking-wide bg-black/35 backdrop-blur-sm pl-1.5 pr-2 py-1 rounded-full">
         <span className={`w-[5px] h-[5px] rounded-full bg-[#ff6b4a] ${card.state === "live" ? "animate-pulse" : ""}`} />
         {card.state === "live" ? "LIVE" : "REC"}
@@ -151,23 +151,23 @@ const FeedCard: React.FC<{ card: FeedCardData; index: number }> = ({ card, index
       <span className="text-[9px] font-semibold bg-black/35 backdrop-blur-sm px-2 py-1 rounded-full">{card.count}</span>
     </div>
 
-    <div className="relative z-10 flex items-end justify-between gap-1.5 px-2.5 pb-1.5 text-white">
+    <div className="relative z-10 flex items-end justify-between gap-1.5 px-2.5 pb-1.5 text-[#fff]">
       <span className="text-[10px] font-bold leading-snug max-w-[74%]">
         {card.caption}
-        <span className="block text-[8.5px] font-medium text-white/65 mt-0.5">{card.handle}</span>
+        <span className="block text-[8.5px] font-medium text-[#ffffffa6] mt-0.5">{card.handle}</span>
       </span>
       <span className="flex flex-col items-center gap-1.5 shrink-0">
         <span className="flex flex-col items-center gap-0.5">
-          <Heart className="w-3.5 h-3.5 fill-white" />
+          <Heart className="w-3.5 h-3.5 fill-[#fff]" />
           <span className="text-[8px] font-semibold tabular-nums">{card.likes}</span>
         </span>
         <MessageCircle className="w-3.5 h-3.5" />
       </span>
     </div>
 
-    <div className="relative z-10 h-[2px] mx-2.5 mb-2 rounded-full bg-white/20 overflow-hidden">
+    <div className="relative z-10 h-[2px] mx-2.5 mb-2 rounded-full bg-[#ffffff33] overflow-hidden">
       <div
-        className="h-full w-full bg-white origin-left animate-reel-scrub"
+        className="h-full w-full bg-[#fff] origin-left animate-reel-scrub"
         style={{ animationDuration: `${card.scrubDuration}s`, animationDelay: `${index * 0.6}s` }}
       />
     </div>
@@ -258,7 +258,7 @@ const PortfolioTile: React.FC<{ item: PortfolioItemData; className?: string }> =
       <div className="absolute inset-0 transition-transform duration-700 group-hover/tile:scale-105" style={{ background: item.gradient }} />
       {item.playable && (
         <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/tile:opacity-100 transition-opacity bg-black/20 backdrop-blur-sm">
-          <div className="w-16 h-16 rounded-full bg-black/40 border border-white/20 text-white flex items-center justify-center pl-1 backdrop-blur-md">
+          <div className="w-16 h-16 rounded-full bg-black/40 border border-[#ffffff33] text-[#fff] flex items-center justify-center pl-1 backdrop-blur-md">
             <Play className="w-6 h-6" fill="currentColor" />
           </div>
         </div>
@@ -374,7 +374,7 @@ export default function Home() {
                 <button 
                   key={idx}
                   onClick={() => setActiveSection(service.id)}
-                  className={`text-left px-6 py-4 rounded-xl transition-all duration-300 font-bold ${activeSection === service.id ? 'bg-white text-black shadow-lg scale-[1.02]' : 'text-on-surface-variant hover:text-white hover:bg-white/5'}`}
+                  className={`text-left px-6 py-4 rounded-xl transition-all duration-300 font-bold ${activeSection === service.id ? 'bg-white text-background shadow-lg scale-[1.02]' : 'text-on-surface-variant hover:text-white hover:bg-white/5'}`}
                 >
                   {service.title}
                 </button>

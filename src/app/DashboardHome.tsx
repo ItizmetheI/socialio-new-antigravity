@@ -81,7 +81,7 @@ export default function DashboardHome() {
           </div>
           <Link
             to="/app/proposal"
-            className="px-6 py-3 bg-white text-black hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all"
+            className="px-6 py-3 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all"
           >
             Review proposal &rarr;
           </Link>

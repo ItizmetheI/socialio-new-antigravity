@@ -134,7 +134,7 @@ export default function Services() {
              <p className="font-sans text-lg text-on-surface-variant leading-relaxed">Book a free discovery call with our growth team. We'll audit your current setup and recommend the exact services you need to hit your goals.</p>
            </div>
            
-           <Link to="/contact" className="shrink-0 relative z-10 bg-white text-black px-8 py-4 rounded-xl font-bold hover:bg-gray-200 transition-colors shadow-xl flex items-center gap-3">
+           <Link to="/contact" className="shrink-0 relative z-10 bg-white text-background px-8 py-4 rounded-xl font-bold hover:bg-gray-200 transition-colors shadow-xl flex items-center gap-3">
              <MessageCircle className="w-5 h-5" />
              <span>Book Discovery Call</span>
            </Link>
