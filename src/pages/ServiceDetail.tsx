@@ -148,7 +148,7 @@ export default function ServiceDetail() {
                       transition={{ duration: 0.45, delay: idx * 0.1 }}
                       className="flex items-start gap-5 bg-surface-container border border-white/5 rounded-2xl p-6 hover:border-white/15 transition-colors"
                     >
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center font-display font-bold text-sm shrink-0 ${idx === 0 ? "bg-primary/20 text-primary" : idx === 1 ? "bg-purple-500/20 text-purple-400" : idx === 2 ? "bg-blue-500/20 text-blue-400" : "bg-emerald-500/20 text-emerald-400"}`}>
+                      <div className="w-10 h-10 rounded-full flex items-center justify-center font-display font-bold text-sm shrink-0 bg-primary/15 text-primary">
                         {idx + 1}
                       </div>
                       <div>
