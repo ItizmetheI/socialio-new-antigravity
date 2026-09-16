@@ -6,8 +6,8 @@ export const ORG_AURORA_ID = "org-aurora";
 export const ORG_NORTHWIND_ID = "org-northwind";
 
 export const mockOrganizations: Organization[] = [
-  { id: ORG_AURORA_ID, name: "Aurora Skincare", created_at: "2026-08-01T00:00:00Z" },
-  { id: ORG_NORTHWIND_ID, name: "Northwind Coffee Co.", created_at: "2026-08-10T00:00:00Z" },
+  { id: ORG_AURORA_ID, name: "Aurora Skincare", stripe_customer_id: null, status: "active", created_at: "2026-08-01T00:00:00Z" },
+  { id: ORG_NORTHWIND_ID, name: "Northwind Coffee Co.", stripe_customer_id: null, status: "active", created_at: "2026-08-10T00:00:00Z" },
 ];
 
 export const mockProfiles: Profile[] = [

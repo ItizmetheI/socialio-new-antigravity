@@ -186,7 +186,13 @@ export const mockSupabaseClient = {
       };
       let orgId = body.orgId ?? null;
       if (body.role === "client" && !orgId) {
-        const newOrg = { id: nextId("org"), name: body.orgName ?? "New client", created_at: new Date().toISOString() };
+        const newOrg = {
+          id: nextId("org"),
+          name: body.orgName ?? "New client",
+          stripe_customer_id: null,
+          status: "prospect" as const,
+          created_at: new Date().toISOString(),
+        };
         mockOrganizations.push(newOrg);
         orgId = newOrg.id;
       }

@@ -6,10 +6,25 @@ export type UserRole = "client" | "internal" | "admin";
 export type ProposalStatus = "pending" | "approved" | "rejected";
 export type RequestStage = "requested" | "in_progress" | "review" | "delivered";
 export type CommentVisibility = "client" | "internal";
+export type OrganizationStatus = "prospect" | "active" | "paused" | "canceled";
+export type OrderStatus = "pending" | "paid" | "failed" | "refunded" | "canceled";
+export type OrderItemType = "service" | "addon";
+export type BillingInterval = "month" | "one_time";
+export type SubscriptionStatus =
+  | "trialing"
+  | "active"
+  | "past_due"
+  | "canceled"
+  | "unpaid"
+  | "incomplete"
+  | "incomplete_expired";
+export type PaymentStatus = "succeeded" | "failed" | "refunded";
 
 export interface Organization {
   id: string;
   name: string;
+  stripe_customer_id: string | null;
+  status: OrganizationStatus;
   created_at: string;
 }
 
@@ -69,6 +84,57 @@ export interface Comment {
   author_id: string;
   body: string;
   visibility: CommentVisibility;
+  created_at: string;
+}
+
+export interface Order {
+  id: string;
+  org_id: string;
+  created_by: string;
+  status: OrderStatus;
+  currency: string;
+  amount_subtotal: number; // cents
+  amount_total: number; // cents
+  stripe_checkout_session_id: string | null;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
+  created_at: string;
+  paid_at: string | null;
+}
+
+export interface OrderItem {
+  id: string;
+  order_id: string;
+  service_id: string;
+  tier_label: string;
+  item_type: OrderItemType;
+  billing_interval: BillingInterval;
+  unit_amount: number; // cents
+  quantity: number;
+}
+
+export interface Subscription {
+  id: string;
+  org_id: string;
+  order_id: string | null;
+  stripe_subscription_id: string;
+  status: SubscriptionStatus;
+  current_period_end: string | null;
+  cancel_at_period_end: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Payment {
+  id: string;
+  org_id: string;
+  order_id: string | null;
+  subscription_id: string | null;
+  stripe_payment_intent_id: string | null;
+  stripe_invoice_id: string | null;
+  status: PaymentStatus;
+  amount: number; // cents
+  currency: string;
   created_at: string;
 }
 
