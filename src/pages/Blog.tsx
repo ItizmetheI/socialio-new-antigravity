@@ -1,6 +1,7 @@
+import { useState, type FormEvent } from "react";
 import { motion } from "motion/react";
-import { ArrowUpRight, Calendar, Clock } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Calendar, Clock, CheckCircle2 } from "lucide-react";
+import { supabase } from "../lib/supabase";
 
 const posts = [
   {
@@ -60,6 +61,25 @@ const posts = [
 ];
 
 export default function Blog() {
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!email.includes("@") || isSubmitting) return;
+    setError("");
+    setIsSubmitting(true);
+    const { error: insertError } = await supabase.from("newsletter_signups").insert({ email });
+    setIsSubmitting(false);
+    if (insertError && insertError.code !== "23505") {
+      setError("Something went wrong. Try again.");
+      return;
+    }
+    setSubmitted(true);
+  };
+
   return (
     <div className="pt-32 pb-24 relative min-h-screen">
       <div className="max-w-container-max mx-auto px-margin-desktop relative z-10 flex flex-col items-center">
@@ -84,7 +104,7 @@ export default function Blog() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="w-full mb-16 group cursor-pointer"
+          className="w-full mb-16"
         >
            <div className="bg-surface-container border border-white/10 rounded-[2rem] p-4 md:p-6 flex flex-col md:flex-row gap-8 items-center overflow-hidden">
              <div className="w-full md:w-1/2 aspect-[16/10] rounded-2xl overflow-hidden relative">
@@ -100,14 +120,9 @@ export default function Blog() {
                 <p className="text-base text-on-surface-variant mb-8 line-clamp-3">
                   {posts[0].excerpt}
                 </p>
-                <div className="flex items-center justify-between mt-auto">
-                   <div className="flex items-center gap-4 text-xs text-on-surface-variant font-medium">
-                     <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4"/> {posts[0].date}</span>
-                     <span className="flex items-center gap-1.5"><Clock className="w-4 h-4"/> {posts[0].readTime}</span>
-                   </div>
-                   <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary-fixed group-hover:border-primary transition-all">
-                     <ArrowUpRight className="w-5 h-5" />
-                   </div>
+                <div className="flex items-center gap-4 text-xs text-on-surface-variant font-medium mt-auto">
+                  <span className="flex items-center gap-1.5"><Calendar className="w-4 h-4"/> {posts[0].date}</span>
+                  <span className="flex items-center gap-1.5"><Clock className="w-4 h-4"/> {posts[0].readTime}</span>
                 </div>
              </div>
            </div>
@@ -122,10 +137,10 @@ export default function Blog() {
                whileInView={{ opacity: 1, y: 0 }}
                viewport={{ once: true }}
                transition={{ duration: 0.5, delay: index * 0.1 }}
-               className="bg-surface-container border border-white/10 rounded-[1.5rem] overflow-hidden group hover:border-primary/50 transition-colors flex flex-col"
+               className="bg-surface-container border border-white/10 rounded-[1.5rem] overflow-hidden flex flex-col"
              >
                 <div className="aspect-[16/10] overflow-hidden relative">
-                  <img src={post.image} alt={post.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                  <img src={post.image} alt={post.title} className="w-full h-full object-cover" />
                   <div className="absolute top-4 left-4">
                     <span className="px-3 py-1 bg-background/80 backdrop-blur-md rounded-full text-xs text-white font-medium border border-white/10">
                       {post.category}
@@ -133,7 +148,7 @@ export default function Blog() {
                   </div>
                 </div>
                 <div className="p-6 flex flex-col flex-grow">
-                  <h3 className="text-xl font-bold text-white mb-3 group-hover:text-primary transition-colors leading-tight">
+                  <h3 className="text-xl font-bold text-white mb-3 leading-tight">
                     {post.title}
                   </h3>
                   <p className="text-sm text-on-surface-variant mb-6 flex-grow line-clamp-3">
@@ -166,18 +181,33 @@ export default function Blog() {
           </div>
           
           <div className="w-full md:w-auto flex-shrink-0 relative z-10">
-            <form className="flex flex-col sm:flex-row gap-3" onSubmit={(e) => e.preventDefault()}>
-              <input 
-                type="email" 
-                placeholder="your@email.com" 
-                className="bg-surface-container/80 border border-outline-variant/30 rounded-xl px-5 py-3 text-white focus:outline-none focus:border-primary min-w-[250px]"
-                required
-              />
-               <button type="submit" className="bg-primary hover:bg-primary-hover font-bold text-on-primary-fixed px-6 py-3 rounded-xl whitespace-nowrap transition-colors">
-                Subscribe
-              </button>
-            </form>
-            <p className="text-[11px] text-on-surface-variant mt-3 text-center sm:text-left">No spam. Unsubscribe anytime.</p>
+            {submitted ? (
+              <div className="flex items-center gap-2 text-primary font-bold text-sm">
+                <CheckCircle2 className="w-5 h-5" /> You're subscribed.
+              </div>
+            ) : (
+              <>
+                <form className="flex flex-col sm:flex-row gap-3" onSubmit={handleSubmit}>
+                  <input
+                    type="email"
+                    placeholder="your@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="bg-surface-container/80 border border-outline-variant/30 rounded-xl px-5 py-3 text-white focus:outline-none focus:border-primary min-w-[250px]"
+                    required
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="bg-primary hover:bg-primary-hover font-bold text-on-primary-fixed px-6 py-3 rounded-xl whitespace-nowrap transition-colors disabled:opacity-50"
+                  >
+                    {isSubmitting ? "Subscribing..." : "Subscribe"}
+                  </button>
+                </form>
+                {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
+                <p className="text-[11px] text-on-surface-variant mt-3 text-center sm:text-left">No spam. Unsubscribe anytime.</p>
+              </>
+            )}
           </div>
         </motion.div>
 
