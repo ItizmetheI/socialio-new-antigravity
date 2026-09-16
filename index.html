@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,6 +7,15 @@
     <link rel="icon" type="image/png" href="/logo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script>
+      // Set data-theme before first paint so there's no flash of the wrong
+      // theme — ThemeContext.tsx's own default (light) matches this, this
+      // just runs before React ever mounts.
+      document.documentElement.setAttribute(
+        "data-theme",
+        localStorage.getItem("socialio-theme") === "dark" ? "dark" : "light"
+      );
+    </script>
   </head>
   <body class="bg-background text-on-surface font-body-md selection:bg-primary/30 selection:text-primary">
     <div id="root"></div>
