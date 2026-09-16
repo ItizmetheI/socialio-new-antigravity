@@ -1,0 +1,16 @@
+# Not used to link/run this project locally (no local Supabase stack here —
+# functions are deployed straight to the live project via `supabase functions
+# deploy --project-ref ...`). This file exists so `verify_jwt` per function is
+# explicit and version-controlled, not just a one-time CLI flag someone could
+# forget on a future redeploy.
+
+[functions.create-checkout-session]
+verify_jwt = true
+
+[functions.stripe-webhook]
+# Stripe calls this directly — no Supabase session exists to verify. The
+# stripe-signature check inside the function is the only auth this has.
+verify_jwt = false
+
+[functions.invite-client]
+verify_jwt = true
