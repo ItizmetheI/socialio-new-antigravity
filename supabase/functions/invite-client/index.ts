@@ -8,6 +8,9 @@
 // the profiles row correctly the moment auth.users gets the new row — no
 // follow-up UPDATE needed, which also sidesteps trg_1_protect_profile_columns
 // entirely (that trigger only fires on UPDATE, not INSERT).
+//
+// role/org_id specifically go in app_metadata, not user_metadata — see the
+// comment at the inviteUserByEmail call below.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
@@ -100,11 +103,17 @@ Deno.serve(async (req: Request) => {
     createdNewOrg = true;
   }
 
+  // role/org_id go in app_metadata (service-role-only-settable) rather than
+  // user_metadata — schema.sql's handle_new_user() reads app_metadata so
+  // that once self-serve signup exists, nobody can self-promote via a
+  // client-settable field. full_name stays low-stakes, in user_metadata.
   const { data: invited, error: inviteError } = await adminClient.auth.admin.inviteUserByEmail(email, {
     data: {
+      full_name: fullName ?? null,
+    },
+    app_metadata: {
       role,
       org_id: resolvedOrgId,
-      full_name: fullName ?? null,
     },
   });
   if (inviteError || !invited.user) {
