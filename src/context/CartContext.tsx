@@ -1,4 +1,15 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+
+const CART_STORAGE_KEY = 'socialio-cart';
+
+function loadStoredCart(): CartItem[] {
+  try {
+    const raw = localStorage.getItem(CART_STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as CartItem[]) : [];
+  } catch {
+    return [];
+  }
+}
 
 export interface CartItem {
   id: string; // unique cart item id (e.g., serviceId-timestamp)
@@ -22,8 +33,17 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(loadStoredCart);
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+    } catch {
+      // localStorage unavailable (private mode, blocked storage) — cart just
+      // won't survive a refresh; not worth surfacing to the user.
+    }
+  }, [items]);
 
   const addToCart = (item: Omit<CartItem, 'id'>) => {
     const newItem = { ...item, id: `${item.serviceId}-${Date.now()}` };
