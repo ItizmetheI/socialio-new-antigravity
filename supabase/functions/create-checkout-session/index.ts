@@ -211,6 +211,13 @@ Deno.serve(async (req: Request) => {
       metadata: { org_id: orgId, order_id: order.id },
     });
   } catch (err) {
+    // Roll back the pending order (order_items cascade with it) so a Stripe
+    // outage/error doesn't leave stale rows behind on every retry — same
+    // discipline as invite-client's orphan-org rollback. Deliberately NOT
+    // rolling back a newly-created org/profile-link: that state is valid on
+    // its own (a signed-up-but-not-yet-purchased client) and reusing it on
+    // retry avoids creating a fresh duplicate org on every failed attempt.
+    await adminClient.from("orders").delete().eq("id", order.id);
     return jsonResponse({ error: err instanceof Error ? err.message : "Stripe error" }, 502);
   }
 
