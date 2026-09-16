@@ -44,7 +44,7 @@ export default function Settings() {
         </div>
         <div className="mb-6">
           <div className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Email</div>
-          <div className="text-white font-bold">{session?.user.email}</div>
+          <div className="text-white font-bold break-all">{session?.user.email}</div>
         </div>
 
         <form onSubmit={handleSave} className="flex flex-col gap-4">

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { servicesData } from "../data/services";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
@@ -118,7 +119,9 @@ export default function ProposalView() {
           >
             <div>
               <div className="font-bold text-white">{item.tier_label}</div>
-              <div className="text-sm text-on-surface-variant">{item.service_id}</div>
+              <div className="text-sm text-on-surface-variant">
+                {servicesData.find((s) => s.id === item.service_id)?.title ?? item.service_id}
+              </div>
             </div>
             <div className="font-bold text-white">${item.price.toLocaleString()}</div>
           </div>
