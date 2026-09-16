@@ -28,6 +28,8 @@ interface AuthContextType {
   profile: Profile | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signUp: (email: string, password: string, fullName: string) => Promise<{ error: string | null }>;
+  resetPasswordForEmail: (email: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
 }
 
@@ -105,6 +107,32 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return { error: error?.message ?? null };
   };
 
+  const signUp = async (email: string, password: string, fullName: string) => {
+    if (TEST_MODE) {
+      return { error: "Signup isn't available in test mode." };
+    }
+    // Only full_name goes here — role/org_id are never client-settable.
+    // handle_new_user() (schema.sql) defaults role to 'client' and org_id to
+    // null when app_metadata has neither, which is exactly the state a
+    // self-serve signup should land in until checkout links them to an org.
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: fullName } },
+    });
+    return { error: error?.message ?? null };
+  };
+
+  const resetPasswordForEmail = async (email: string) => {
+    if (TEST_MODE) {
+      return { error: "Password reset isn't available in test mode." };
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/app/reset-password`,
+    });
+    return { error: error?.message ?? null };
+  };
+
   const signOut = async () => {
     if (TEST_MODE) {
       setStoredTestIdentityKey(null);
@@ -116,7 +144,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <AuthContext.Provider value={{ session, profile, isLoading, signIn, signOut }}>
+    <AuthContext.Provider value={{ session, profile, isLoading, signIn, signUp, resetPasswordForEmail, signOut }}>
       {children}
     </AuthContext.Provider>
   );
