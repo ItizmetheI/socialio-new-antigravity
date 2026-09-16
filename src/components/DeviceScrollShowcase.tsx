@@ -49,7 +49,7 @@ export default function DeviceScrollShowcase() {
   const textTracking = useTransform(smoothProgress, [0.75, 0.85], ["-0.05em", "0.2em"]);
 
   return (
-    <section ref={containerRef} className="h-[600vh] relative bg-background">
+    <section id="reel-showcase" ref={containerRef} className="h-[600vh] relative bg-background">
       <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden perspective-[1200px]">
         <div className="absolute inset-0 bg-background bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] z-0 pointer-events-none" />
 

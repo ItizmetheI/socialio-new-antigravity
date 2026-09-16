@@ -329,7 +329,11 @@ export default function Home() {
                 </Link>
               </Magnetic>
               <Magnetic>
-                <button className="border border-white/15 text-white px-8 py-4 rounded-lg font-bold text-sm hover:bg-white/5 transition-all duration-300 flex items-center justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => document.getElementById("reel-showcase")?.scrollIntoView({ behavior: "smooth" })}
+                  className="border border-white/15 text-white px-8 py-4 rounded-lg font-bold text-sm hover:bg-white/5 transition-all duration-300 flex items-center justify-center gap-2"
+                >
                   <Play className="w-4 h-4 text-primary" fill="currentColor" /> Watch The Reel
                 </button>
               </Magnetic>
