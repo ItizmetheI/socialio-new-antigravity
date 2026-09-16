@@ -104,9 +104,15 @@ Deno.serve(async (req: Request) => {
   }
 
   // role/org_id go in app_metadata (service-role-only-settable) rather than
-  // user_metadata — schema.sql's handle_new_user() reads app_metadata so
-  // that once self-serve signup exists, nobody can self-promote via a
-  // client-settable field. full_name stays low-stakes, in user_metadata.
+  // user_metadata, so nobody can self-promote via the client-settable field
+  // once self-serve signup exists. full_name stays low-stakes, in
+  // user_metadata. NOTE: trg_handle_new_user (schema.sql) also tries to read
+  // app_metadata on INSERT, but GoTrue applies admin-supplied app_metadata to
+  // auth.users in a step AFTER the initial row insert — an AFTER INSERT
+  // trigger never sees it, so the trigger silently falls back to its
+  // role='client'/org_id=null defaults. Verified live via
+  // scripts/diagnose_rls.mjs. The explicit UPDATE below is the real fix —
+  // don't remove it and rely on the trigger alone.
   const { data: invited, error: inviteError } = await adminClient.auth.admin.inviteUserByEmail(email, {
     data: {
       full_name: fullName ?? null,
@@ -125,6 +131,21 @@ Deno.serve(async (req: Request) => {
       await adminClient.from("organizations").delete().eq("id", resolvedOrgId);
     }
     return jsonResponse({ error: inviteError?.message ?? "Invite failed" }, 500);
+  }
+
+  const { error: profileFixError } = await adminClient
+    .from("profiles")
+    .update({ role, org_id: resolvedOrgId })
+    .eq("id", invited.user.id);
+  if (profileFixError) {
+    // The auth user + email invite already went out — can't cleanly undo
+    // the email, but we can at least not leave a wrong-role profile and a
+    // possibly-orphaned org behind for a retry to duplicate.
+    await adminClient.auth.admin.deleteUser(invited.user.id);
+    if (createdNewOrg && resolvedOrgId) {
+      await adminClient.from("organizations").delete().eq("id", resolvedOrgId);
+    }
+    return jsonResponse({ error: profileFixError.message }, 500);
   }
 
   return jsonResponse({ userId: invited.user.id, orgId: resolvedOrgId }, 200);
