@@ -1,0 +1,26 @@
+# Cloudflare Pages picks this up automatically from the build output root
+# (Vite copies everything in public/ to dist/ as-is). Docs:
+# https://developers.cloudflare.com/pages/configuration/headers/
+
+/*
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Content-Security-Policy deliberately NOT set here yet. This site embeds
+# Mux video (CustomPlayer.tsx), Google Fonts, and Supabase — a wrong CSP
+# silently breaks video playback or fonts in production, and there's no way
+# to test it against a real Cloudflare deploy from this environment. Add it
+# once there's a staging/preview deploy to verify against, roughly:
+#   default-src 'self';
+#   connect-src 'self' https://*.supabase.co https://*.mux.com https://inferred.litix.io;
+#   img-src 'self' data: https://image.mux.com;
+#   media-src 'self' https://stream.mux.com;
+#   font-src 'self' https://fonts.gstatic.com;
+#   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+#   frame-ancestors 'none';
+# — verify against the actual Mux/Supabase domains in use and test every
+# page (especially anything with video) before shipping, not just the
+# checkout flow.
