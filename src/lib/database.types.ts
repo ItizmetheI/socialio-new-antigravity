@@ -19,6 +19,22 @@ export type SubscriptionStatus =
   | "incomplete"
   | "incomplete_expired";
 export type PaymentStatus = "succeeded" | "failed" | "refunded";
+export type OnboardingStatus = "not_started" | "in_progress" | "submitted" | "reviewed";
+
+// Free-form by design (jsonb column) — this is the shape the frontend reads
+// and writes, not a DB-enforced schema. Add fields here as the intake form
+// grows; older rows simply won't have newer keys.
+export interface OnboardingAnswers {
+  business_name?: string;
+  business_description?: string;
+  target_audience?: string;
+  brand_voice?: string;
+  platforms?: string[];
+  existing_handles?: string;
+  goals?: string;
+  inspiration?: string;
+  content_guidelines?: string;
+}
 
 export interface Organization {
   id: string;
@@ -84,6 +100,25 @@ export interface Comment {
   author_id: string;
   body: string;
   visibility: CommentVisibility;
+  created_at: string;
+}
+
+export interface ClientOnboarding {
+  id: string;
+  org_id: string;
+  status: OnboardingStatus;
+  answers: OnboardingAnswers;
+  submitted_at: string | null;
+  reviewed_at: string | null;
+  reviewed_by: string | null;
+  created_at: string;
+}
+
+export interface OnboardingAsset {
+  id: string;
+  onboarding_id: string;
+  file_path: string;
+  uploaded_by: string;
   created_at: string;
 }
 

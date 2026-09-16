@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
-import { LayoutDashboard, FileText, KanbanSquare, Settings as SettingsIcon, LogOut } from "lucide-react";
+import { LayoutDashboard, ClipboardList, FileText, KanbanSquare, Settings as SettingsIcon, LogOut } from "lucide-react";
 import Logo from "../components/Logo";
 import ThemeToggle from "../components/ThemeToggle";
 import { useAuth } from "../lib/auth/AuthContext";
@@ -15,6 +15,7 @@ export type ClientOutletContext = {
 
 const NAV_ITEMS = [
   { to: "/app", label: "Overview", icon: LayoutDashboard, end: true },
+  { to: "/app/onboarding", label: "Onboarding", icon: ClipboardList, end: false },
   { to: "/app/proposal", label: "Proposal", icon: FileText, end: false },
   { to: "/app/requests", label: "Requests", icon: KanbanSquare, end: false },
   { to: "/app/settings", label: "Settings", icon: SettingsIcon, end: false },
