@@ -24,7 +24,11 @@ import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './lib/auth/AuthContext';
 import Login from './app/Login';
+import Signup from './app/Signup';
+import ForgotPassword from './app/ForgotPassword';
 import SetPassword from './lib/auth/SetPassword';
+import Checkout from './checkout/Checkout';
+import CheckoutSuccess from './checkout/CheckoutSuccess';
 import ClientLayout from './app/ClientLayout';
 import DashboardHome from './app/DashboardHome';
 import ProposalView from './app/ProposalView';
@@ -91,7 +95,7 @@ function AnimatedRoutes() {
   );
 }
 
-const DASHBOARD_PATH_PREFIXES = ['/app', '/ops', '/set-password'];
+const DASHBOARD_PATH_PREFIXES = ['/app', '/ops', '/set-password', '/checkout'];
 
 function isDashboardPath(pathname: string): boolean {
   return DASHBOARD_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix));
@@ -106,7 +110,12 @@ function DashboardRoutes() {
       {TEST_MODE && <RoleSwitcher />}
       <Routes>
         <Route path="/app/login" element={<Login />} />
+        <Route path="/app/signup" element={<Signup />} />
+        <Route path="/app/forgot-password" element={<ForgotPassword />} />
+        <Route path="/app/reset-password" element={<SetPassword />} />
         <Route path="/set-password" element={<SetPassword />} />
+        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/checkout/success" element={<CheckoutSuccess />} />
         <Route path="/app" element={<ClientLayout />}>
           <Route index element={<DashboardHome />} />
           <Route path="proposal" element={<ProposalView />} />

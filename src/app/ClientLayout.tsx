@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { LayoutDashboard, FileText, KanbanSquare, Settings as SettingsIcon, LogOut } from "lucide-react";
 import Logo from "../components/Logo";
-import ErrorBanner from "../components/ErrorBanner";
 import ThemeToggle from "../components/ThemeToggle";
 import { useAuth } from "../lib/auth/AuthContext";
 import RequireRole from "../lib/auth/RequireRole";
@@ -48,13 +47,12 @@ function ClientLayoutInner() {
   };
 
   if (!profile?.org_id) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-10">
-        <div className="max-w-md">
-          <ErrorBanner message="Your account isn't linked to an organization yet. Contact support@socialio.io." />
-        </div>
-      </div>
-    );
+    // org_id is only ever set by an admin invite or by create-checkout-session
+    // (which links the profile in the same request that creates the order) —
+    // so a signed-in client with no org_id has always just signed up and
+    // never checked out yet, not a broken account. Send them to finish that,
+    // same as a signed-out visitor with items in cart.
+    return <Navigate to="/checkout" replace />;
   }
 
   return (
