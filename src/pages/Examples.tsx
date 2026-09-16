@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ArrowUpRight } from "lucide-react";
 
 const tabs = [
   "All",
@@ -58,19 +57,11 @@ export default function Examples() {
 
       <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-4 space-y-4">
         {filteredItems.map((item) => (
-          <div key={item.id} className={`break-inside-avoid rounded-2xl overflow-hidden relative group bg-surface-container ${item.aspect}`}>
-             <div
-               className="absolute inset-0 transition-transform duration-700 group-hover:scale-110"
-               style={{ background: item.gradient }}
-             />
+          <div key={item.id} className={`break-inside-avoid rounded-2xl overflow-hidden relative bg-surface-container ${item.aspect}`}>
+             <div className="absolute inset-0" style={{ background: item.gradient }} />
              <div className="absolute top-4 left-4 z-20">
                 <div className="text-[10px] font-bold uppercase tracking-widest text-[#fff] bg-black/60 backdrop-blur-md px-3 py-1.5 rounded border border-[#ffffff1a]">
                   {item.category}
-                </div>
-             </div>
-             <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
-                <div className="text-[#fff] flex items-center gap-2 text-xl font-bold transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                  {item.category} <ArrowUpRight className="w-5 h-5 text-primary" />
                 </div>
              </div>
           </div>
