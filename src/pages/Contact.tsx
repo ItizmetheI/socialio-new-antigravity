@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { Mail, Clock, Globe, CheckCircle2 } from "lucide-react";
 import React, { useState } from "react";
 import { servicesData } from "../data/services";
+import { supabase } from "../lib/supabase";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -12,17 +13,31 @@ export default function Contact() {
     budget: "",
     message: ""
   });
-  
-  const [error, setError] = useState("");
-  const [status, setStatus] = useState<"idle" | "success">("idle");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [error, setError] = useState("");
+  const [status, setStatus] = useState<"idle" | "submitting" | "success">("idle");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.email || !formData.message) {
       setError("Please fill out your name, email, and message.");
       return;
     }
     setError("");
+    setStatus("submitting");
+    const { error: submitError } = await supabase.from("contact_submissions").insert({
+      name: formData.name,
+      email: formData.email,
+      company: formData.company || null,
+      service: formData.service || null,
+      budget: formData.budget || null,
+      message: formData.message,
+    });
+    if (submitError) {
+      setStatus("idle");
+      setError("Something went wrong sending your message. Please try again.");
+      return;
+    }
     setStatus("success");
   };
 
@@ -203,11 +218,12 @@ export default function Contact() {
                 <div className="text-red-400 font-sans text-sm">{error}</div>
               )}
 
-              <button 
+              <button
                 type="submit"
-                className="w-full py-4 mt-2 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(215,183,255,0.3)]"
+                disabled={status === "submitting"}
+                className="w-full py-4 mt-2 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(215,183,255,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Send Message &rarr;
+                {status === "submitting" ? "Sending..." : "Send Message →"}
               </button>
             </form>
           )}
