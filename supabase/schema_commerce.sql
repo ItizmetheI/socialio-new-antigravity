@@ -345,18 +345,29 @@ create policy "staff read all payments" on public.payments
   for select to authenticated using (public.is_staff());
 
 -- ============================================================================
--- Manual verification checklist — extends schema.sql's checklist. Run once
--- Stripe test-mode keys exist and a full test purchase has gone through.
+-- Manual verification checklist — extends schema.sql's checklist.
 -- ============================================================================
+-- scripts/verify_rls.mjs covers the RLS/table-access items below without
+-- needing Stripe keys (it seeds orders/payments directly, bypassing
+-- checkout). The items that actually need a live Stripe integration
+-- (signed-out rejection, price tampering, webhook replay) need Stripe
+-- test-mode keys first — see steady-crafting-wren.md's rollout sequencing.
+--
 -- [ ] Signed-out visitor: calling create-checkout-session is rejected (401).
 -- [ ] Client with a fabricated price in the request body: rejected — the
 --     function only trusts serviceId/levelLabel lookups against services.ts,
 --     never a client-submitted amount.
--- [ ] Replaying the same stripe-webhook payload twice: second call is a
---     no-op (stripe_events unique PK), no duplicate payments row.
--- [ ] Client A: select on orders/payments/subscriptions returns zero rows
---     from org B, even with a guessed UUID.
--- [ ] Client A: any UPDATE attempt on orders/payments/subscriptions/
---     organizations.status from the browser is rejected — service-role only.
--- [ ] stripe_events: authenticated select (staff or client) returns zero
+-- [x] Replaying the same stripe-webhook event twice is a no-op (stripe_events
+--     unique PK), no duplicate payments row. Verified via
+--     scripts/verify_webhook_idempotency.mjs, which calls
+--     handle_stripe_checkout_completed directly by RPC — the actual Stripe
+--     signature verification in the Edge Function itself still isn't
+--     exercised, since that needs real Stripe keys.
+-- [x] Client A: select on orders/payments returns zero rows from org B, even
+--     with a guessed UUID. (subscriptions not yet seeded/tested — same
+--     org-scoped policy pattern as orders/payments, not independently run.)
+-- [x] Client A: UPDATE on orders and organizations.status from the browser
+--     is rejected — service-role only. (payments/subscriptions UPDATE not
+--     independently tested — same no-grant-at-all pattern as orders.)
+-- [x] stripe_events: authenticated select (staff or client) returns zero
 --     rows — no grant exists at all.

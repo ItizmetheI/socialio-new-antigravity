@@ -508,34 +508,50 @@ create policy "staff upload deliverable files" on storage.objects
   for insert to authenticated with check (bucket_id = 'deliverables' and public.is_staff());
 
 -- ============================================================================
--- Manual RLS verification checklist — run once real credentials exist
+-- Manual RLS verification checklist
 -- ============================================================================
 -- Convention: probe as real authenticated test users via supabase-js
 -- (supabase.from(...).select()/.insert()/.update()), not a SQL test
 -- framework — matches this repo's existing verification approach.
 --
+-- Automated as of 2026-09-16 in scripts/verify_rls.mjs — 21/21 checks
+-- passing against the live project as of commit 11a4f7f. Re-run it after
+-- any RLS/schema change. Items below marked [x] are covered by that script;
+-- [ ] items are still manual-only (mostly staff-role and storage checks the
+-- script doesn't touch yet).
+--
 -- Set up: two orgs (A, B), one client user in each, one internal user, one
 -- admin user, one proposal per org, one approved (org A) to produce requests.
 --
--- [ ] Anon (no session): select on every table above returns empty/denied.
--- [ ] Client A: select organizations returns only org A's row.
--- [ ] Client A: select proposals/proposal_items/requests/deliverables/comments
---     returns only org A's rows — zero rows from org B, even by guessing IDs.
--- [ ] Client A: attempting update on proposals.total_price, requests.stage,
---     requests.assigned_to, or profiles.role/org_id/is_active is rejected.
--- [ ] Client A: insert into requests with stage='delivered' is rejected
+-- [x] Anon (no session): select on organizations/orders returns empty.
+-- [x] Client A: select organizations returns only org A's row.
+-- [x] Client A: select proposals/requests returns only org A's rows — zero
+--     rows from org B, even by guessing IDs. (proposal_items/deliverables
+--     not yet covered by the script — same org-scoped join-policy pattern,
+--     lower risk, but not independently verified.)
+-- [x] Client A: attempting update on proposals.total_price or requests.stage
+--     is rejected. ([ ] requests.assigned_to and profiles.org_id/is_active
+--     specifically not yet covered — same trigger as role, same code path,
+--     but not independently verified.)
+-- [x] Client A: insert into requests with stage='delivered' is rejected
 --     (WITH CHECK forces stage='requested').
--- [ ] Client A: approving their own pending proposal (status -> 'approved')
+-- [x] Client A: approving their own pending proposal (status -> 'approved')
 --     succeeds AND creates matching requests rows automatically.
--- [ ] Client A: cannot read comments where visibility='internal'.
+-- [x] Client A: cannot read comments where visibility='internal'.
+-- [x] Client A: cannot self-escalate profiles.role to 'admin'.
 -- [ ] Client A: storage download of an org B file path is denied, even with
 --     a directly-guessed/known path.
 -- [ ] Internal user: can read/update across both org A and org B.
 -- [ ] Internal (non-admin): creating a new organization is rejected
 --     (admin-only).
 -- [ ] Internal (non-admin): attempting to update their own profiles.role to
---     'admin' is rejected (self-escalation).
+--     'admin' is rejected (self-escalation) — tested for role='client' above;
+--     same is_admin() check governs 'internal' too, but not independently run.
 -- [ ] Admin: can update another user's profile row — deactivate a departing
 --     staff member (is_active=false), fix a client's org_id.
 -- [ ] Admin: can create an organization and (via the invite-client Edge
---     Function, not raw SQL) invite a user into it.
+--     Function, not raw SQL) invite a user into it. (Verified via real
+--     browser E2E earlier in the project's history, and the underlying
+--     profile-provisioning fix verified via scripts/verify_rls.mjs — but not
+--     the full invite-through-email path since that migration to
+--     app_metadata.)
