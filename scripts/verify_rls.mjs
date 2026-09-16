@@ -147,6 +147,107 @@ async function main() {
     `${ordersAsB?.length} rows`,
   );
 
+  // ---- Original dashboard tables (proposals/requests/comments) ---------
+  // Never actually verified against a live project before now — only the
+  // admin happy path was smoke-tested during the original dashboard build.
+  // All rows here cascade-delete when the test orgs are removed at the end
+  // (every FK chain in schema.sql traces back to organizations ON DELETE
+  // CASCADE), so no separate cleanup is needed.
+  const { data: propA } = await admin
+    .from("proposals")
+    .insert({ org_id: orgA.id, created_by: userA.user.id, status: "pending", total_price: 199 })
+    .select()
+    .single();
+  await admin.from("proposal_items").insert({
+    proposal_id: propA.id, service_id: "social-media-posts", tier_label: "10 Posts", price: 199,
+  });
+  const { data: propB } = await admin
+    .from("proposals")
+    .insert({ org_id: orgB.id, created_by: userB.user.id, status: "pending", total_price: 99 })
+    .select()
+    .single();
+
+  const { data: reqA } = await admin
+    .from("requests")
+    .insert({ org_id: orgA.id, title: "Test request A", created_by: userA.user.id })
+    .select()
+    .single();
+  await admin.from("comments").insert({
+    request_id: reqA.id, author_id: userA.user.id, body: "internal note", visibility: "internal",
+  });
+
+  const { data: proposalsAsA } = await clientA.from("proposals").select("*");
+  check(
+    "client A: select proposals returns only org A's",
+    proposalsAsA?.length === 1 && proposalsAsA[0].id === propA.id,
+    `${proposalsAsA?.length} rows`,
+  );
+  const { data: guessedPropB } = await clientA.from("proposals").select("*").eq("id", propB.id);
+  check("client A: guessing org B's proposal id returns nothing", (guessedPropB?.length ?? 0) === 0);
+
+  const { error: totalPriceErr } = await clientA.from("proposals").update({ total_price: 1 }).eq("id", propA.id);
+  const { data: propAAfterPriceAttempt } = await admin.from("proposals").select("total_price").eq("id", propA.id).single();
+  check(
+    "client A: cannot change proposals.total_price",
+    propAAfterPriceAttempt?.total_price === 199,
+    totalPriceErr ? totalPriceErr.message : `total_price is now ${propAAfterPriceAttempt?.total_price}`,
+  );
+
+  const { data: requestsAsA } = await clientA.from("requests").select("*");
+  check(
+    "client A: select requests returns only org A's",
+    requestsAsA?.some((r) => r.id === reqA.id) && requestsAsA.every((r) => r.org_id === orgA.id),
+    `${requestsAsA?.length} rows`,
+  );
+
+  // Clients CAN flip their own pending proposal to approved — and that
+  // transition should auto-create a matching request from proposal_items
+  // (trg_2_create_requests_from_proposal).
+  const { error: approveErr } = await clientA.from("proposals").update({ status: "approved" }).eq("id", propA.id);
+  const { data: propAAfterApprove } = await admin.from("proposals").select("status").eq("id", propA.id).single();
+  check(
+    "client A: can approve their own pending proposal",
+    !approveErr && propAAfterApprove?.status === "approved",
+    approveErr?.message ?? `status is now ${propAAfterApprove?.status}`,
+  );
+  const { data: autoCreatedRequests } = await admin
+    .from("requests")
+    .select("*")
+    .eq("proposal_item_id", (await admin.from("proposal_items").select("id").eq("proposal_id", propA.id).single()).data?.id);
+  check(
+    "client A approving a proposal auto-creates its request",
+    (autoCreatedRequests?.length ?? 0) === 1,
+    `${autoCreatedRequests?.length} rows`,
+  );
+
+  await clientA.from("requests").update({ stage: "delivered" }).eq("id", reqA.id);
+  const { data: reqAAfter } = await admin.from("requests").select("stage").eq("id", reqA.id).single();
+  check(
+    "client A: cannot change requests.stage",
+    reqAAfter?.stage === "requested",
+    `stage is now ${reqAAfter?.stage}`,
+  );
+
+  const { error: badInsertErr } = await clientA.from("requests").insert({
+    org_id: orgA.id, title: "Sneaky request", created_by: userA.user.id, stage: "delivered",
+  });
+  check("client A: cannot INSERT a request with stage='delivered'", !!badInsertErr, badInsertErr?.message);
+
+  const { data: commentsAsA } = await clientA.from("comments").select("*").eq("request_id", reqA.id);
+  check(
+    "client A: cannot read internal-visibility comments on their own request",
+    (commentsAsA?.length ?? 0) === 0,
+    `${commentsAsA?.length} rows`,
+  );
+
+  await clientA.from("profiles").update({ role: "admin" }).eq("id", userA.user.id);
+  const { data: profileAAfter } = await admin.from("profiles").select("role").eq("id", userA.user.id).single();
+  check(
+    "client A: cannot self-escalate profiles.role to admin",
+    profileAAfter?.role === "client",
+    `role is now ${profileAAfter?.role}`,
+  );
+
   // ---- Cleanup -----------------------------------------------------------
   await admin.from("payments").delete().in("order_id", created.orderIds);
   await admin.from("orders").delete().in("id", created.orderIds);
