@@ -313,7 +313,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
-            <h1 className="hero-display font-bold text-white mb-6 leading-[0.96] tracking-tight text-[13vw] sm:text-[7.5vw] lg:text-[4.6vw] text-balance">
+            <h1 className="hero-display font-bold text-white mb-6 leading-[0.96] tracking-tight text-5xl md:text-6xl lg:text-7xl text-balance">
               Stop posting.<br />
               Start <span className="italic text-primary">scrolling</span> them.
             </h1>

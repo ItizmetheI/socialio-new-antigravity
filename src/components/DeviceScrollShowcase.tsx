@@ -117,7 +117,7 @@ export default function DeviceScrollShowcase() {
                   style={{ opacity: textOpacity, scale: textScale, filter: textBlur, letterSpacing: textTracking }}
                   className="relative z-10 flex flex-col items-center justify-center origin-center"
                 >
-                  <h1 className="hero-display text-5xl font-bold text-white">socialio</h1>
+                  <p className="hero-display text-5xl font-bold text-white" aria-hidden="true">socialio</p>
                 </motion.div>
                 <motion.div
                   style={{ opacity: textOpacity }}
