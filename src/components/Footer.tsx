@@ -3,6 +3,7 @@ import { servicesData } from "../data/services";
 import { Facebook, Linkedin, Instagram, Mail, ArrowRight, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import Logo from "./Logo";
+import { supabase } from "../lib/supabase";
 
 export default function Footer() {
   const socialCategories = servicesData.filter(s => s.category === "Social Media");
@@ -10,11 +11,22 @@ export default function Footer() {
 
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = () => {
-    if (email.includes("@")) {
-      setSubmitted(true);
+  const handleSubmit = async () => {
+    if (!email.includes("@") || isSubmitting) return;
+    setError("");
+    setIsSubmitting(true);
+    const { error: insertError } = await supabase.from("newsletter_signups").insert({ email });
+    setIsSubmitting(false);
+    // Treat a duplicate email (already subscribed) as success from the
+    // user's point of view — they don't need to know they'd already signed up.
+    if (insertError && insertError.code !== "23505") {
+      setError("Something went wrong. Try again.");
+      return;
     }
+    setSubmitted(true);
   };
 
   return (
@@ -38,18 +50,25 @@ export default function Footer() {
                        <CheckCircle2 className="w-5 h-5" /> You're in. Growth incoming.
                      </div>
                    ) : (
-                     <div className="flex gap-2">
-                       <input 
-                         type="email" 
-                         placeholder="Email address" 
-                         value={email}
-                         onChange={(e) => setEmail(e.target.value)}
-                         onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
-                         className="bg-transparent border-b border-white/20 px-2 py-2 text-sm text-white focus:outline-none focus:border-primary flex-grow" 
-                       />
-                       <button onClick={handleSubmit} className="text-white hover:text-primary transition-colors font-bold type-level-4 flex items-center justify-center px-2">
-                         <ArrowRight className="w-5 h-5" />
-                       </button>
+                     <div>
+                       <div className="flex gap-2">
+                         <input
+                           type="email"
+                           placeholder="Email address"
+                           value={email}
+                           onChange={(e) => setEmail(e.target.value)}
+                           onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+                           className="bg-transparent border-b border-white/20 px-2 py-2 text-sm text-white focus:outline-none focus:border-primary flex-grow"
+                         />
+                         <button
+                           onClick={handleSubmit}
+                           disabled={isSubmitting}
+                           className="text-white hover:text-primary transition-colors font-bold type-level-4 flex items-center justify-center px-2 disabled:opacity-50"
+                         >
+                           <ArrowRight className="w-5 h-5" />
+                         </button>
+                       </div>
+                       {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
                      </div>
                    )}
                 </div>
