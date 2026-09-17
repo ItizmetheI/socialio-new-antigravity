@@ -1,17 +1,20 @@
 import { Link, useLocation } from "react-router-dom";
-import { ShoppingBag, ChevronDown, MonitorPlay, Menu, X } from "lucide-react";
+import { ShoppingBag, ChevronDown, MonitorPlay, Menu, X, LayoutDashboard } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import CartDrawer from "./CartDrawer";
 import { useState, useEffect } from "react";
 import { servicesData } from "../data/services";
 import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
+import { useAuth } from "../lib/auth/AuthContext";
 
 
 export default function NavBar() {
   const { pathname } = useLocation();
   const { items, setIsCartOpen } = useCart();
-  
+  const { session, profile } = useAuth();
+  const dashboardHome = profile?.role === "client" ? "/app" : "/ops";
+
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -91,12 +94,23 @@ export default function NavBar() {
                 </span>
               )}
             </button>
-            <Link to="/app/login" className="hidden md:inline-block border border-white/10 bg-transparent text-white px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-white/5 rounded-full">
-              Client Login
-            </Link>
-            <Link to="/contact" className="hidden md:inline-block bg-white text-background px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-gray-200 rounded-full">
-              Get Started
-            </Link>
+            {session && profile ? (
+              <Link
+                to={dashboardHome}
+                className="hidden md:inline-flex items-center gap-2 bg-white text-background px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-gray-200 rounded-full"
+              >
+                <LayoutDashboard className="w-4 h-4" /> Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link to="/app/login" className="hidden md:inline-block border border-white/10 bg-transparent text-white px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-white/5 rounded-full">
+                  Client Login
+                </Link>
+                <Link to="/contact" className="hidden md:inline-block bg-white text-background px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-gray-200 rounded-full">
+                  Get Started
+                </Link>
+              </>
+            )}
             <button 
               className="md:hidden text-white"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -168,12 +182,20 @@ export default function NavBar() {
               
               <div className="h-[1px] bg-white/10 my-2 w-full"></div>
               
-              <Link to="/contact" className="text-center bg-primary text-background px-6 py-3 font-bold text-sm">
-                Get Started
-              </Link>
-              <Link to="/app/login" className="text-center border border-white/20 bg-transparent text-white px-6 py-3 font-bold text-sm">
-                Client Login
-              </Link>
+              {session && profile ? (
+                <Link to={dashboardHome} className="text-center bg-primary text-background px-6 py-3 font-bold text-sm">
+                  Dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link to="/contact" className="text-center bg-primary text-background px-6 py-3 font-bold text-sm">
+                    Get Started
+                  </Link>
+                  <Link to="/app/login" className="text-center border border-white/20 bg-transparent text-white px-6 py-3 font-bold text-sm">
+                    Client Login
+                  </Link>
+                </>
+              )}
 
               <div className="h-[1px] bg-white/10 my-2 w-full"></div>
               <div className="flex items-center justify-between">
