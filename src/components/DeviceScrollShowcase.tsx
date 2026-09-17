@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform, useMotionTemplate } from "motion/react";
 import { useRef, useState } from "react";
 import { Heart, MessageCircle, Share2, Bookmark } from "lucide-react";
 import Magnetic from "./Magnetic";
@@ -39,8 +39,17 @@ export default function DeviceScrollShowcase() {
   // 3. The engulfing zoom through the screen (0.65 - 0.95)
   const phoneScale = useTransform(smoothProgress, [0.65, 0.75, 0.85, 0.95], [1, 3, 20, 200]);
   const phoneBorderOpacity = useTransform(smoothProgress, [0.65, 0.75], [1, 0]);
+  const phoneBorderColor = useMotionTemplate`rgba(255, 255, 255, ${phoneBorderOpacity})`;
   const phoneRadius = useTransform(smoothProgress, [0.65, 0.8], ["54px", "0px"]);
   const innerRadius = useTransform(smoothProgress, [0.65, 0.8], ["44px", "0px"]);
+  // The drop shadow costs a full-viewport blurred repaint every scroll frame
+  // — fine at rest, but the phone scales up to 200x through this section, so
+  // without fading the shadow out first, the browser keeps repainting an
+  // enormous blur underneath an element that's already filled the screen.
+  // That backlog of expensive paints is what reads as lag once you scroll
+  // past this section into the next one.
+  const phoneShadowOpacity = useTransform(smoothProgress, [0.65, 0.72], [0.6, 0]);
+  const phoneShadow = useMotionTemplate`0 50px 100px -20px rgba(0, 0, 0, ${phoneShadowOpacity})`;
 
   // 4. Wordmark reveal inside the last reel
   const textOpacity = useTransform(smoothProgress, [0.75, 0.85], [1, 0]);
@@ -70,11 +79,12 @@ export default function DeviceScrollShowcase() {
             y: phoneY,
             scale: phoneScale,
             borderRadius: phoneRadius,
-            borderColor: `rgba(255, 255, 255, ${phoneBorderOpacity})`,
+            borderColor: phoneBorderColor,
             borderWidth: "1px",
             borderStyle: "solid",
+            boxShadow: phoneShadow,
           }}
-          className="relative w-[320px] h-[680px] bg-surface-container p-[10px] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.6)] z-10 origin-center will-change-transform"
+          className="relative w-[320px] h-[680px] bg-surface-container p-[10px] z-10 origin-center will-change-transform"
         >
           <motion.div style={{ borderRadius: innerRadius }} className="relative w-full h-full bg-[#151018] overflow-hidden">
             {/* Glass glare */}
