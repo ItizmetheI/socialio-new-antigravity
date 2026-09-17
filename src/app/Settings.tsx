@@ -5,6 +5,8 @@ import { useAuth } from "../lib/auth/AuthContext";
 import ErrorBanner from "../components/ErrorBanner";
 import type { ClientOutletContext } from "./ClientLayout";
 
+const MIN_PASSWORD_LENGTH = 8;
+
 export default function Settings() {
   const { profile, session } = useAuth();
   const { orgName } = useOutletContext<ClientOutletContext>();
@@ -12,6 +14,12 @@ export default function Settings() {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
+
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isSavingPassword, setIsSavingPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSaved, setPasswordSaved] = useState(false);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,6 +37,30 @@ export default function Settings() {
       return;
     }
     setSaved(true);
+  };
+
+  const handlePasswordSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordSaved(false);
+    if (newPassword.length < MIN_PASSWORD_LENGTH) {
+      setPasswordError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters.`);
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError("Passwords don't match.");
+      return;
+    }
+    setPasswordError("");
+    setIsSavingPassword(true);
+    const { error: updateError } = await supabase.auth.updateUser({ password: newPassword });
+    setIsSavingPassword(false);
+    if (updateError) {
+      setPasswordError(updateError.message);
+      return;
+    }
+    setNewPassword("");
+    setConfirmPassword("");
+    setPasswordSaved(true);
   };
 
   return (
@@ -67,6 +99,47 @@ export default function Settings() {
             className="self-start px-6 py-3 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
           >
             {isSaving ? "Saving..." : "Save changes"}
+          </button>
+        </form>
+      </div>
+
+      <div className="bg-surface-container border border-white/10 rounded-3xl p-8 mt-6">
+        <h2 className="font-bold text-white mb-6">Change password</h2>
+        <form onSubmit={handlePasswordSave} className="flex flex-col gap-4">
+          <div>
+            <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
+              New password
+            </label>
+            <input
+              type="password"
+              autoComplete="new-password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              placeholder="••••••••"
+              className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+            />
+          </div>
+          <div>
+            <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
+              Confirm password
+            </label>
+            <input
+              type="password"
+              autoComplete="new-password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="••••••••"
+              className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+            />
+          </div>
+          {passwordError && <ErrorBanner message={passwordError} />}
+          {passwordSaved && <div className="text-primary text-sm">Password updated.</div>}
+          <button
+            type="submit"
+            disabled={isSavingPassword}
+            className="self-start px-6 py-3 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+          >
+            {isSavingPassword ? "Saving..." : "Update password"}
           </button>
         </form>
       </div>
