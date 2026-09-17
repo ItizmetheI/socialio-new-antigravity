@@ -20,6 +20,7 @@ export type SubscriptionStatus =
   | "incomplete_expired";
 export type PaymentStatus = "succeeded" | "failed" | "refunded";
 export type OnboardingStatus = "not_started" | "in_progress" | "submitted" | "reviewed";
+export type PlanStatus = "draft" | "sent" | "viewed" | "changes_requested" | "approved" | "superseded";
 
 // Free-form by design (jsonb column) — this is the shape the frontend reads
 // and writes, not a DB-enforced schema. Add fields here as the intake form
@@ -75,6 +76,7 @@ export interface Request {
   id: string;
   org_id: string;
   proposal_item_id: string | null;
+  plan_item_id: string | null;
   title: string;
   description: string | null;
   service_type: string | null;
@@ -119,6 +121,40 @@ export interface OnboardingAsset {
   onboarding_id: string;
   file_path: string;
   uploaded_by: string;
+  created_at: string;
+}
+
+export interface Plan {
+  id: string;
+  org_id: string;
+  created_by: string;
+  status: PlanStatus;
+  version: number;
+  supersedes_plan_id: string | null;
+  total_price: number;
+  sent_at: string | null;
+  viewed_at: string | null;
+  responded_at: string | null;
+  created_at: string;
+}
+
+export interface PlanItem {
+  id: string;
+  plan_id: string;
+  service_id: string | null;
+  deliverable_label: string;
+  quantity: number;
+  frequency: string | null;
+  platform: string | null;
+  price: number;
+  notes: string | null;
+}
+
+export interface PlanFeedback {
+  id: string;
+  plan_id: string;
+  author_id: string;
+  body: string;
   created_at: string;
 }
 

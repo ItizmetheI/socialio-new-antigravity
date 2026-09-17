@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { KanbanSquare, Users2, Building2, FileText, UserCog, LogOut, ClipboardList } from "lucide-react";
+import { KanbanSquare, Users2, Building2, FileText, ScrollText, UserCog, LogOut, ClipboardList } from "lucide-react";
 import Logo from "../components/Logo";
 import ThemeToggle from "../components/ThemeToggle";
 import { useAuth } from "../lib/auth/AuthContext";
@@ -10,6 +10,7 @@ const STAFF_NAV_ITEMS = [
   { to: "/ops", label: "Board", icon: KanbanSquare, end: true },
   { to: "/ops/clients", label: "Clients", icon: Users2, end: false },
   { to: "/ops/onboarding", label: "Onboarding", icon: ClipboardList, end: false },
+  { to: "/ops/admin/plans", label: "Plans", icon: ScrollText, end: false },
 ];
 
 const ADMIN_NAV_ITEMS = [

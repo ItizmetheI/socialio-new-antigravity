@@ -31,6 +31,7 @@ import CheckoutSuccess from './checkout/CheckoutSuccess';
 import ClientLayout from './app/ClientLayout';
 import DashboardHome from './app/DashboardHome';
 import Onboarding from './app/Onboarding';
+import PlanView from './app/PlanView';
 import ProposalView from './app/ProposalView';
 import RequestBoard from './app/RequestBoard';
 import RequestDetail from './app/RequestDetail';
@@ -42,6 +43,7 @@ import OnboardingReview from './ops/OnboardingReview';
 import OpsRequestDetail from './ops/RequestDetail';
 import OrgsAdmin from './ops/admin/OrgsAdmin';
 import ProposalBuilder from './ops/admin/ProposalBuilder';
+import PlanBuilder from './ops/admin/PlanBuilder';
 import UsersAdmin from './ops/admin/UsersAdmin';
 import RequireRole from './lib/auth/RequireRole';
 import { TEST_MODE } from './lib/testMode/flag';
@@ -120,6 +122,7 @@ function DashboardRoutes() {
         <Route path="/app" element={<ClientLayout />}>
           <Route index element={<DashboardHome />} />
           <Route path="onboarding" element={<Onboarding />} />
+          <Route path="plan" element={<PlanView />} />
           <Route path="proposal" element={<ProposalView />} />
           <Route path="requests" element={<RequestBoard />} />
           <Route path="requests/:id" element={<RequestDetail />} />
@@ -129,6 +132,7 @@ function DashboardRoutes() {
           <Route index element={<OpsBoard />} />
           <Route path="clients" element={<ClientsList />} />
           <Route path="onboarding" element={<OnboardingReview />} />
+          <Route path="admin/plans" element={<PlanBuilder />} />
           <Route path="requests/:id" element={<OpsRequestDetail />} />
           <Route
             path="admin/orgs"
