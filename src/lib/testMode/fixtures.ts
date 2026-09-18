@@ -9,6 +9,7 @@ import type {
   ClientOnboarding,
   Plan,
   PlanItem,
+  PlanFeedback,
 } from "../database.types";
 
 export const TEST_STAFF_ID = "staff-priya";
@@ -171,7 +172,7 @@ export const mockPlans: Plan[] = [
     status: "approved",
     version: 1,
     supersedes_plan_id: null,
-    total_price: 1278,
+    total_price: 10174,
     sent_at: "2026-08-14T00:00:00Z",
     viewed_at: "2026-08-14T12:00:00Z",
     responded_at: "2026-08-16T00:00:00Z",
@@ -201,6 +202,23 @@ export const mockPlanItems: PlanItem[] = [
     platform: "tiktok",
     price: 1099,
     notes: "Cold brew launch focus for the first batch.",
+  },
+];
+
+export const mockPlanFeedback: PlanFeedback[] = [
+  {
+    id: "plan-feedback-1",
+    plan_id: "plan-northwind-1",
+    author_id: "client-northwind",
+    body: "Can we swap one of the Instagram carousels for a Reel each month? Reels are outperforming static posts for us right now.",
+    created_at: "2026-08-15T00:00:00Z",
+  },
+  {
+    id: "plan-feedback-2",
+    plan_id: "plan-northwind-1",
+    author_id: TEST_STAFF_ID,
+    body: "Good call — we'll rotate one carousel slot to a Reel each month starting this batch.",
+    created_at: "2026-08-15T10:00:00Z",
   },
 ];
 

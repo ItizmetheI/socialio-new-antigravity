@@ -15,7 +15,9 @@ import {
   mockClientOnboarding,
   mockPlans,
   mockPlanItems,
+  mockPlanFeedback,
 } from "./fixtures";
+import { getStoredTestIdentityKey, TEST_IDENTITIES } from "./testAuth";
 
 type Row = Record<string, unknown>;
 type MockResult = { data: unknown; error: { message: string } | null };
@@ -31,6 +33,13 @@ const TABLES: Record<string, Row[]> = {
   client_onboarding: mockClientOnboarding as unknown as Row[],
   plans: mockPlans as unknown as Row[],
   plan_items: mockPlanItems as unknown as Row[],
+  plan_feedback: mockPlanFeedback as unknown as Row[],
+  // Insert-only tables with no fixture backstory needed — an empty table is
+  // the realistic starting state, and it lets these forms actually "succeed"
+  // in test mode instead of failing on an unregistered table.
+  orders: [],
+  contact_submissions: [],
+  newsletter_signups: [],
 };
 
 let idCounter = 0;
@@ -141,6 +150,18 @@ class MockQueryBuilder implements PromiseLike<MockResult> {
     }
 
     let rows = store.filter((row) => this.matches(row));
+    // Real RLS hides staff-only comments from clients (schema.sql: "clients
+    // read own org client-visible comments" requires visibility='client').
+    // The mock has no RLS layer at all, so without this, test mode leaks
+    // internal notes into the client view — replicate just this one rule
+    // rather than simulating RLS generally.
+    if (this.table === "comments") {
+      const identityKey = getStoredTestIdentityKey();
+      const role = identityKey ? TEST_IDENTITIES[identityKey].role : null;
+      if (role === "client") {
+        rows = rows.filter((row) => row.visibility === "client");
+      }
+    }
     if (this.orderCol) {
       const col = this.orderCol;
       const dir = this.orderAscending ? 1 : -1;
