@@ -11,7 +11,7 @@ import Stripe from "npm:stripe@17";
 import { servicesData, addOnsData } from "../../../src/data/services.ts";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://socialio.io",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
