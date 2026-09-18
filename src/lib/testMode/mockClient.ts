@@ -12,6 +12,9 @@ import {
   mockRequests,
   mockComments,
   mockDeliverables,
+  mockClientOnboarding,
+  mockPlans,
+  mockPlanItems,
 } from "./fixtures";
 
 type Row = Record<string, unknown>;
@@ -25,6 +28,9 @@ const TABLES: Record<string, Row[]> = {
   requests: mockRequests as unknown as Row[],
   comments: mockComments as unknown as Row[],
   deliverables: mockDeliverables as unknown as Row[],
+  client_onboarding: mockClientOnboarding as unknown as Row[],
+  plans: mockPlans as unknown as Row[],
+  plan_items: mockPlanItems as unknown as Row[],
 };
 
 let idCounter = 0;
@@ -33,7 +39,7 @@ function nextId(prefix: string): string {
   return `${prefix}-${idCounter}`;
 }
 
-type Filter = { col: string; op: "eq" | "in"; val: unknown };
+type Filter = { col: string; op: "eq" | "neq" | "in"; val: unknown };
 
 class MockQueryBuilder implements PromiseLike<MockResult> {
   private readonly table: string;
@@ -56,6 +62,11 @@ class MockQueryBuilder implements PromiseLike<MockResult> {
 
   eq(col: string, val: unknown) {
     this.filters.push({ col, op: "eq", val });
+    return this;
+  }
+
+  neq(col: string, val: unknown) {
+    this.filters.push({ col, op: "neq", val });
     return this;
   }
 
@@ -100,6 +111,7 @@ class MockQueryBuilder implements PromiseLike<MockResult> {
   private matches(row: Row): boolean {
     return this.filters.every(({ col, op, val }) => {
       if (op === "eq") return row[col] === val;
+      if (op === "neq") return row[col] !== val;
       if (op === "in") return (val as unknown[]).includes(row[col]);
       return true;
     });

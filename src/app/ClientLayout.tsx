@@ -13,11 +13,12 @@ export type ClientOutletContext = {
   orgName: string;
 };
 
-const NAV_ITEMS = [
+const BASE_NAV_ITEMS = [
   { to: "/app", label: "Overview", icon: LayoutDashboard, end: true },
   { to: "/app/onboarding", label: "Onboarding", icon: ClipboardList, end: false },
-  { to: "/app/plan", label: "Plan", icon: ScrollText, end: false },
-  { to: "/app/proposal", label: "Proposal", icon: FileText, end: false },
+];
+
+const TAIL_NAV_ITEMS = [
   { to: "/app/requests", label: "Requests", icon: KanbanSquare, end: false },
   { to: "/app/settings", label: "Settings", icon: SettingsIcon, end: false },
 ];
@@ -25,6 +26,10 @@ const NAV_ITEMS = [
 function ClientLayoutInner() {
   const { profile, signOut } = useAuth();
   const [org, setOrg] = useState<Organization | null>(null);
+  // An org is either on the new plans system or the legacy proposals one,
+  // never both (see DashboardHome's isApproved logic) — the nav should
+  // reflect that instead of always showing both links.
+  const [hasPlan, setHasPlan] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,10 +43,27 @@ function ClientLayoutInner() {
       .then(({ data }) => {
         if (isMounted) setOrg(data as Organization | null);
       });
+    supabase
+      .from("plans")
+      .select("id")
+      .eq("org_id", profile.org_id)
+      .limit(1)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (isMounted) setHasPlan(!!data);
+      });
     return () => {
       isMounted = false;
     };
   }, [profile?.org_id]);
+
+  const navItems = [
+    ...BASE_NAV_ITEMS,
+    hasPlan
+      ? { to: "/app/plan", label: "Plan", icon: ScrollText, end: false }
+      : { to: "/app/proposal", label: "Proposal", icon: FileText, end: false },
+    ...TAIL_NAV_ITEMS,
+  ];
 
   const handleSignOut = async () => {
     await signOut();
@@ -64,7 +86,7 @@ function ClientLayoutInner() {
           <Logo />
         </div>
         <nav className="flex-1 px-4 flex flex-col gap-1">
-          {NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
+          {navItems.map(({ to, label, icon: Icon, end }) => (
             <NavLink
               key={to}
               to={to}

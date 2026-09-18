@@ -1,4 +1,15 @@
-import type { Organization, Profile, Proposal, ProposalItem, Request, Comment, Deliverable } from "../database.types";
+import type {
+  Organization,
+  Profile,
+  Proposal,
+  ProposalItem,
+  Request,
+  Comment,
+  Deliverable,
+  ClientOnboarding,
+  Plan,
+  PlanItem,
+} from "../database.types";
 
 export const TEST_STAFF_ID = "staff-priya";
 
@@ -122,6 +133,74 @@ export const mockComments: Comment[] = [
     body: "Client mentioned on the call they want a slightly warmer color grade — flagging before final.",
     visibility: "internal",
     created_at: "2026-09-12T15:30:00Z",
+  },
+];
+
+// Northwind is the "approved & in progress" fixture client — gets the full
+// Phase 2/3 story (onboarding reviewed, plan approved) so test mode actually
+// exercises those pages. Aurora stays on the legacy pending-proposal path
+// (no onboarding/plan rows) to keep that fallback branch covered too.
+export const mockClientOnboarding: ClientOnboarding[] = [
+  {
+    id: "onboarding-northwind",
+    org_id: ORG_NORTHWIND_ID,
+    status: "reviewed",
+    answers: {
+      business_name: "Northwind Coffee Co.",
+      business_description: "Specialty cold brew roaster shipping direct-to-consumer.",
+      target_audience: "Coffee enthusiasts, 25-40, urban",
+      brand_voice: "Warm, a little irreverent, never corporate",
+      platforms: ["instagram", "tiktok"],
+      existing_handles: "@northwindcoffee",
+      goals: "Grow Instagram to 25k, launch a TikTok presence",
+      inspiration: "Partake Foods, Blank Street Coffee",
+      content_guidelines: "No stock photography, always feature real product",
+    },
+    submitted_at: "2026-08-12T00:00:00Z",
+    reviewed_at: "2026-08-13T00:00:00Z",
+    reviewed_by: "staff-morgan",
+    created_at: "2026-08-10T00:00:00Z",
+  },
+];
+
+export const mockPlans: Plan[] = [
+  {
+    id: "plan-northwind-1",
+    org_id: ORG_NORTHWIND_ID,
+    created_by: TEST_STAFF_ID,
+    status: "approved",
+    version: 1,
+    supersedes_plan_id: null,
+    total_price: 1278,
+    sent_at: "2026-08-14T00:00:00Z",
+    viewed_at: "2026-08-14T12:00:00Z",
+    responded_at: "2026-08-16T00:00:00Z",
+    created_at: "2026-08-13T00:00:00Z",
+  },
+];
+
+export const mockPlanItems: PlanItem[] = [
+  {
+    id: "plan-item-northwind-1",
+    plan_id: "plan-northwind-1",
+    service_id: "social-media-posts",
+    deliverable_label: "Instagram carousel batch",
+    quantity: 20,
+    frequency: "monthly",
+    platform: "instagram",
+    price: 179,
+    notes: null,
+  },
+  {
+    id: "plan-item-northwind-2",
+    plan_id: "plan-northwind-1",
+    service_id: "ugc-content",
+    deliverable_label: "Founder-led UGC videos",
+    quantity: 6,
+    frequency: "monthly",
+    platform: "tiktok",
+    price: 1099,
+    notes: "Cold brew launch focus for the first batch.",
   },
 ];
 

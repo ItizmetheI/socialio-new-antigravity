@@ -164,14 +164,55 @@ export default function DashboardHome() {
       )}
 
       {!needsOnboarding && isApproved && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {stageCounts.map(({ label, count }) => (
-            <div key={label} className="bg-surface-container border border-white/10 rounded-2xl p-6">
-              <div className="text-3xl font-bold text-white mb-1">{count}</div>
-              <div className="text-xs uppercase tracking-widest text-on-surface-variant font-bold">{label}</div>
+        <>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+            {stageCounts.map(({ label, count }) => (
+              <div key={label} className="bg-surface-container border border-white/10 rounded-2xl p-6">
+                <div className="text-3xl font-bold text-white mb-1">{count}</div>
+                <div className="text-xs uppercase tracking-widest text-on-surface-variant font-bold">{label}</div>
+              </div>
+            ))}
+          </div>
+
+          {requests.length === 0 ? (
+            <EmptyState
+              title="No requests yet"
+              description="Once work kicks off, requests will show up here."
+            />
+          ) : (
+            <div>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-bold text-white">Recent activity</h2>
+                <Link to="/app/requests" className="text-xs text-primary hover:underline">
+                  View all &rarr;
+                </Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                {[...requests]
+                  .sort((a, b) => b.updated_at.localeCompare(a.updated_at))
+                  .slice(0, 5)
+                  .map((request) => {
+                    const stageLabel = REQUEST_STAGES.find((s) => s.value === request.stage)?.label ?? request.stage;
+                    return (
+                      <Link
+                        key={request.id}
+                        to={`/app/requests/${request.id}`}
+                        className="bg-surface-container border border-white/10 hover:border-primary/30 rounded-2xl p-5 flex items-center justify-between gap-4 transition-colors"
+                      >
+                        <div>
+                          <div className="font-bold text-white text-sm mb-1">{request.title}</div>
+                          <div className="text-xs text-on-surface-variant">
+                            {stageLabel}
+                            {request.due_date && ` · Due ${new Date(request.due_date).toLocaleDateString()}`}
+                          </div>
+                        </div>
+                      </Link>
+                    );
+                  })}
+              </div>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   );
