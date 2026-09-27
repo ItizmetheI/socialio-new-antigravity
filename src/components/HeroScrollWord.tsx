@@ -10,9 +10,10 @@ import { SHOWCASE_MP4S } from "../data/showcaseVideos";
 const WORD = "SCROLL";
 const FONT_FAMILY = '"Bricolage Grotesque", sans-serif';
 const FONT_WEIGHT = 800;
-// Shared with DeviceScrollShowcase's opening overlay — the dive ends on this
-// exact full-screen gradient, and the phone section starts on it.
-export const HERO_GRADIENT_STOPS = ["#ff6b4a", "#842bd2"] as const;
+// The logo's own two colors (sampled from public/logo.png). Shared with
+// DeviceScrollShowcase's opening overlay — the dive ends on this exact
+// full-screen gradient, and the phone section starts on it.
+export const HERO_GRADIENT_STOPS = ["#1b75bc", "#652c91"] as const;
 // The dive completes at this point of the hero's scroll track; the rest is a
 // short hold before the gradient dissolves into the phone section.
 const ZOOM_END = 0.85;
@@ -283,24 +284,31 @@ export default function HeroScrollWord() {
           aria-hidden="true"
         />
 
-        <div className="relative z-20 h-full max-w-6xl mx-auto px-6 flex flex-col items-center justify-center text-center pt-16">
+        {/* Sizes key off viewport height as well as width so the whole block
+            fits under the fixed nav on short screens (docked laptop windows,
+            landscape phones) instead of sliding up behind it. */}
+        <div className="relative z-20 h-full max-w-6xl mx-auto px-6 flex flex-col items-center justify-center text-center pt-24 pb-6">
           <motion.h1
             style={{ opacity: chromeOpacity, y: chromeY }}
-            className="hero-display font-bold text-white tracking-tight leading-tight text-3xl sm:text-4xl md:text-5xl text-balance"
+            className="hero-display font-bold text-white tracking-tight leading-tight text-[clamp(1.5rem,min(6vw,6.5vh),3rem)] text-balance"
           >
             Content made to stop the <span className="sr-only">scroll.</span>
           </motion.h1>
 
-          <div ref={slotRef} className="w-full my-4 md:my-6" style={{ aspectRatio: ratio }} />
+          <div
+            ref={slotRef}
+            className="my-[2.5vh]"
+            style={{ aspectRatio: ratio, width: `min(100%, calc(${ratio} * 24vh))` }}
+          />
 
           <motion.div
             style={{ opacity: chromeOpacity, y: chromeY, pointerEvents: chromePointer }}
-            className="flex flex-col items-center gap-6"
+            className="flex flex-col items-center gap-[min(1.5rem,3vh)]"
           >
-            <p className="text-on-surface-variant text-lg leading-relaxed max-w-xl">
+            <p className="text-on-surface-variant text-base md:text-lg leading-relaxed max-w-xl [@media(max-height:560px)]:hidden">
               Posts, short-form video, UGC and SEO articles — made for your brand every month, for one flat price.
             </p>
-            <div className="flex flex-col sm:flex-row items-center gap-3">
+            <div className="flex flex-row flex-wrap justify-center items-center gap-3">
               <Magnetic>
                 <Link
                   to="/pricing"
