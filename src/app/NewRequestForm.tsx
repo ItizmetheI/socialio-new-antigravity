@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { supabase } from "../lib/supabase";
+import { localDateString } from "../lib/format";
 import { servicesData } from "../data/services";
 import type { Request } from "../lib/database.types";
 
@@ -24,7 +25,7 @@ export default function NewRequestForm({ orgId, profileId, onCreated, onCancel }
   const [dueDate, setDueDate] = useState("");
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
-  const today = new Date().toISOString().slice(0, 10);
+  const today = localDateString();
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();

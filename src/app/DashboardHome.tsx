@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { formatDate } from "../lib/format";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
@@ -203,7 +204,7 @@ export default function DashboardHome() {
                           <div className="font-bold text-white text-sm mb-1">{request.title}</div>
                           <div className="text-xs text-on-surface-variant">
                             {stageLabel}
-                            {request.due_date && ` · Due ${new Date(request.due_date).toLocaleDateString()}`}
+                            {request.due_date && ` · Due ${formatDate(request.due_date)}`}
                           </div>
                         </div>
                       </Link>

@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
-import { formatCents, formatDate } from "../lib/format";
+import { formatCents, formatDate, localDateString } from "../lib/format";
 import type { ClientOnboarding, ContactSubmission, Organization, Payment, Plan, Request } from "../lib/database.types";
 
 type LoadState = "loading" | "error" | "ready";
@@ -112,8 +112,8 @@ export default function OpsOverview() {
 
   const { orgs, requests, onboardings, plans, leads, payments } = data;
   const orgName = (id: string) => orgs.find((o) => o.id === id)?.name ?? "Unknown client";
-  const today = new Date().toISOString().slice(0, 10);
-  const soon = new Date(Date.now() + DUE_SOON_DAYS * 86400000).toISOString().slice(0, 10);
+  const today = localDateString();
+  const soon = localDateString(new Date(Date.now() + DUE_SOON_DAYS * 86400000));
   const overdue = requests.filter((r) => r.due_date && r.due_date < today);
   const dueSoon = requests.filter((r) => r.due_date && r.due_date >= today && r.due_date <= soon);
   const unassigned = requests.filter((r) => !r.assigned_to);

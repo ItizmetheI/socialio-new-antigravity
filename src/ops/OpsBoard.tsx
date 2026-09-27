@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { DndContext, useDroppable, useDraggable, type DragEndEvent } from "@dnd-kit/core";
 import { supabase } from "../lib/supabase";
+import { formatDate } from "../lib/format";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
@@ -38,7 +39,7 @@ function BoardCard({ request, orgName }: { request: Request; orgName: string }) 
         {request.title}
       </Link>
       {request.due_date && (
-        <div className="text-xs text-on-surface-variant">Due {new Date(request.due_date).toLocaleDateString()}</div>
+        <div className="text-xs text-on-surface-variant">Due {formatDate(request.due_date)}</div>
       )}
     </div>
   );
