@@ -9,15 +9,15 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 // the whole app at import time (this module loads eagerly via page imports, not just
 // when a Supabase-backed feature actually runs). Fall back to a syntactically valid
 // placeholder so the app boots; real calls then fail gracefully with a normal { error }.
-const isConfigured = supabaseUrl.startsWith('http') && supabaseAnonKey.length > 0;
+export const isSupabaseConfigured = supabaseUrl.startsWith('http') && supabaseAnonKey.length > 0;
 
-if (!isConfigured && !TEST_MODE) {
+if (!isSupabaseConfigured && !TEST_MODE) {
   console.warn('Missing Supabase environment variables. Please check your .env file.');
 }
 
 const realClient = createClient(
-  isConfigured ? supabaseUrl : 'https://placeholder.supabase.co',
-  isConfigured ? supabaseAnonKey : 'placeholder-anon-key'
+  isSupabaseConfigured ? supabaseUrl : 'https://placeholder.supabase.co',
+  isSupabaseConfigured ? supabaseAnonKey : 'placeholder-anon-key'
 );
 
 // TEST_MODE swaps in an in-memory fixture client (src/lib/testMode/) so the

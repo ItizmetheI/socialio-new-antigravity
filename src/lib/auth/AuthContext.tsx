@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import type { Session } from "@supabase/supabase-js";
-import { supabase } from "../supabase";
+import { supabase, isSupabaseConfigured } from "../supabase";
 import type { Profile } from "../database.types";
 import { TEST_MODE } from "../testMode/flag";
 import { TEST_IDENTITIES, getStoredTestIdentityKey, setStoredTestIdentityKey } from "../testMode/testAuth";
@@ -34,6 +34,19 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+// supabase-js reports an unreachable server as a bare "Failed to fetch",
+// which tells a person nothing. Say what's actually wrong.
+function authErrorMessage(error: { message: string } | null): string | null {
+  if (!error) return null;
+  if (!isSupabaseConfigured) {
+    return "Sign-in isn't set up on this copy of the site yet (its Supabase settings are missing).";
+  }
+  if (/failed to fetch|networkerror|load failed|network request failed/i.test(error.message)) {
+    return "Couldn't reach the sign-in server. Check your connection, turn off any ad or tracker blocker for this site, and try again.";
+  }
+  return error.message;
+}
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
@@ -103,8 +116,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setProfile(identity?.profile ?? null);
       return { error: null };
     }
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    return { error: error?.message ?? null };
+    const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+    return { error: authErrorMessage(error) };
   };
 
   const signUp = async (email: string, password: string, fullName: string) => {
@@ -116,21 +129,21 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // null when app_metadata has neither, which is exactly the state a
     // self-serve signup should land in until checkout links them to an org.
     const { error } = await supabase.auth.signUp({
-      email,
+      email: email.trim(),
       password,
-      options: { data: { full_name: fullName } },
+      options: { data: { full_name: fullName.trim() } },
     });
-    return { error: error?.message ?? null };
+    return { error: authErrorMessage(error) };
   };
 
   const resetPasswordForEmail = async (email: string) => {
     if (TEST_MODE) {
       return { error: "Password reset isn't available in test mode." };
     }
-    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
       redirectTo: `${window.location.origin}/app/reset-password`,
     });
-    return { error: error?.message ?? null };
+    return { error: authErrorMessage(error) };
   };
 
   const signOut = async () => {
