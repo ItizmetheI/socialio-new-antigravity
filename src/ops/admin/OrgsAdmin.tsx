@@ -66,7 +66,7 @@ export default function OrgsAdmin() {
   };
 
   return (
-    <div className="p-10 max-w-4xl">
+    <div className="p-5 md:p-10 max-w-4xl">
       <h1 className="hero-display font-bold text-3xl text-white mb-8">Organizations</h1>
 
       <div className="bg-surface-container border border-white/10 rounded-3xl p-8 mb-10">

@@ -101,7 +101,7 @@ export default function PlanView() {
 
   if (state === "loading") {
     return (
-      <div className="p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -109,7 +109,7 @@ export default function PlanView() {
 
   if (state === "error") {
     return (
-      <div className="p-10">
+      <div className="p-5 md:p-10">
         <ErrorBanner message="Couldn't load your plan. Try refreshing." />
       </div>
     );
@@ -117,7 +117,7 @@ export default function PlanView() {
 
   if (!plan) {
     return (
-      <div className="p-10">
+      <div className="p-5 md:p-10">
         <EmptyState
           title="No plan yet"
           description="Once we've reviewed your onboarding info, your curated plan will show up here."
@@ -129,7 +129,7 @@ export default function PlanView() {
   const canRespond = plan.status === "sent" || plan.status === "viewed";
 
   return (
-    <div className="p-10 max-w-3xl">
+    <div className="p-5 md:p-10 max-w-3xl">
       <div className="flex items-center justify-between mb-8">
         <h1 className="hero-display font-bold text-3xl text-white">Your plan{plan.version > 1 ? ` (v${plan.version})` : ""}</h1>
         <PlanStatusBadge status={plan.status} />

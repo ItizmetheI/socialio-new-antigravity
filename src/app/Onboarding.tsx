@@ -4,6 +4,8 @@ import { CheckCircle2 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
+import { useAuth } from "../lib/auth/AuthContext";
+import BrandAssets from "./BrandAssets";
 import type { ClientOnboarding, OnboardingAnswers } from "../lib/database.types";
 import type { ClientOutletContext } from "./ClientLayout";
 
@@ -70,6 +72,7 @@ const REQUIRED_KEYS = FIELD_CONFIG.filter((f) => f.required).map((f) => f.key);
 
 export default function Onboarding() {
   const { orgId } = useOutletContext<ClientOutletContext>();
+  const { profile } = useAuth();
   const [state, setState] = useState<LoadState>("loading");
   const [row, setRow] = useState<ClientOnboarding | null>(null);
   const [answers, setAnswers] = useState<OnboardingAnswers>({});
@@ -139,7 +142,7 @@ export default function Onboarding() {
 
   if (state === "loading") {
     return (
-      <div className="p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -147,7 +150,7 @@ export default function Onboarding() {
 
   if (state === "error") {
     return (
-      <div className="p-10">
+      <div className="p-5 md:p-10">
         <ErrorBanner message="Couldn't load onboarding. Try refreshing." />
       </div>
     );
@@ -156,7 +159,7 @@ export default function Onboarding() {
   const isLocked = row?.status === "reviewed";
 
   return (
-    <div className="p-10 max-w-2xl">
+    <div className="p-5 md:p-10 max-w-2xl">
       <div className="flex items-center justify-between mb-2">
         <h1 className="hero-display font-bold text-3xl text-white">Tell us about your business</h1>
       </div>
@@ -251,6 +254,8 @@ export default function Onboarding() {
           </div>
         )}
       </div>
+
+      {profile && <BrandAssets orgId={orgId} onboardingId={row?.id ?? null} profileId={profile.id} />}
     </div>
   );
 }

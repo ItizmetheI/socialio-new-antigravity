@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { Trash2 } from "lucide-react";
 import { supabase } from "../../lib/supabase";
 import { servicesData } from "../../data/services";
@@ -35,6 +36,8 @@ export default function PlanBuilder() {
   const { profile } = useAuth();
   const [state, setState] = useState<LoadState>("loading");
   const [orgs, setOrgs] = useState<Organization[]>([]);
+  // ?org= preselects a client when arriving from their client page.
+  const [searchParams] = useSearchParams();
   const [orgId, setOrgId] = useState("");
   const [existingPlan, setExistingPlan] = useState<Plan | null>(null);
   const [items, setItems] = useState<DraftItem[]>([]);
@@ -57,7 +60,8 @@ export default function PlanBuilder() {
         }
         const orgList = (data ?? []) as Organization[];
         setOrgs(orgList);
-        setOrgId(orgList[0]?.id ?? "");
+        const requested = searchParams.get("org");
+        setOrgId(orgList.some((o) => o.id === requested) ? requested! : orgList[0]?.id ?? "");
         setState("ready");
       });
     return () => {
@@ -152,7 +156,7 @@ export default function PlanBuilder() {
 
   if (state === "loading") {
     return (
-      <div className="p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -160,14 +164,14 @@ export default function PlanBuilder() {
 
   if (state === "error") {
     return (
-      <div className="p-10">
+      <div className="p-5 md:p-10">
         <ErrorBanner message="Couldn't load organizations. Try refreshing." />
       </div>
     );
   }
 
   return (
-    <div className="p-10 max-w-4xl">
+    <div className="p-5 md:p-10 max-w-4xl">
       <h1 className="hero-display font-bold text-3xl text-white mb-8">
         {isRevision ? "Revise plan" : "New plan"}
       </h1>

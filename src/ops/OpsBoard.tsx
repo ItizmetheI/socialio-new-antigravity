@@ -128,7 +128,7 @@ export default function OpsBoard() {
 
   if (state === "loading") {
     return (
-      <div className="p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -136,7 +136,7 @@ export default function OpsBoard() {
 
   if (state === "error") {
     return (
-      <div className="p-10">
+      <div className="p-5 md:p-10">
         <ErrorBanner message="Couldn't load the board. Try refreshing." />
       </div>
     );
@@ -144,14 +144,14 @@ export default function OpsBoard() {
 
   if (requests.length === 0) {
     return (
-      <div className="p-10">
+      <div className="p-5 md:p-10">
         <EmptyState title="No requests yet" description="Requests appear here once a client approves a proposal." />
       </div>
     );
   }
 
   return (
-    <div className="p-10">
+    <div className="p-5 md:p-10">
       <h1 className="hero-display font-bold text-3xl text-white mb-8">Board</h1>
       {actionError && (
         <div className="mb-6">

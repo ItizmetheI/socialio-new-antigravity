@@ -38,6 +38,10 @@ const TABLES: Record<string, Row[]> = {
   // the realistic starting state, and it lets these forms actually "succeed"
   // in test mode instead of failing on an unregistered table.
   orders: [],
+  order_items: [],
+  subscriptions: [],
+  payments: [],
+  onboarding_assets: [],
   contact_submissions: [],
   newsletter_signups: [],
 };
@@ -202,6 +206,11 @@ export const mockSupabaseClient = {
         // No real Storage bucket exists until Phase 5 — a preview upload
         // just succeeds so the deliverable insert that follows it can run.
         upload: async (path: string, _file: File) => ({ data: { path }, error: null }),
+        // No real files exist in test mode — links resolve to a blank page.
+        createSignedUrls: async (paths: string[], _expiresIn: number) => ({
+          data: paths.map((path) => ({ path, signedUrl: `about:blank#${encodeURIComponent(path)}`, error: null })),
+          error: null,
+        }),
       };
     },
   },

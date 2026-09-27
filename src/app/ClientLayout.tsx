@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
-import { LayoutDashboard, ClipboardList, FileText, ScrollText, KanbanSquare, Settings as SettingsIcon, LogOut } from "lucide-react";
-import Logo from "../components/Logo";
-import ThemeToggle from "../components/ThemeToggle";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
+import { LayoutDashboard, ClipboardList, FileText, ScrollText, KanbanSquare, CreditCard, Settings as SettingsIcon } from "lucide-react";
+import DashboardShell from "../components/DashboardShell";
 import { useAuth } from "../lib/auth/AuthContext";
 import RequireRole from "../lib/auth/RequireRole";
 import { supabase } from "../lib/supabase";
@@ -20,6 +19,7 @@ const BASE_NAV_ITEMS = [
 
 const TAIL_NAV_ITEMS = [
   { to: "/app/requests", label: "Requests", icon: KanbanSquare, end: false },
+  { to: "/app/billing", label: "Billing", icon: CreditCard, end: false },
   { to: "/app/settings", label: "Settings", icon: SettingsIcon, end: false },
 ];
 
@@ -80,51 +80,14 @@ function ClientLayoutInner() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex">
-      <aside className="w-64 border-r border-white/10 flex flex-col shrink-0">
-        <div className="px-6 py-8">
-          <Logo />
-        </div>
-        <nav className="flex-1 px-4 flex flex-col gap-1">
-          {navItems.map(({ to, label, icon: Icon, end }) => (
-            <NavLink
-              key={to}
-              to={to}
-              end={end}
-              className={({ isActive }) =>
-                `flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold transition-colors ${
-                  isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-on-surface-variant hover:text-white hover:bg-white/5"
-                }`
-              }
-            >
-              <Icon className="w-4 h-4" />
-              {label}
-            </NavLink>
-          ))}
-        </nav>
-        <div className="px-4 py-6 border-t border-white/10">
-          <div className="flex items-center justify-between px-4 mb-3">
-            <div className="min-w-0">
-              <div className="text-sm font-bold text-white truncate">{org?.name ?? "..."}</div>
-              <div className="text-xs text-on-surface-variant truncate">{profile.full_name ?? ""}</div>
-            </div>
-            <ThemeToggle className="shrink-0" />
-          </div>
-          <button
-            onClick={handleSignOut}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-bold text-on-surface-variant hover:text-white hover:bg-white/5 transition-colors"
-          >
-            <LogOut className="w-4 h-4" />
-            Sign out
-          </button>
-        </div>
-      </aside>
-      <main className="flex-1 min-w-0">
-        <Outlet context={{ orgId: profile.org_id, orgName: org?.name ?? "" } satisfies ClientOutletContext} />
-      </main>
-    </div>
+    <DashboardShell
+      sections={[{ items: navItems }]}
+      accountName={org?.name ?? "..."}
+      accountDetail={profile.full_name ?? ""}
+      onSignOut={handleSignOut}
+    >
+      <Outlet context={{ orgId: profile.org_id, orgName: org?.name ?? "" } satisfies ClientOutletContext} />
+    </DashboardShell>
   );
 }
 

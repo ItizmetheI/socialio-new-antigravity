@@ -1,13 +1,75 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { CheckCircle2, RotateCcw } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
+import DeliverableList from "../components/DeliverableList";
 import { useAuth } from "../lib/auth/AuthContext";
 import { REQUEST_STAGES } from "../lib/database.types";
-import type { Request, Comment, Deliverable } from "../lib/database.types";
+import type { Request, Comment, Deliverable, RequestStage } from "../lib/database.types";
 
 type LoadState = "loading" | "error" | "ready";
+
+// Work in "review" is waiting on the client: approve it, or send it back
+// with a note (the note is required so the team knows what to change).
+function ReviewPanel({ onDecide }: { onDecide: (stage: RequestStage, note: string) => Promise<string | null> }) {
+  const [mode, setMode] = useState<"idle" | "changes">("idle");
+  const [note, setNote] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  const decide = async (stage: RequestStage) => {
+    if (stage === "in_progress" && !note.trim()) {
+      setError("Tell us what to change so we can get it right.");
+      return;
+    }
+    setIsSaving(true);
+    setError("");
+    const failure = await onDecide(stage, note.trim());
+    setIsSaving(false);
+    if (failure) setError(failure);
+  };
+
+  return (
+    <div className="mb-10 rounded-3xl border border-primary/30 bg-primary/5 p-6">
+      <h2 className="font-bold text-white mb-1">Ready for your review</h2>
+      <p className="text-sm text-on-surface-variant mb-5">Look through the files below, then approve or ask for changes.</p>
+      {mode === "changes" && (
+        <textarea
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="What should we change?"
+          rows={3}
+          autoFocus
+          className="mb-4 bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors resize-none"
+        />
+      )}
+      {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
+      <div className="flex flex-wrap gap-3">
+        {mode === "idle" ? (
+          <>
+            <button onClick={() => decide("delivered")} disabled={isSaving} className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-background font-bold text-sm hover:bg-primary hover:text-[#fff] transition-colors disabled:opacity-50">
+              <CheckCircle2 className="w-4 h-4" /> {isSaving ? "Saving..." : "Approve"}
+            </button>
+            <button onClick={() => setMode("changes")} disabled={isSaving} className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-white/15 text-white font-bold text-sm hover:bg-white/5 transition-colors disabled:opacity-50">
+              <RotateCcw className="w-4 h-4" /> Request changes
+            </button>
+          </>
+        ) : (
+          <>
+            <button onClick={() => decide("in_progress")} disabled={isSaving} className="px-5 py-3 rounded-xl bg-white text-background font-bold text-sm hover:bg-primary hover:text-[#fff] transition-colors disabled:opacity-50">
+              {isSaving ? "Sending..." : "Send changes"}
+            </button>
+            <button onClick={() => { setMode("idle"); setError(""); }} disabled={isSaving} className="px-5 py-3 rounded-xl border border-white/15 text-white font-bold text-sm hover:bg-white/5 transition-colors">
+              Cancel
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function RequestDetail() {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +80,7 @@ export default function RequestDetail() {
   const [deliverables, setDeliverables] = useState<Deliverable[]>([]);
   const [newComment, setNewComment] = useState("");
   const [isPosting, setIsPosting] = useState(false);
+  const [commentError, setCommentError] = useState("");
 
   const load = useCallback(async () => {
     if (!id) return;
@@ -52,15 +115,32 @@ export default function RequestDetail() {
       visibility: "client",
     });
     setIsPosting(false);
-    if (!error) {
-      setNewComment("");
-      await load();
+    if (error) {
+      setCommentError("Couldn't post your comment. Try again.");
+      return;
     }
+    setCommentError("");
+    setNewComment("");
+    await load();
+  };
+
+  const decide = async (stage: RequestStage, note: string): Promise<string | null> => {
+    if (!id || !profile) return "You're signed out. Sign in and try again.";
+    if (note) {
+      const { error: noteError } = await supabase
+        .from("comments")
+        .insert({ request_id: id, author_id: profile.id, body: note, visibility: "client" });
+      if (noteError) return "Couldn't save your note. Try again.";
+    }
+    const { error } = await supabase.from("requests").update({ stage }).eq("id", id);
+    if (error) return "Couldn't update this request. Try again.";
+    await load();
+    return null;
   };
 
   if (state === "loading") {
     return (
-      <div className="p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -68,7 +148,7 @@ export default function RequestDetail() {
 
   if (state === "error" || !request) {
     return (
-      <div className="p-10">
+      <div className="p-5 md:p-10">
         <ErrorBanner message="Couldn't load this request." />
       </div>
     );
@@ -77,26 +157,19 @@ export default function RequestDetail() {
   const stageLabel = REQUEST_STAGES.find((s) => s.value === request.stage)?.label ?? request.stage;
 
   return (
-    <div className="p-10 max-w-3xl">
+    <div className="p-5 md:p-10 max-w-3xl">
       <div className="mb-8">
         <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">{stageLabel}</div>
         <h1 className="hero-display font-bold text-3xl text-white mb-3">{request.title}</h1>
         {request.description && <p className="text-on-surface-variant">{request.description}</p>}
       </div>
 
+      {request.stage === "review" && <ReviewPanel onDecide={decide} />}
+
       {deliverables.length > 0 && (
         <div className="mb-10">
           <h2 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Deliverables</h2>
-          <div className="flex flex-col gap-3">
-            {deliverables.map((deliverable) => (
-              <div
-                key={deliverable.id}
-                className="bg-surface-container border border-white/10 rounded-2xl px-5 py-4 text-sm text-white"
-              >
-                {deliverable.file_path.split("/").pop()}
-              </div>
-            ))}
-          </div>
+          <DeliverableList deliverables={deliverables} />
         </div>
       )}
 
@@ -128,6 +201,7 @@ export default function RequestDetail() {
           >
             {isPosting ? "Posting..." : "Post comment"}
           </button>
+          {commentError && <p className="text-red-400 text-sm">{commentError}</p>}
         </form>
       </div>
     </div>

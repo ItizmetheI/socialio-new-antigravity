@@ -34,10 +34,14 @@ const ProposalView = lazy(() => import('./app/ProposalView'));
 const RequestBoard = lazy(() => import('./app/RequestBoard'));
 const RequestDetail = lazy(() => import('./app/RequestDetail'));
 const Settings = lazy(() => import('./app/Settings'));
+const Billing = lazy(() => import('./app/Billing'));
 const OpsLayout = lazy(() => import('./ops/OpsLayout'));
 const OpsBoard = lazy(() => import('./ops/OpsBoard'));
+const OpsOverview = lazy(() => import('./ops/OpsOverview'));
 const ClientsList = lazy(() => import('./ops/ClientsList'));
 const OnboardingReview = lazy(() => import('./ops/OnboardingReview'));
+const LeadsInbox = lazy(() => import('./ops/LeadsInbox'));
+const ClientDetail = lazy(() => import('./ops/ClientDetail'));
 const OpsRequestDetail = lazy(() => import('./ops/RequestDetail'));
 const OrgsAdmin = lazy(() => import('./ops/admin/OrgsAdmin'));
 const ProposalBuilder = lazy(() => import('./ops/admin/ProposalBuilder'));
@@ -144,12 +148,16 @@ function DashboardRoutes() {
           <Route path="proposal" element={<ProposalView />} />
           <Route path="requests" element={<RequestBoard />} />
           <Route path="requests/:id" element={<RequestDetail />} />
+          <Route path="billing" element={<Billing />} />
           <Route path="settings" element={<Settings />} />
         </Route>
         <Route path="/ops" element={<OpsLayout />}>
-          <Route index element={<OpsBoard />} />
+          <Route index element={<OpsOverview />} />
+          <Route path="board" element={<OpsBoard />} />
           <Route path="clients" element={<ClientsList />} />
+          <Route path="clients/:orgId" element={<ClientDetail />} />
           <Route path="onboarding" element={<OnboardingReview />} />
+          <Route path="leads" element={<LeadsInbox />} />
           <Route path="admin/plans" element={<PlanBuilder />} />
           <Route path="requests/:id" element={<OpsRequestDetail />} />
           <Route

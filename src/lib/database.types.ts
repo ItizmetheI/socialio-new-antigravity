@@ -215,3 +215,23 @@ export const REQUEST_STAGES: { value: RequestStage; label: string }[] = [
   { value: "review", label: "Review" },
   { value: "delivered", label: "Delivered" },
 ];
+
+export type LeadStatus = "new" | "contacted" | "closed";
+
+export interface ContactSubmission {
+  id: string;
+  created_at: string;
+  name: string;
+  email: string;
+  company: string | null;
+  service: string | null;
+  budget: string | null;
+  message: string;
+  status: LeadStatus;
+}
+
+export interface NewsletterSignup {
+  id: string;
+  email: string;
+  created_at: string;
+}

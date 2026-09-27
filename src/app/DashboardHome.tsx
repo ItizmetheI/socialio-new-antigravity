@@ -59,7 +59,7 @@ export default function DashboardHome() {
 
   if (state === "loading") {
     return (
-      <div className="p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -67,7 +67,7 @@ export default function DashboardHome() {
 
   if (state === "error") {
     return (
-      <div className="p-10">
+      <div className="p-5 md:p-10">
         <ErrorBanner message="Couldn't load your dashboard. Try refreshing." />
       </div>
     );
@@ -86,7 +86,7 @@ export default function DashboardHome() {
   const isApproved = plan?.status === "approved" || (!plan && proposal?.status === "approved");
 
   return (
-    <div className="p-10 max-w-5xl">
+    <div className="p-5 md:p-10 max-w-5xl">
       <h1 className="hero-display font-bold text-3xl text-white mb-8">
         {needsOnboarding
           ? "Let's get to know your business."

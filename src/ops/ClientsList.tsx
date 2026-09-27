@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
@@ -49,7 +50,7 @@ export default function ClientsList() {
 
   if (state === "loading") {
     return (
-      <div className="p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -57,7 +58,7 @@ export default function ClientsList() {
 
   if (state === "error") {
     return (
-      <div className="p-10">
+      <div className="p-5 md:p-10">
         <ErrorBanner message="Couldn't load clients. Try refreshing." />
       </div>
     );
@@ -65,20 +66,21 @@ export default function ClientsList() {
 
   if (rows.length === 0) {
     return (
-      <div className="p-10">
+      <div className="p-5 md:p-10">
         <EmptyState title="No clients yet" description="New organizations show up here once created in Admin." />
       </div>
     );
   }
 
   return (
-    <div className="p-10">
+    <div className="p-5 md:p-10">
       <h1 className="hero-display font-bold text-3xl text-white mb-8">Clients</h1>
       <div className="bg-surface-container border border-white/10 rounded-3xl overflow-hidden">
         {rows.map(({ org, latestPlan, latestProposal }, index) => (
-          <div
+          <Link
             key={org.id}
-            className={`flex items-center justify-between px-8 py-6 ${
+            to={`/ops/clients/${org.id}`}
+            className={`flex items-center justify-between px-8 py-6 hover:bg-white/[0.03] transition-colors ${
               index !== rows.length - 1 ? "border-b border-white/5" : ""
             }`}
           >
@@ -97,7 +99,7 @@ export default function ClientsList() {
                 No plan yet
               </span>
             )}
-          </div>
+          </Link>
         ))}
       </div>
     </div>

@@ -4,9 +4,10 @@ import { Upload } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
+import DeliverableList, { DELIVERABLES_BUCKET, storagePathFor } from "../components/DeliverableList";
 import { useAuth } from "../lib/auth/AuthContext";
 import { REQUEST_STAGES } from "../lib/database.types";
-import type { Request, Comment, Deliverable, RequestStage, CommentVisibility, Organization } from "../lib/database.types";
+import type { Request, Comment, Deliverable, RequestStage, CommentVisibility, Organization, Profile } from "../lib/database.types";
 
 type LoadState = "loading" | "error" | "ready";
 
@@ -24,6 +25,8 @@ export default function RequestDetail() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const [isChangingStage, setIsChangingStage] = useState(false);
+  const [staff, setStaff] = useState<Profile[]>([]);
+  const [assignError, setAssignError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const load = useCallback(async () => {
@@ -43,12 +46,12 @@ export default function RequestDetail() {
     setComments((commentsRes.data ?? []) as Comment[]);
     setDeliverables((deliverablesRes.data ?? []) as Deliverable[]);
 
-    const { data: orgData } = await supabase
-      .from("organizations")
-      .select("*")
-      .eq("id", requestData.org_id)
-      .single();
+    const [{ data: orgData }, { data: staffData }] = await Promise.all([
+      supabase.from("organizations").select("*").eq("id", requestData.org_id).single(),
+      supabase.from("profiles").select("*").in("role", ["internal", "admin"]).eq("is_active", true),
+    ]);
     setOrg(orgData as Organization | null);
+    setStaff((staffData ?? []) as Profile[]);
     setState("ready");
   }, [id]);
 
@@ -83,13 +86,25 @@ export default function RequestDetail() {
     }
   };
 
+  const assign = async (assignee: string) => {
+    if (!id || !request) return;
+    setAssignError("");
+    const assignedTo = assignee || null;
+    const { error } = await supabase.from("requests").update({ assigned_to: assignedTo }).eq("id", id);
+    if (error) {
+      setAssignError(error.message);
+      return;
+    }
+    setRequest({ ...request, assigned_to: assignedTo });
+  };
+
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file || !request || !profile) return;
     setIsUploading(true);
     setUploadError("");
-    const filePath = `${request.org_id}/${request.id}/${file.name}`;
-    const { error: uploadErr } = await supabase.storage.from("deliverables").upload(filePath, file);
+    const filePath = storagePathFor(request.org_id, request.id, file.name);
+    const { error: uploadErr } = await supabase.storage.from(DELIVERABLES_BUCKET).upload(filePath, file);
     if (uploadErr) {
       setIsUploading(false);
       setUploadError(uploadErr.message);
@@ -111,7 +126,7 @@ export default function RequestDetail() {
 
   if (state === "loading") {
     return (
-      <div className="p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -119,19 +134,20 @@ export default function RequestDetail() {
 
   if (state === "error" || !request) {
     return (
-      <div className="p-10">
+      <div className="p-5 md:p-10">
         <ErrorBanner message="Couldn't load this request." />
       </div>
     );
   }
 
   return (
-    <div className="p-10 max-w-3xl">
+    <div className="p-5 md:p-10 max-w-3xl">
       <div className="mb-8">
         <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">{org?.name ?? "—"}</div>
         <h1 className="hero-display font-bold text-3xl text-white mb-3">{request.title}</h1>
         {request.description && <p className="text-on-surface-variant mb-4">{request.description}</p>}
         <select
+          aria-label="Stage"
           value={request.stage}
           onChange={(e) => changeStage(e.target.value as RequestStage)}
           disabled={isChangingStage}
@@ -143,20 +159,26 @@ export default function RequestDetail() {
             </option>
           ))}
         </select>
+        <select
+          value={request.assigned_to ?? ""}
+          onChange={(e) => assign(e.target.value)}
+          aria-label="Assigned to"
+          className="ml-3 bg-background border border-white/10 rounded-xl px-4 py-2 text-white text-sm font-bold focus:outline-none focus:border-primary transition-colors"
+        >
+          <option value="">Unassigned</option>
+          {staff.map((member) => (
+            <option key={member.id} value={member.id}>
+              {member.full_name ?? "Unnamed teammate"}
+            </option>
+          ))}
+        </select>
+        {assignError && <div className="mt-3"><ErrorBanner message={assignError} /></div>}
       </div>
 
       <div className="mb-10">
         <h2 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Deliverables</h2>
-        <div className="flex flex-col gap-3 mb-4">
-          {deliverables.length === 0 && <p className="text-on-surface-variant text-sm">Nothing uploaded yet.</p>}
-          {deliverables.map((deliverable) => (
-            <div
-              key={deliverable.id}
-              className="bg-surface-container border border-white/10 rounded-2xl px-5 py-4 text-sm text-white"
-            >
-              {deliverable.file_path.split("/").pop()}
-            </div>
-          ))}
+        <div className="mb-4">
+          <DeliverableList deliverables={deliverables} emptyText="Nothing uploaded yet." />
         </div>
         {uploadError && (
           <div className="mb-4">

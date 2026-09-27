@@ -7,6 +7,9 @@ import ErrorBanner from "../components/ErrorBanner";
 import { REQUEST_STAGES } from "../lib/database.types";
 import type { Request } from "../lib/database.types";
 import type { ClientOutletContext } from "./ClientLayout";
+import { Plus } from "lucide-react";
+import { useAuth } from "../lib/auth/AuthContext";
+import NewRequestForm from "./NewRequestForm";
 
 type LoadState = "loading" | "error" | "ready";
 
@@ -14,6 +17,8 @@ export default function RequestBoard() {
   const { orgId } = useOutletContext<ClientOutletContext>();
   const [state, setState] = useState<LoadState>("loading");
   const [requests, setRequests] = useState<Request[]>([]);
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const { profile } = useAuth();
 
   useEffect(() => {
     let isMounted = true;
@@ -39,7 +44,7 @@ export default function RequestBoard() {
 
   if (state === "loading") {
     return (
-      <div className="p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -47,26 +52,46 @@ export default function RequestBoard() {
 
   if (state === "error") {
     return (
-      <div className="p-10">
+      <div className="p-5 md:p-10">
         <ErrorBanner message="Couldn't load your requests. Try refreshing." />
       </div>
     );
   }
 
-  if (requests.length === 0) {
-    return (
-      <div className="p-10">
+  return (
+    <div className="p-5 md:p-10">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <h1 className="hero-display font-bold text-3xl text-white">Requests</h1>
+        {!isFormOpen && profile && (
+          <button
+            onClick={() => setIsFormOpen(true)}
+            className="inline-flex items-center gap-2 px-5 py-3 bg-white text-background hover:bg-primary hover:text-[#fff] rounded-xl font-bold text-sm transition-colors"
+          >
+            <Plus className="w-4 h-4" /> New request
+          </button>
+        )}
+      </div>
+
+      {isFormOpen && profile && (
+        <NewRequestForm
+          orgId={orgId}
+          profileId={profile.id}
+          onCancel={() => setIsFormOpen(false)}
+          onCreated={(created) => {
+            setRequests((current) => [created, ...current]);
+            setIsFormOpen(false);
+          }}
+        />
+      )}
+
+      {requests.length === 0 && !isFormOpen && (
         <EmptyState
           title="No requests yet"
-          description="Once your proposal is approved, work items will show up here."
+          description="Send us your first request, or wait for work from your approved plan to show up here."
         />
-      </div>
-    );
-  }
+      )}
 
-  return (
-    <div className="p-10">
-      <h1 className="hero-display font-bold text-3xl text-white mb-8">Requests</h1>
+      {requests.length > 0 && (
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {REQUEST_STAGES.map(({ value, label }) => {
           const stageRequests = requests.filter((r) => r.stage === value);
@@ -95,6 +120,7 @@ export default function RequestBoard() {
           );
         })}
       </div>
+      )}
     </div>
   );
 }

@@ -104,7 +104,7 @@ export default function ProposalBuilder() {
 
   if (state === "loading") {
     return (
-      <div className="p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -112,14 +112,14 @@ export default function ProposalBuilder() {
 
   if (state === "error") {
     return (
-      <div className="p-10">
+      <div className="p-5 md:p-10">
         <ErrorBanner message="Couldn't load organizations. Try refreshing." />
       </div>
     );
   }
 
   return (
-    <div className="p-10 max-w-4xl">
+    <div className="p-5 md:p-10 max-w-4xl">
       <h1 className="hero-display font-bold text-3xl text-white mb-8">New proposal</h1>
 
       <div className="mb-8">
