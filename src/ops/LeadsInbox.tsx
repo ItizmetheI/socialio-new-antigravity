@@ -64,7 +64,13 @@ export default function LeadsInbox() {
   };
 
   const copyEmails = async () => {
-    await navigator.clipboard.writeText(signups.map((s) => s.email).join(", "));
+    try {
+      await navigator.clipboard.writeText(signups.map((s) => s.email).join(", "));
+    } catch {
+      setUpdateError("Your browser blocked copying. Select the emails below and copy them manually.");
+      return;
+    }
+    setUpdateError("");
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

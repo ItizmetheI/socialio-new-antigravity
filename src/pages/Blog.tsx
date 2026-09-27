@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { motion } from "motion/react";
 import { Calendar, Clock, CheckCircle2 } from "lucide-react";
-import { supabase } from "../lib/supabase";
+import { subscribeToNewsletter } from "../lib/newsletter";
 
 const posts = [
   {
@@ -68,13 +68,13 @@ export default function Blog() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!email.includes("@") || isSubmitting) return;
+    if (isSubmitting) return;
     setError("");
     setIsSubmitting(true);
-    const { error: insertError } = await supabase.from("newsletter_signups").insert({ email });
+    const failure = await subscribeToNewsletter(email);
     setIsSubmitting(false);
-    if (insertError && insertError.code !== "23505") {
-      setError("Something went wrong. Try again.");
+    if (failure) {
+      setError(failure);
       return;
     }
     setSubmitted(true);

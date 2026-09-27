@@ -3,7 +3,7 @@ import { servicesData } from "../data/services";
 import { Facebook, Instagram, Mail, ArrowRight, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
 import Logo from "./Logo";
-import { supabase } from "../lib/supabase";
+import { subscribeToNewsletter } from "../lib/newsletter";
 
 export default function Footer() {
   const socialCategories = servicesData.filter(s => s.category === "Social Media");
@@ -15,15 +15,13 @@ export default function Footer() {
   const [error, setError] = useState("");
 
   const handleSubmit = async () => {
-    if (!email.includes("@") || isSubmitting) return;
+    if (isSubmitting) return;
     setError("");
     setIsSubmitting(true);
-    const { error: insertError } = await supabase.from("newsletter_signups").insert({ email });
+    const failure = await subscribeToNewsletter(email);
     setIsSubmitting(false);
-    // Treat a duplicate email (already subscribed) as success from the
-    // user's point of view — they don't need to know they'd already signed up.
-    if (insertError && insertError.code !== "23505") {
-      setError("Something went wrong. Try again.");
+    if (failure) {
+      setError(failure);
       return;
     }
     setSubmitted(true);
@@ -55,6 +53,7 @@ export default function Footer() {
                          <input
                            type="email"
                            placeholder="Email address"
+                           aria-label="Email address"
                            value={email}
                            onChange={(e) => setEmail(e.target.value)}
                            onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
@@ -63,6 +62,7 @@ export default function Footer() {
                          <button
                            onClick={handleSubmit}
                            disabled={isSubmitting}
+                           aria-label="Subscribe to the newsletter"
                            className="text-white hover:text-primary transition-colors font-bold type-level-4 flex items-center justify-center px-2 disabled:opacity-50"
                          >
                            <ArrowRight className="w-5 h-5" />
