@@ -4,6 +4,7 @@ import { motion, useReducedMotion, useScroll, useTransform, type MotionValue } f
 import { useLenis } from "lenis/react";
 import { ArrowRight } from "lucide-react";
 import Magnetic from "./Magnetic";
+import { useScrollRange } from "../lib/useScrollRange";
 import { SHOWCASE_MP4S } from "../data/showcaseVideos";
 
 const WORD = "SCROLL";
@@ -226,14 +227,14 @@ export default function HeroScrollWord() {
   // dissolve in lockstep and the handoff has no seam.
   const { scrollYProgress: exitProgress } = useScroll({ target: sectionRef, offset: ["end end", "end start"] });
 
-  const chromeOpacity = useTransform(scrollYProgress, [0, 0.12], [1, 0]);
+  const chromeOpacity = useScrollRange(scrollYProgress, [0, 0.12], [1, 0]);
   const chromeY = useTransform(scrollYProgress, [0, 0.12], [0, -24]);
   const chromePointer = useTransform(scrollYProgress, (v) => (v > 0.1 ? "none" : "auto"));
   // The clip cards sit "closer to the camera": scaling their container about
   // the viewport center flies them outward past the viewer.
   const cardsScale = useTransform(scrollYProgress, (v) => Math.pow(5, Math.min(v / 0.5, 1)));
-  const cardsOpacity = useTransform(scrollYProgress, [0.3, 0.5], [1, 0]);
-  const wordExitOpacity = useTransform(exitProgress, [0, 0.6], [1, 0]);
+  const cardsOpacity = useScrollRange(scrollYProgress, [0.3, 0.5], [1, 0]);
+  const wordExitOpacity = useScrollRange(exitProgress, [0, 0.6], [1, 0]);
 
   useWordCanvas(canvasRef, slotRef, scrollYProgress, animate, setRatio);
 

@@ -2,6 +2,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from "motion/react"
 import { useRef, useState } from "react";
 import { Heart, MessageCircle, Share2, Bookmark } from "lucide-react";
 import Magnetic from "./Magnetic";
+import { useScrollRange } from "../lib/useScrollRange";
 import { HERO_GRADIENT_STOPS } from "./HeroScrollWord";
 
 // A scroll-driven cinematic sequence: a phone scrolls through three reels,
@@ -28,7 +29,7 @@ export default function DeviceScrollShowcase() {
   // range the hero uses to fade its own — no seam between the two.
   const reduceMotion = useReducedMotion();
   const { scrollYProgress: entryProgress } = useScroll({ target: containerRef, offset: ["start end", "start start"] });
-  const handoffOpacity = useTransform(entryProgress, [0, 0.6], [1, 0]);
+  const handoffOpacity = useScrollRange(entryProgress, [0, 0.6], [1, 0]);
 
   // 1. Entrance (0 - 0.15)
   const phoneRotateX = useTransform(smoothProgress, [0, 0.15], [45, 0]);
@@ -51,7 +52,9 @@ export default function DeviceScrollShowcase() {
   const phoneScale = useTransform(smoothProgress, [0.62, 0.72, 0.82, 0.9], [1, 1.6, 3.5, 9]);
 
   // 4. Wordmark inside the last reel fades as the zoom takes over.
-  const textOpacity = useTransform(smoothProgress, [0.7, 0.8], [1, 0]);
+  const textOpacity = useScrollRange(smoothProgress, [0.7, 0.8], [1, 0]);
+  const phaseTextOpacity = useScrollRange(smoothProgress, [0.05, 0.15, 0.6, 0.65], [0, 1, 1, 0]);
+  const islandOpacity = useScrollRange(smoothProgress, [0.6, 0.65], [1, 0]);
   const textScale = useTransform(smoothProgress, [0.62, 0.8], [1, 1.3]);
 
   return (
@@ -69,7 +72,7 @@ export default function DeviceScrollShowcase() {
 
         {/* Phase text */}
         <motion.div
-          style={{ opacity: useTransform(smoothProgress, [0.05, 0.15, 0.6, 0.65], [0, 1, 1, 0]) }}
+          style={{ opacity: phaseTextOpacity }}
           className="absolute top-16 max-w-2xl text-center z-0 px-6"
         >
           <p className="hero-display font-bold text-[clamp(1.5rem,4vw,2.5rem)] text-white tracking-tight text-balance">
@@ -85,13 +88,13 @@ export default function DeviceScrollShowcase() {
           <div className="relative w-full h-full rounded-[44px] bg-background overflow-hidden">
             {/* Glass glare */}
             <motion.div
-              style={{ top: glareY }}
+              style={{ top: glareY, opacity: islandOpacity }}
               className="absolute left-0 right-0 h-[150%] bg-gradient-to-b from-transparent via-white/[0.06] to-transparent -rotate-12 pointer-events-none z-40"
             />
 
             {/* Dynamic Island */}
             <motion.div
-              style={{ opacity: useTransform(smoothProgress, [0.6, 0.65], [1, 0]) }}
+              style={{ opacity: islandOpacity }}
               className="absolute top-3 left-1/2 -translate-x-1/2 w-[110px] h-[32px] bg-black rounded-[20px] z-30 shadow-sm flex items-center justify-end px-3"
             >
               <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse opacity-80" />
