@@ -5,15 +5,15 @@ import Logo from "./Logo";
 // site already had a fake LIVE_EVENTS ticker removed earlier for reading as
 // AI-template slop; a marquee of fabricated stats here would be the same
 // mistake). Reuses the reel color language from DeviceScrollShowcase
-// (cream/coral/gradient blocks) as pure visual rhythm, not simulated data.
+// (cream/brand-blue/brand-purple blocks) as pure visual rhythm, not simulated data.
 // Every bg color here is picked for contrast against the panel's own
 // near-black background (#0c0712) — the first version used a near-black
 // accent gradient that blended invisibly into the panel and read as a
 // broken/empty layout.
 const BLOCKS = [
   { icon: PenTool, label: "Social Media Posts", bg: "#EAE7E0", fg: "#1a1a1a" },
-  { icon: Video, label: "Short-Form Videos", bg: "#ff6b4a", fg: "#ffffff" },
-  { icon: TrendingUp, label: "Instagram Growth", bg: "#842bd2", fg: "#f0dbff" },
+  { icon: Video, label: "Short-Form Videos", bg: "#1b75bc", fg: "#ffffff" },
+  { icon: TrendingUp, label: "Instagram Growth", bg: "#652c91", fg: "#f0dbff" },
   { icon: Search, label: "SEO & Backlinks", bg: "#1c5f60", fg: "#ffffff" },
 ];
 

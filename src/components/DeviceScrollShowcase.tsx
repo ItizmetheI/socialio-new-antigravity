@@ -111,8 +111,8 @@ export default function DeviceScrollShowcase() {
                 <ReelOverlay dark />
               </div>
 
-              {/* Reel 2 — coral block */}
-              <div className="w-full h-1/3 bg-[#ff6b4a] relative flex items-center justify-center p-6 overflow-hidden">
+              {/* Reel 2 — brand blue block (logo colour, matches the hero gradient) */}
+              <div className="w-full h-1/3 bg-[#1b75bc] relative flex items-center justify-center p-6 overflow-hidden">
                 <div className="relative z-10 text-center">
                   <h3 className="hero-display text-5xl font-bold text-white tracking-tighter mb-2">Engage</h3>
                   <p className="text-sm font-bold text-white/70 uppercase tracking-widest">The Mind</p>
