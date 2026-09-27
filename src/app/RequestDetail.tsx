@@ -82,9 +82,10 @@ export default function RequestDetail() {
   const [isPosting, setIsPosting] = useState(false);
   const [commentError, setCommentError] = useState("");
 
-  const load = useCallback(async () => {
+  // isRefresh: reload after posting without swapping the page for a spinner.
+  const load = useCallback(async (isRefresh = false) => {
     if (!id) return;
-    setState("loading");
+    if (!isRefresh) setState("loading");
     const [requestRes, commentsRes, deliverablesRes] = await Promise.all([
       supabase.from("requests").select("*").eq("id", id).single(),
       supabase.from("comments").select("*").eq("request_id", id).order("created_at", { ascending: true }),
@@ -121,7 +122,7 @@ export default function RequestDetail() {
     }
     setCommentError("");
     setNewComment("");
-    await load();
+    await load(true);
   };
 
   const decide = async (stage: RequestStage, note: string): Promise<string | null> => {
@@ -134,7 +135,7 @@ export default function RequestDetail() {
     }
     const { error } = await supabase.from("requests").update({ stage }).eq("id", id);
     if (error) return "Couldn't update this request. Try again.";
-    await load();
+    await load(true);
     return null;
   };
 

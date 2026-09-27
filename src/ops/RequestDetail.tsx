@@ -27,11 +27,14 @@ export default function RequestDetail() {
   const [isChangingStage, setIsChangingStage] = useState(false);
   const [staff, setStaff] = useState<Profile[]>([]);
   const [assignError, setAssignError] = useState("");
+  const [actionError, setActionError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const load = useCallback(async () => {
+  // isRefresh: reload after an action without swapping the page for a
+  // spinner (which also threw away the scroll position).
+  const load = useCallback(async (isRefresh = false) => {
     if (!id) return;
-    setState("loading");
+    if (!isRefresh) setState("loading");
     const [requestRes, commentsRes, deliverablesRes] = await Promise.all([
       supabase.from("requests").select("*").eq("id", id).single(),
       supabase.from("comments").select("*").eq("request_id", id).order("created_at", { ascending: true }),
@@ -70,10 +73,13 @@ export default function RequestDetail() {
       visibility: commentVisibility,
     });
     setIsPosting(false);
-    if (!error) {
-      setNewComment("");
-      await load();
+    if (error) {
+      setActionError("Couldn't post your comment. Try again.");
+      return;
     }
+    setActionError("");
+    setNewComment("");
+    await load(true);
   };
 
   const changeStage = async (newStage: RequestStage) => {
@@ -81,9 +87,12 @@ export default function RequestDetail() {
     setIsChangingStage(true);
     const { error } = await supabase.from("requests").update({ stage: newStage }).eq("id", id);
     setIsChangingStage(false);
-    if (!error) {
-      setRequest({ ...request, stage: newStage });
+    if (error) {
+      setActionError(`Couldn't change the stage: ${error.message}`);
+      return;
     }
+    setActionError("");
+    setRequest({ ...request, stage: newStage });
   };
 
   const assign = async (assignee: string) => {
@@ -121,7 +130,7 @@ export default function RequestDetail() {
       return;
     }
     if (fileInputRef.current) fileInputRef.current.value = "";
-    await load();
+    await load(true);
   };
 
   if (state === "loading") {
@@ -173,6 +182,7 @@ export default function RequestDetail() {
           ))}
         </select>
         {assignError && <div className="mt-3"><ErrorBanner message={assignError} /></div>}
+        {actionError && <div className="mt-3"><ErrorBanner message={actionError} /></div>}
       </div>
 
       <div className="mb-10">
