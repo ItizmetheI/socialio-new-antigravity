@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Download, Eye, FileText } from "lucide-react";
 import { supabase } from "../lib/supabase";
+export { storagePathFor } from "../lib/storagePath";
 
 export const DELIVERABLES_BUCKET = "deliverables";
 // Links are generated when the list renders; an hour covers a long review
@@ -11,10 +12,6 @@ const SIGNED_URL_TTL_SECONDS = 60 * 60;
 // with the same name doesn't collide — show people the name they uploaded.
 export function displayFileName(path: string) {
   return (path.split("/").pop() ?? path).replace(/^\d{13}-/, "");
-}
-
-export function storagePathFor(orgId: string, folder: string, fileName: string) {
-  return `${orgId}/${folder}/${Date.now()}-${fileName}`;
 }
 
 // Anything stored in the bucket — deliverables and onboarding assets share it.
