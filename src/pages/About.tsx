@@ -6,12 +6,12 @@ const values = [
   {
     icon: <Zap className="w-6 h-6 text-primary" />,
     title: "Velocity Over Perfection",
-    description: "We operate in sprints, not quarters. Growth requires testing, and testing requires speed. Your first batch of content is live within 7 days."
+    description: "We operate in sprints, not quarters. Growth requires testing, and testing requires speed. Your first batch of content is delivered within 3–5 business days."
   },
   {
     icon: <ShieldCheck className="w-6 h-6 text-primary" />,
     title: "Radical Transparency",
-    description: "Flat-rate pricing, no hidden fees, and a real-time Kanban board where you can track every deliverable, campaign, and metric 24/7."
+    description: "Flat-rate pricing, no hidden fees, and a live board in your dashboard where you can track every request and deliverable 24/7."
   },
   {
     icon: <BarChart3 className="w-6 h-6 text-primary" />,
@@ -102,7 +102,7 @@ export default function About() {
                 Traditional agencies overpromise, underdeliver, and trap you in archaic 6-month contracts with no incentive to move fast. 
               </p>
               <p>
-                We built the exact opposite: a flat-rate subscription service that plugs an elite design, content, and performance marketing team directly into your slack channel. Predictable output at a predictable cost—allowing you to treat marketing as scalable infrastructure.
+                We built the exact opposite: a flat-rate subscription service that plugs an elite design and content team into a dashboard where you approve your plan and track every request. Predictable output at a predictable cost—allowing you to treat marketing as scalable infrastructure.
               </p>
             </div>
           </div>
@@ -123,7 +123,7 @@ export default function About() {
                   <div className="hero-display text-4xl text-white font-bold mb-1">$50M+</div>
                   <div className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant">Ad Spend Managed</div>
                 </div>
-                <div className="w-16 h-16 rounded-full border-4 border-primary border-t-transparent animate-spin flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full border-4 border-primary border-t-transparent flex items-center justify-center">
                    <div className="w-12 h-12 rounded-full border-2 border-white/20" />
                 </div>
              </div>
@@ -208,7 +208,7 @@ export default function About() {
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px]" />
             <h2 className="hero-display text-4xl md:text-5xl font-bold text-white mb-8 relative z-10">Stop managing freelancers. <br />Start scaling.</h2>
             <p className="font-sans text-on-surface-variant text-lg max-w-xl mx-auto mb-10 relative z-10">
-              One subscription. One dedicated team. Boundless growth. Hop on a 15-minute discovery call to explore the model.
+              One subscription. One dedicated team. Boundless growth. Hop on a free 30-minute strategy call to explore the model.
             </p>
             <Link to="/contact" className="relative z-10 inline-flex px-8 py-5 bg-white text-background font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-all duration-300 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(215,183,255,0.4)] hover:-translate-y-1 items-center gap-3">
               Book Your Strategy Session <Zap className="w-4 h-4" />

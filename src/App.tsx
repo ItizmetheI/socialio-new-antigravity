@@ -4,78 +4,91 @@
  */
 
 import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import React, { useEffect } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
-import { ReactLenis } from 'lenis/react';
+import React, { useEffect, lazy, Suspense } from 'react';
+import { motion } from 'motion/react';
+import { ReactLenis, useLenis } from 'lenis/react';
+import Spinner from './components/Spinner';
 import Home from './pages/Home';
-import Services from './pages/Services';
-import Pricing from './pages/Pricing';
-import CaseStudies from './pages/CaseStudies';
-import About from './pages/About';
-import Contact from './pages/Contact';
-import Blog from './pages/Blog';
-import Privacy from './pages/Privacy';
-import Terms from './pages/Terms';
-import ServiceDetail from './pages/ServiceDetail';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 import { CartProvider } from './context/CartContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './lib/auth/AuthContext';
-import Login from './app/Login';
-import Signup from './app/Signup';
-import ForgotPassword from './app/ForgotPassword';
-import SetPassword from './lib/auth/SetPassword';
-import Checkout from './checkout/Checkout';
-import CheckoutSuccess from './checkout/CheckoutSuccess';
-import ClientLayout from './app/ClientLayout';
-import DashboardHome from './app/DashboardHome';
-import Onboarding from './app/Onboarding';
-import PlanView from './app/PlanView';
-import ProposalView from './app/ProposalView';
-import RequestBoard from './app/RequestBoard';
-import RequestDetail from './app/RequestDetail';
-import Settings from './app/Settings';
-import OpsLayout from './ops/OpsLayout';
-import OpsBoard from './ops/OpsBoard';
-import ClientsList from './ops/ClientsList';
-import OnboardingReview from './ops/OnboardingReview';
-import OpsRequestDetail from './ops/RequestDetail';
-import OrgsAdmin from './ops/admin/OrgsAdmin';
-import ProposalBuilder from './ops/admin/ProposalBuilder';
-import PlanBuilder from './ops/admin/PlanBuilder';
-import UsersAdmin from './ops/admin/UsersAdmin';
 import RequireRole from './lib/auth/RequireRole';
 import { TEST_MODE } from './lib/testMode/flag';
-import RoleSwitcher from './lib/testMode/RoleSwitcher';
 
-import Compare from './pages/Compare';
-import Examples from './pages/Examples';
-import Reviews from './pages/Reviews';
-import Industries from './pages/Industries';
+// Dashboard, ops, auth, and checkout screens are only reached by signed-in
+// clients/staff — split them out so marketing visitors don't download the
+// whole client portal and ops tooling (dnd-kit, builders, etc.) up front.
+const Login = lazy(() => import('./app/Login'));
+const Signup = lazy(() => import('./app/Signup'));
+const ForgotPassword = lazy(() => import('./app/ForgotPassword'));
+const SetPassword = lazy(() => import('./lib/auth/SetPassword'));
+const Checkout = lazy(() => import('./checkout/Checkout'));
+const CheckoutSuccess = lazy(() => import('./checkout/CheckoutSuccess'));
+const ClientLayout = lazy(() => import('./app/ClientLayout'));
+const DashboardHome = lazy(() => import('./app/DashboardHome'));
+const Onboarding = lazy(() => import('./app/Onboarding'));
+const PlanView = lazy(() => import('./app/PlanView'));
+const ProposalView = lazy(() => import('./app/ProposalView'));
+const RequestBoard = lazy(() => import('./app/RequestBoard'));
+const RequestDetail = lazy(() => import('./app/RequestDetail'));
+const Settings = lazy(() => import('./app/Settings'));
+const OpsLayout = lazy(() => import('./ops/OpsLayout'));
+const OpsBoard = lazy(() => import('./ops/OpsBoard'));
+const ClientsList = lazy(() => import('./ops/ClientsList'));
+const OnboardingReview = lazy(() => import('./ops/OnboardingReview'));
+const OpsRequestDetail = lazy(() => import('./ops/RequestDetail'));
+const OrgsAdmin = lazy(() => import('./ops/admin/OrgsAdmin'));
+const ProposalBuilder = lazy(() => import('./ops/admin/ProposalBuilder'));
+const PlanBuilder = lazy(() => import('./ops/admin/PlanBuilder'));
+const UsersAdmin = lazy(() => import('./ops/admin/UsersAdmin'));
+const RoleSwitcher = lazy(() => import('./lib/testMode/RoleSwitcher'));
 
+// Home is the landing page and stays in the main bundle; every other
+// marketing page loads on first visit.
+const Services = lazy(() => import('./pages/Services'));
+const ServiceDetail = lazy(() => import('./pages/ServiceDetail'));
+const Pricing = lazy(() => import('./pages/Pricing'));
+const CaseStudies = lazy(() => import('./pages/CaseStudies'));
+const About = lazy(() => import('./pages/About'));
+const Contact = lazy(() => import('./pages/Contact'));
+const Blog = lazy(() => import('./pages/Blog'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const Terms = lazy(() => import('./pages/Terms'));
+const Compare = lazy(() => import('./pages/Compare'));
+const Examples = lazy(() => import('./pages/Examples'));
+const Reviews = lazy(() => import('./pages/Reviews'));
+const Industries = lazy(() => import('./pages/Industries'));
+
+// Goes through Lenis rather than window.scrollTo: a native jump leaves
+// Lenis's internal target at the old position, so the first wheel tick on
+// the new page would glide back toward where the previous page was.
 function ScrollToTop() {
   const { pathname } = useLocation();
+  const lenis = useLenis();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
+    else window.scrollTo(0, 0);
+  }, [pathname, lenis]);
 
   return null;
 }
 
+// Enter-only fade. The old exit animation + AnimatePresence mode="wait"
+// held every navigation for 300ms, and ScrollToTop fired during that exit,
+// visibly snapping the outgoing page to the top before it faded.
 function AnimatedRoutes() {
   const location = useLocation();
-  
+
   return (
-    <AnimatePresence mode="wait">
-      <motion.div
-        key={location.pathname}
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.3, ease: 'easeOut' }}
-      >
+    <motion.div
+      key={location.pathname}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.25, ease: 'easeOut' }}
+    >
         <Routes location={location}>
           <Route path="/" element={<Home />} />
           <Route path="/services" element={<Services />} />
@@ -93,8 +106,7 @@ function AnimatedRoutes() {
           <Route path="/industries" element={<Industries />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </motion.div>
-    </AnimatePresence>
+    </motion.div>
   );
 }
 
@@ -108,7 +120,13 @@ function isDashboardPath(pathname: string): boolean {
 // chrome instead of the marketing NavBar/Footer — see ClientLayout/OpsLayout.
 function DashboardRoutes() {
   return (
-    <>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-background flex items-center justify-center">
+          <Spinner />
+        </div>
+      }
+    >
       <ScrollToTop />
       {TEST_MODE && <RoleSwitcher />}
       <Routes>
@@ -160,7 +178,7 @@ function DashboardRoutes() {
           />
         </Route>
       </Routes>
-    </>
+    </Suspense>
   );
 }
 
@@ -171,7 +189,9 @@ function MarketingSite() {
       <div className="min-h-screen flex flex-col bg-background text-on-surface transition-colors duration-500">
         <NavBar />
         <main className="flex-grow">
-          <AnimatedRoutes />
+          <Suspense fallback={<div className="min-h-screen" />}>
+            <AnimatedRoutes />
+          </Suspense>
         </main>
         <Footer />
       </div>

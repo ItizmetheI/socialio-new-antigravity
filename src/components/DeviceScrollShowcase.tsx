@@ -90,7 +90,7 @@ export default function DeviceScrollShowcase() {
             {/* Glass glare */}
             <motion.div
               style={{ top: glareY }}
-              className="absolute left-0 right-0 h-[150%] bg-gradient-to-b from-transparent via-white/10 to-transparent -rotate-12 pointer-events-none z-40 mix-blend-overlay"
+              className="absolute left-0 right-0 h-[150%] bg-gradient-to-b from-transparent via-white/[0.06] to-transparent -rotate-12 pointer-events-none z-40"
             />
 
             {/* Dynamic Island */}
@@ -133,7 +133,10 @@ export default function DeviceScrollShowcase() {
                   style={{ opacity: textOpacity }}
                   className="absolute inset-0 flex items-center justify-center pointer-events-none"
                 >
-                  <div className="w-10 h-10 shadow-[0_0_120px_60px_rgba(221,183,255,0.25)] rounded-full mix-blend-screen" />
+                  <div
+                    className="w-[400px] h-[400px] shrink-0"
+                    style={{ background: "radial-gradient(circle closest-side, rgba(221, 183, 255, 0.25) 0%, rgba(221, 183, 255, 0.12) 40%, transparent 100%)" }}
+                  />
                 </motion.div>
               </div>
             </motion.div>

@@ -12,7 +12,10 @@ import Magnetic from "./Magnetic";
 export default function AnalyticsShowcase() {
   return (
     <section className="py-32 px-6 relative overflow-hidden bg-background text-on-surface border-t border-white/5">
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/10 blur-[150px] rounded-[100%] pointer-events-none mix-blend-screen" />
+      <div
+        className="absolute top-[calc(25%-375px)] left-1/2 -translate-x-1/2 w-[1550px] h-[1250px] pointer-events-none"
+        style={{ background: "radial-gradient(ellipse closest-side, rgba(var(--color-primary-rgb), 0.1) 0%, rgba(var(--color-primary-rgb), 0.06) 40%, transparent 100%)" }}
+      />
 
       <div className="max-w-5xl mx-auto relative z-10 w-full">
         <motion.div
@@ -45,7 +48,7 @@ export default function AnalyticsShowcase() {
               </h3>
               <div className="hero-display text-6xl font-bold text-white leading-none">3.4x</div>
             </div>
-            <div className="text-sm text-primary font-bold">+124% vs. standard content model</div>
+            <div className="text-sm text-primary font-bold">+240% vs. standard content model</div>
           </div>
           <div className="w-full h-56">
             <AnimatedChart />

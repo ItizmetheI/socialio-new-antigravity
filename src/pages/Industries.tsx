@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 const industries = [
   { name: "SaaS & Tech", icon: MonitorPlay, tag: "Content + SEO focus", desc: "Content that educates and converts. Blog posts, LinkedIn content, and SEO strategies that compound MRR." },
   { name: "Health & Wellness", icon: Activity, tag: "Trust-first content", desc: "Trust-first content strategies. UGC and educational posts that build credibility before the ask." },
-  { name: "E-Commerce", icon: ShoppingBag, tag: "UGC + Social Posts", desc: "We scale DTC brands with UGC, short-form video, and paid social that converts cold traffic profitably." },
+  { name: "E-Commerce", icon: ShoppingBag, tag: "UGC + Social Posts", desc: "We scale DTC brands with UGC ad creative, short-form video, and product-first social posts that convert cold traffic." },
   { name: "Real Estate", icon: MapPin, tag: "Local SEO + Social", desc: "Instagram growth, consistent social posts, and local SEO backlinks that put you on the map — literally." },
   { name: "Travel & Hospitality", icon: UserSquare2, tag: "Short-form + Instagram", desc: "Short-form video editing, Instagram growth, and content systems that turn followers into revenue." },
   { name: "Professional Services", icon: Layers, tag: "Blog + Backlinks", desc: "White-label content production. We work quietly in the background so you can focus on client relationships." },

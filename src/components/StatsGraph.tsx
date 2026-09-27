@@ -1,12 +1,14 @@
 import { AreaChart, Area, ResponsiveContainer, XAxis, Tooltip } from 'recharts';
 
+// Ends at 8,415 to match the "Pieces of Content Delivered" counter rendered
+// right beside this chart — the two previously disagreed (18,000 vs 8,415).
 const data = [
-  { name: 'Q1', revenue: 800 },
-  { name: 'Q2', revenue: 2400 },
-  { name: 'Q3', revenue: 5100 },
-  { name: 'Q4', revenue: 8900 },
-  { name: 'Q1', revenue: 13200 },
-  { name: 'Q2', revenue: 18000 },
+  { name: 'Q1', revenue: 374 },
+  { name: 'Q2', revenue: 1122 },
+  { name: 'Q3', revenue: 2384 },
+  { name: 'Q4', revenue: 4161 },
+  { name: 'Q1', revenue: 6171 },
+  { name: 'Q2', revenue: 8415 },
 ];
 
 export default function StatsGraph() {
@@ -19,9 +21,6 @@ export default function StatsGraph() {
         <div>
           <h3 className="hero-display font-bold text-lg text-white">Content Output Over Time</h3>
           <p className="text-on-surface-variant text-xs">Cumulative pieces delivered across all active clients</p>
-        </div>
-        <div className="font-mono text-white text-[10px] uppercase tracking-widest font-bold border border-white/20 px-2 py-1">
-          Live Data
         </div>
       </div>
       

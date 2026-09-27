@@ -6,6 +6,8 @@ import { motion, useInView } from "motion/react";
 import { useCart } from "../context/CartContext";
 import CustomPlayer from "../components/CustomPlayer";
 
+const VIDEO_SERVICE_IDS = ["short-form-videos", "ugc-content"];
+
 const faqs = [
   { question: "How quickly will I receive my first delivery?", answer: "Within 3 to 5 business days of completing your onboarding brief." },
   { question: "How many revisions do I get?", answer: "As many as you need until you're happy. We don't cap revisions." },
@@ -167,8 +169,8 @@ export default function ServiceDetail() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative">
                 <div className="hidden md:block absolute top-7 left-[18%] right-[18%] h-px bg-white/10" />
                 {[
-                  { n: "1", title: "Subscribe & Brief Us", body: "Choose your volume, fill the onboarding form, and tell us about your brand in under 10 minutes." },
-                  { n: "2", title: "We Get to Work", body: "Your dedicated team starts producing immediately — no waiting on approvals before we begin." },
+                  { n: "1", title: "Check Out & Brief Us", body: "Choose your volume, check out, and tell us about your brand in a short onboarding form." },
+                  { n: "2", title: "Approve Your Plan", body: "We curate a plan for your brand and send it to your dashboard. Approve it, or ask for changes first." },
                   { n: "3", title: "Review & Repeat", body: "Receive content, request revisions, approve. We repeat the cycle every month like clockwork." },
                 ].map((s, i) => (
                   <div key={i} className="flex flex-col items-center text-center">
@@ -187,9 +189,9 @@ export default function ServiceDetail() {
               <p className="text-on-surface-variant font-sans mb-8 text-sm">What happens right after you check out.</p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {[
-                  { icon: <Zap className="w-5 h-5" />, title: "Workspace Setup", body: "Instant invite to your dedicated Slack channel and Notion dashboard." },
-                  { icon: <Users className="w-5 h-5" />, title: "Kickoff Call", body: "Meet your account manager. Align on deliverables, tone, and timeline." },
-                  { icon: <LineChart className="w-5 h-5" />, title: "First Delivery", body: "Within a week your first batch is ready for review." },
+                  { icon: <Zap className="w-5 h-5" />, title: "Your Dashboard", body: "Ready the moment you check out — onboarding, your plan, and every request in one place." },
+                  { icon: <Users className="w-5 h-5" />, title: "Your Plan", body: "Answer the onboarding questions and we curate a plan for you to approve." },
+                  { icon: <LineChart className="w-5 h-5" />, title: "First Delivery", body: "Your first batch lands within 3–5 business days of your onboarding brief." },
                 ].map((item, i) => (
                   <div key={i} className="bg-background/50 border border-white/5 rounded-2xl p-5">
                     <div className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center text-white mb-4">{item.icon}</div>
@@ -355,7 +357,9 @@ export default function ServiceDetail() {
               </div>
             </div>
 
-            {/* Recent Work Showcase */}
+            {/* Recent Work Showcase — these are vertical short-form clips, so
+                they only belong on the video services, not blog/SEO/growth. */}
+            {VIDEO_SERVICE_IDS.includes(service.id) && (
             <div className="bg-surface-container border border-white/10 rounded-3xl p-6 shadow-xl relative overflow-hidden">
 
                <h3 className="hero-display text-lg font-bold text-white mb-1">Recent Showcase</h3>
@@ -379,6 +383,7 @@ export default function ServiceDetail() {
                  </div>
                </div>
             </div>
+            )}
 
           </div>
         </div>

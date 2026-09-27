@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, lazy, Suspense } from "react";
 import { Play, ArrowUpRight, CheckCircle2, ChevronDown, ArrowRight, Heart, MessageCircle } from "lucide-react";
 import { motion, useInView, useMotionValue, useSpring, useTransform, useScroll, type Variants } from "motion/react";
 import { servicesData } from "../data/services";
 import PricingCard from "../components/PricingCard";
-import StatsGraph from "../components/StatsGraph";
+// recharts is the heaviest dependency on this page and this chart sits well
+// below the fold — split it out so it never delays first paint.
+const StatsGraph = lazy(() => import("../components/StatsGraph"));
 import Magnetic from "../components/Magnetic";
 import DeviceScrollShowcase from "../components/DeviceScrollShowcase";
 import AnalyticsShowcase from "../components/AnalyticsShowcase";
@@ -137,18 +139,18 @@ const FeedCard: React.FC<{ card: FeedCardData; index: number }> = ({ card, index
     custom={card.rotate}
     variants={feedCardVariants}
     whileHover={{ y: -6, scale: 1.03, transition: { duration: 0.25 } }}
-    className={`absolute w-[124px] sm:w-[150px] lg:w-[172px] aspect-[9/16] rounded-2xl overflow-hidden border border-white/15 shadow-[0_24px_48px_-16px_rgba(0,0,0,0.65)] flex flex-col justify-between cursor-pointer ${card.pos} ${card.featured ? "outline outline-2 outline-primary outline-offset-2 animate-feed-pulse" : ""}`}
+    className={`absolute w-[124px] sm:w-[150px] lg:w-[172px] aspect-[9/16] rounded-2xl overflow-hidden border border-white/15 shadow-[0_24px_48px_-16px_rgba(0,0,0,0.65)] flex flex-col justify-between ${card.pos} ${card.featured ? "outline outline-2 outline-primary outline-offset-2 animate-feed-pulse" : ""}`}
     style={{ zIndex: card.z }}
   >
     <div className="absolute inset-0" style={{ background: card.gradient }} />
     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-black/30" />
 
     <div className="relative z-10 flex items-start justify-between p-2.5 text-[#fff]">
-      <span className="flex items-center gap-1 text-[9px] font-bold tracking-wide bg-black/35 backdrop-blur-sm pl-1.5 pr-2 py-1 rounded-full">
+      <span className="flex items-center gap-1 text-[9px] font-bold tracking-wide bg-black/45 pl-1.5 pr-2 py-1 rounded-full">
         <span className={`w-[5px] h-[5px] rounded-full bg-[#ff6b4a] ${card.state === "live" ? "animate-pulse" : ""}`} />
         {card.state === "live" ? "LIVE" : "REC"}
       </span>
-      <span className="text-[9px] font-semibold bg-black/35 backdrop-blur-sm px-2 py-1 rounded-full">{card.count}</span>
+      <span className="text-[9px] font-semibold bg-black/45 px-2 py-1 rounded-full">{card.count}</span>
     </div>
 
     <div className="relative z-10 flex items-end justify-between gap-1.5 px-2.5 pb-1.5 text-[#fff]">
@@ -237,7 +239,6 @@ interface PortfolioItemData {
   gradient: string;
   aspect: string;
   stat?: string;
-  playable?: boolean;
 }
 
 // Same gradient-tile language as the hero's feed cards — until real client
@@ -245,24 +246,19 @@ interface PortfolioItemData {
 // beats a hotlinked stock photo captioned to look like something it isn't.
 const portfolioItems: PortfolioItemData[] = [
   { id: "social", category: "Social Posts", title: "Social Media Campaign", meta: "Instagram & Facebook", gradient: "radial-gradient(120% 100% at 20% 15%, #6c4fa3 0%, #241a38 60%, #100c18 100%)", aspect: "aspect-[16/9]", stat: "+300% Engagement" },
-  { id: "short-1", category: "Short-Form", title: "The unboxing hook", meta: "TikTok · Reel", gradient: "radial-gradient(120% 100% at 75% 15%, #ff9169 0%, #a83e22 55%, #24100a 100%)", aspect: "aspect-[4/5]", playable: true },
-  { id: "short-2", category: "Short-Form", title: "Before / after cut", meta: "Reels · 0:18", gradient: "radial-gradient(120% 100% at 25% 85%, #4fc7c2 0%, #1c5f60 55%, #0a1e1e 100%)", aspect: "aspect-[4/5]", playable: true },
-  { id: "short-3", category: "Short-Form", title: "Founder POV", meta: "TikTok · 0:24", gradient: "radial-gradient(120% 100% at 80% 80%, #e2c1ff 0%, #6f4a99 55%, #1f1330 100%)", aspect: "aspect-[4/5]", playable: true },
-  { id: "ugc-1", category: "UGC", title: "Unboxing, unscripted", meta: "Creator-shot · Raw", gradient: "radial-gradient(120% 100% at 30% 20%, #ffd166 0%, #a86a1c 55%, #241804 100%)", aspect: "aspect-[16/9]", playable: true },
-  { id: "ugc-2", category: "UGC", title: "A day in the studio", meta: "Creator-shot · Raw", gradient: "radial-gradient(120% 100% at 70% 80%, #7fb8ff 0%, #2f5c94 55%, #0c1a2e 100%)", aspect: "aspect-[16/9]", playable: true },
+  { id: "short-1", category: "Short-Form", title: "The unboxing hook", meta: "TikTok · Reel", gradient: "radial-gradient(120% 100% at 75% 15%, #ff9169 0%, #a83e22 55%, #24100a 100%)", aspect: "aspect-[4/5]" },
+  { id: "short-2", category: "Short-Form", title: "Before / after cut", meta: "Reels · 0:18", gradient: "radial-gradient(120% 100% at 25% 85%, #4fc7c2 0%, #1c5f60 55%, #0a1e1e 100%)", aspect: "aspect-[4/5]" },
+  { id: "short-3", category: "Short-Form", title: "Founder POV", meta: "TikTok · 0:24", gradient: "radial-gradient(120% 100% at 80% 80%, #e2c1ff 0%, #6f4a99 55%, #1f1330 100%)", aspect: "aspect-[4/5]" },
+  { id: "ugc-1", category: "UGC", title: "Unboxing, unscripted", meta: "Creator-shot · Raw", gradient: "radial-gradient(120% 100% at 30% 20%, #ffd166 0%, #a86a1c 55%, #241804 100%)", aspect: "aspect-[16/9]" },
+  { id: "ugc-2", category: "UGC", title: "A day in the studio", meta: "Creator-shot · Raw", gradient: "radial-gradient(120% 100% at 70% 80%, #7fb8ff 0%, #2f5c94 55%, #0c1a2e 100%)", aspect: "aspect-[16/9]" },
 ];
 
+// Not a link and no video behind it yet — so no hover zoom or play button
+// pretending otherwise (same reasoning as the Examples page tiles).
 const PortfolioTile: React.FC<{ item: PortfolioItemData; className?: string }> = ({ item, className = "" }) => (
-  <div className={`bg-surface-container border border-white/10 p-2 md:p-6 rounded-2xl flex flex-col group/tile ${className}`}>
+  <div className={`bg-surface-container border border-white/10 p-2 md:p-6 rounded-2xl flex flex-col ${className}`}>
     <div className={`overflow-hidden rounded-xl border border-white/5 relative mb-6 ${item.aspect}`}>
-      <div className="absolute inset-0 transition-transform duration-700 group-hover/tile:scale-105" style={{ background: item.gradient }} />
-      {item.playable && (
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover/tile:opacity-100 transition-opacity bg-black/20 backdrop-blur-sm">
-          <div className="w-16 h-16 rounded-full bg-black/40 border border-[#ffffff33] text-[#fff] flex items-center justify-center pl-1 backdrop-blur-md">
-            <Play className="w-6 h-6" fill="currentColor" />
-          </div>
-        </div>
-      )}
+      <div className="absolute inset-0" style={{ background: item.gradient }} />
     </div>
     <div className="flex justify-between items-start px-2">
       <div>
@@ -279,7 +275,7 @@ const FAQS = [
   { question: "Do I need to sign a long-term contract?", answer: "No. All plans are month-to-month. You can pause or cancel anytime with no penalties and no awkward conversations." },
   { question: "What do you need from me to get started?", answer: "After subscribing, you'll fill out a short onboarding questionnaire covering your brand voice, target audience, and content preferences. That's it — we handle the rest." },
   { question: "Can I request revisions?", answer: "Yes. Every order includes revision rounds. If something doesn't feel right, just let us know and we'll fix it until it does." },
-  { question: "Do you manage my social media accounts?", answer: "We produce the content and can deliver it ready to post. Full scheduling and account management is available as an add-on — ask us about it during onboarding." },
+  { question: "Do you manage my social media accounts?", answer: "Social Media Posts plans include scheduled posting — we can post for you once you grant access, or hand over ready-to-post files. Every other service is delivered as finished files to your dashboard." },
   { question: "How does the money-back guarantee work?", answer: "If you're not satisfied with your first batch of content, contact us within 14 days of delivery and we'll issue a full refund. No hoops." },
   { question: "Can I buy multiple services at once?", answer: "Absolutely. Many clients stack services — for example, Social Media Posts paired with Short-Form Videos. Add multiple items to your cart and check out in one go." },
   { question: "What industries do you work with?", answer: "We've produced content for e-commerce brands, SaaS companies, local businesses, health and wellness brands, creators, and agencies. If you sell something, we can create content for it." }
@@ -299,11 +295,14 @@ export default function Home() {
       {/* Hero — Feed Collision: headline the video columns interrupt, staged as a real scroll, not a bento grid */}
       <section className="relative pt-32 pb-24 md:pt-44 md:pb-28 overflow-hidden border-b border-white/5 bg-background">
 
-        {/* Subtle grid background for agency feel */}
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay z-0 pointer-events-none"></div>
         <div className="absolute inset-0 bg-background bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] z-0 pointer-events-none"></div>
-        {/* Rationed glow — one soft lilac wash, not a wall of purple */}
-        <div className="absolute -top-40 -left-40 w-[560px] h-[560px] rounded-full bg-primary/10 blur-[120px] z-0 pointer-events-none" />
+        {/* Soft lilac wash as a radial gradient, not filter: blur() — a 120px
+            blur on a large element re-rasterizes on scroll and was the main
+            source of hero scroll jank. Same falloff, no filter cost. */}
+        <div
+          className="absolute top-[-440px] left-[-440px] w-[1120px] h-[1120px] z-0 pointer-events-none"
+          style={{ background: "radial-gradient(circle closest-side, rgba(var(--color-primary-rgb), 0.1) 0%, rgba(var(--color-primary-rgb), 0.1) 18%, rgba(var(--color-primary-rgb), 0.05) 50%, transparent 100%)" }}
+        />
 
         <div className="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-14 lg:gap-8 items-center">
 
@@ -325,7 +324,7 @@ export default function Home() {
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-10">
               <Magnetic>
                 <Link to="/pricing" className="bg-white text-background px-8 py-4 rounded-lg font-bold text-sm hover:bg-primary transition-all duration-300 flex items-center justify-center gap-2 group">
-                  See This Week's Drops <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  See plans & pricing <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </Magnetic>
               <Magnetic>
@@ -345,7 +344,7 @@ export default function Home() {
                 <span className="w-8 h-8 rounded-full border-2 border-background flex items-center justify-center text-[10px] font-bold text-white" style={{ background: "linear-gradient(135deg,#ff9169,#d3512f)" }}>RK</span>
                 <span className="w-8 h-8 rounded-full border-2 border-background flex items-center justify-center text-[10px] font-bold text-white" style={{ background: "linear-gradient(135deg,#4fc7c2,#1c6b6c)" }}>AT</span>
               </div>
-              <p className="text-xs text-on-surface-variant"><span className="text-white font-bold">212 brands</span> currently in production</p>
+              <p className="text-xs text-on-surface-variant"><span className="text-white font-bold">200+ brands</span> served</p>
             </div>
           </motion.div>
 
@@ -478,7 +477,9 @@ export default function Home() {
             
             {/* Main Graph */}
             <div className="lg:col-span-2">
-              <StatsGraph />
+              <Suspense fallback={<div className="min-h-[300px]" />}>
+                <StatsGraph />
+              </Suspense>
             </div>
           </div>
         </div>
@@ -500,9 +501,9 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-16">
             {[
-              { n: "01", title: "Subscribe & onboard", body: "Select your plan, complete our focused alignment questionnaire, and get access to your dedicated Slack channel within hours." },
-              { n: "02", title: "Submit briefs", body: "Use your kanban board to request as many creatives or campaigns as you need. We dissect the brief and get straight to work." },
-              { n: "03", title: "Review & scale", body: "Receive your first batch in days. Give feedback in one place. Once approved, we launch, measure, and scale the winners." },
+              { n: "01", title: "Check out & onboard", body: "Pick your services, check out, and answer a short questionnaire about your brand, audience, and goals." },
+              { n: "02", title: "Approve your plan", body: "We curate a plan — deliverables, platforms, cadence — and send it to your dashboard. Approve it or ask for changes." },
+              { n: "03", title: "Track & review", body: "Work moves across your board from requested to delivered. Review each piece and leave feedback in one place." },
             ].map((step, i) => (
               <motion.div
                 key={step.n}
@@ -639,7 +640,7 @@ export default function Home() {
                  Ironclad Guarantee
                </span>
                <h3 className="type-level-2 text-white mb-6 text-balance">
-                 Results in 14 days.<br />
+                 Love your first batch.<br />
                  <span className="text-white/50">Or it's free.</span>
                </h3>
                <p className="type-level-3 mb-8 max-w-prose">
@@ -681,7 +682,6 @@ export default function Home() {
       {/* Quiet Section */}
       <section className="section-quiet">
          <div className="text-center">
-            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-white/50 mb-6 block">04 &mdash; Our Work</span>
             <h2 className="type-level-1 text-white leading-none text-balance">We make things<br/>people actually<br/>notice.</h2>
          </div>
       </section>
@@ -716,7 +716,10 @@ export default function Home() {
 
       {/* CTA — closes on the same "posting vs. scrolling" line the hero opened with, not a generic purple-flood CTA */}
       <section className="py-28 md:py-36 bg-background border-t border-white/5 relative overflow-hidden">
-        <div className="absolute -bottom-40 -right-40 w-[560px] h-[560px] rounded-full bg-[#ff6b4a]/10 blur-[120px] z-0 pointer-events-none" />
+        <div
+          className="absolute bottom-[-440px] right-[-440px] w-[1120px] h-[1120px] z-0 pointer-events-none"
+          style={{ background: "radial-gradient(circle closest-side, rgba(255, 107, 74, 0.1) 0%, rgba(255, 107, 74, 0.1) 18%, rgba(255, 107, 74, 0.05) 50%, transparent 100%)" }}
+        />
         <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
           <div>
             <h2 className="hero-display font-bold text-white text-4xl md:text-6xl leading-[1.05] tracking-tight text-balance max-w-xl">
@@ -728,7 +731,7 @@ export default function Home() {
 
           <Magnetic>
             <Link to="/contact" className="shrink-0 px-10 py-5 bg-white text-background rounded-lg font-bold text-sm hover:bg-primary transition-all duration-300 flex items-center gap-2 group">
-              Start The Audit <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              Talk to us <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Magnetic>
         </div>
