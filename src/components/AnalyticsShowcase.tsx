@@ -11,13 +11,13 @@ import Magnetic from "./Magnetic";
 // back deliberately rather than as filler.
 export default function AnalyticsShowcase() {
   return (
-    <section className="py-32 px-6 relative overflow-hidden bg-background text-on-surface border-t border-white/5">
+    <section className="py-32 relative overflow-hidden bg-background text-on-surface border-t border-white/5">
       <div
         className="absolute top-[calc(25%-375px)] left-1/2 -translate-x-1/2 w-[1550px] h-[1250px] pointer-events-none"
         style={{ background: "radial-gradient(ellipse closest-side, rgba(var(--color-primary-rgb), 0.1) 0%, rgba(var(--color-primary-rgb), 0.06) 40%, transparent 100%)" }}
       />
 
-      <div className="max-w-5xl mx-auto relative z-10 w-full">
+      <div className="max-w-7xl mx-auto px-6 relative z-10 w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

@@ -1,7 +1,8 @@
-import { motion, useScroll, useTransform, useMotionTemplate } from "motion/react";
+import { motion, useReducedMotion, useScroll, useTransform } from "motion/react";
 import { useRef, useState } from "react";
 import { Heart, MessageCircle, Share2, Bookmark } from "lucide-react";
 import Magnetic from "./Magnetic";
+import { HERO_GRADIENT_STOPS } from "./HeroScrollWord";
 
 // A scroll-driven cinematic sequence: a phone scrolls through three reels,
 // then zooms through the screen into the Socialio wordmark. 600vh of scroll
@@ -20,9 +21,14 @@ export default function DeviceScrollShowcase() {
   // root> (App.tsx), which smooths scroll physics itself. Layering a second
   // spring on top of Lenis's own smoothing double-smooths the signal and
   // makes the whole sequence lag noticeably behind the actual scroll input.
-  // Home.tsx's FeedCluster already proves raw scrollYProgress + useTransform
-  // tracks correctly under this site's Lenis setup — same pattern here.
-  const smoothProgress = scrollYProgress;
+    const smoothProgress = scrollYProgress;
+
+  // 0. Handoff from the hero: its dive ends on a full-screen gradient, so this
+  // section enters on the same gradient and dissolves it over the exact scroll
+  // range the hero uses to fade its own — no seam between the two.
+  const reduceMotion = useReducedMotion();
+  const { scrollYProgress: entryProgress } = useScroll({ target: containerRef, offset: ["start end", "start start"] });
+  const handoffOpacity = useTransform(entryProgress, [0, 0.6], [1, 0]);
 
   // 1. Entrance (0 - 0.15)
   const phoneRotateX = useTransform(smoothProgress, [0, 0.15], [45, 0]);
@@ -36,31 +42,30 @@ export default function DeviceScrollShowcase() {
     ["0%", "0%", "-33.33%", "-33.33%", "-66.66%"]
   );
 
-  // 3. The engulfing zoom through the screen (0.65 - 0.95)
-  const phoneScale = useTransform(smoothProgress, [0.65, 0.75, 0.85, 0.95], [1, 3, 20, 200]);
-  const phoneBorderOpacity = useTransform(smoothProgress, [0.65, 0.75], [1, 0]);
-  const phoneBorderColor = useMotionTemplate`rgba(255, 255, 255, ${phoneBorderOpacity})`;
-  const phoneRadius = useTransform(smoothProgress, [0.65, 0.8], ["54px", "0px"]);
-  const innerRadius = useTransform(smoothProgress, [0.65, 0.8], ["44px", "0px"]);
-  // The drop shadow costs a full-viewport blurred repaint every scroll frame
-  // — fine at rest, but the phone scales up to 200x through this section, so
-  // without fading the shadow out first, the browser keeps repainting an
-  // enormous blur underneath an element that's already filled the screen.
-  // That backlog of expensive paints is what reads as lag once you scroll
-  // past this section into the next one.
-  const phoneShadowOpacity = useTransform(smoothProgress, [0.65, 0.72], [0.6, 0]);
-  const phoneShadow = useMotionTemplate`0 50px 100px -20px rgba(0, 0, 0, ${phoneShadowOpacity})`;
+  // 3. Zoom through the screen (0.62 - 0.9). Only transform animates here:
+  // the phone used to scale to 200x while also animating border color,
+  // radius, shadow, blur and letter-spacing — each forced a repaint of a
+  // gigantic layer, and the GPU showed unpainted (black) tiles before the
+  // hard cut to the next section. 9x already covers a 2560px-wide screen, and
+  // reel 3 is the page background color, so the end state is seamless.
+  const phoneScale = useTransform(smoothProgress, [0.62, 0.72, 0.82, 0.9], [1, 1.6, 3.5, 9]);
 
-  // 4. Wordmark reveal inside the last reel
-  const textOpacity = useTransform(smoothProgress, [0.75, 0.85], [1, 0]);
-  const textScale = useTransform(smoothProgress, [0.75, 0.9], [1, 8]);
-  const textBlur = useTransform(smoothProgress, [0.75, 0.85], ["blur(0px)", "blur(20px)"]);
-  const textTracking = useTransform(smoothProgress, [0.75, 0.85], ["-0.05em", "0.2em"]);
+  // 4. Wordmark inside the last reel fades as the zoom takes over.
+  const textOpacity = useTransform(smoothProgress, [0.7, 0.8], [1, 0]);
+  const textScale = useTransform(smoothProgress, [0.62, 0.8], [1, 1.3]);
 
   return (
     <section id="reel-showcase" ref={containerRef} className="h-[600vh] relative bg-background">
       <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden perspective-[1200px]">
         <div className="absolute inset-0 bg-background bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] z-0 pointer-events-none" />
+
+        {!reduceMotion && (
+          <motion.div
+            aria-hidden="true"
+            style={{ opacity: handoffOpacity, background: `linear-gradient(90deg, ${HERO_GRADIENT_STOPS[0]}, ${HERO_GRADIENT_STOPS[1]})` }}
+            className="absolute inset-0 z-50 pointer-events-none"
+          />
+        )}
 
         {/* Phase text */}
         <motion.div
@@ -74,19 +79,10 @@ export default function DeviceScrollShowcase() {
 
         {/* The device */}
         <motion.div
-          style={{
-            rotateX: phoneRotateX,
-            y: phoneY,
-            scale: phoneScale,
-            borderRadius: phoneRadius,
-            borderColor: phoneBorderColor,
-            borderWidth: "1px",
-            borderStyle: "solid",
-            boxShadow: phoneShadow,
-          }}
-          className="relative w-[320px] h-[680px] bg-surface-container p-[10px] z-10 origin-center will-change-transform"
+          style={{ rotateX: phoneRotateX, y: phoneY, scale: phoneScale }}
+          className="relative w-[320px] h-[680px] bg-surface-container p-[10px] z-10 origin-center will-change-transform rounded-[54px] border border-white/10 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.35)]"
         >
-          <motion.div style={{ borderRadius: innerRadius }} className="relative w-full h-full bg-[#151018] overflow-hidden">
+          <div className="relative w-full h-full rounded-[44px] bg-background overflow-hidden">
             {/* Glass glare */}
             <motion.div
               style={{ top: glareY }}
@@ -124,7 +120,7 @@ export default function DeviceScrollShowcase() {
               {/* Reel 3 — the gateway into the brand */}
               <div className="w-full h-1/3 bg-background relative flex items-center justify-center p-6 overflow-hidden">
                 <motion.div
-                  style={{ opacity: textOpacity, scale: textScale, filter: textBlur, letterSpacing: textTracking }}
+                  style={{ opacity: textOpacity, scale: textScale }}
                   className="relative z-10 flex flex-col items-center justify-center origin-center"
                 >
                   <p className="hero-display text-5xl font-bold text-white" aria-hidden="true">socialio</p>
@@ -140,7 +136,7 @@ export default function DeviceScrollShowcase() {
                 </motion.div>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>

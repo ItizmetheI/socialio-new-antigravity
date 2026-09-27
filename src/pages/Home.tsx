@@ -1,15 +1,17 @@
 import { Link } from "react-router-dom";
 import React, { useEffect, useState, useRef, lazy, Suspense } from "react";
-import { Play, ArrowUpRight, CheckCircle2, ChevronDown, ArrowRight, Heart, MessageCircle } from "lucide-react";
-import { motion, useInView, useMotionValue, useSpring, useTransform, useScroll, type Variants } from "motion/react";
+import { ArrowUpRight, CheckCircle2, ChevronDown, ArrowRight } from "lucide-react";
+import { motion, useInView } from "motion/react";
 import { servicesData } from "../data/services";
 import PricingCard from "../components/PricingCard";
+import Magnetic from "../components/Magnetic";
+import DeviceScrollShowcase from "../components/DeviceScrollShowcase";
+import HeroScrollWord from "../components/HeroScrollWord";
+import AnalyticsShowcase from "../components/AnalyticsShowcase";
+
 // recharts is the heaviest dependency on this page and this chart sits well
 // below the fold — split it out so it never delays first paint.
 const StatsGraph = lazy(() => import("../components/StatsGraph"));
-import Magnetic from "../components/Magnetic";
-import DeviceScrollShowcase from "../components/DeviceScrollShowcase";
-import AnalyticsShowcase from "../components/AnalyticsShowcase";
 
 function useAnimatedCounter(start: number, end: number, duration: number, suffix = "", inView = true) {
   const [value, setValue] = useState(start);
@@ -45,191 +47,6 @@ function Counter({ start, end, duration, suffix = "", inView = false }: { start:
   return <>{val}</>;
 }
 
-
-interface FeedCardData {
-  id: string;
-  state: "rec" | "live";
-  count: string;
-  caption: string;
-  handle: string;
-  likes: string;
-  scrubDuration: number;
-  gradient: string;
-  pos: string;
-  rotate: number;
-  z: number;
-  featured?: boolean;
-}
-
-const feedCards: FeedCardData[] = [
-  {
-    id: "a",
-    state: "rec",
-    count: "2,451",
-    caption: "the pitch, unscripted",
-    handle: "Margo & Co · UGC",
-    likes: "301",
-    scrubDuration: 9,
-    gradient: "radial-gradient(120% 100% at 25% 15%, #6c4fa3 0%, #2c1f42 55%, #120c1c 100%)",
-    pos: "top-[2%] right-[4%] sm:top-[-2%]",
-    rotate: 4,
-    z: 20,
-  },
-  {
-    id: "b",
-    state: "live",
-    count: "128K",
-    caption: "day 1 of the audit",
-    handle: "Ferro Supply · TikTok",
-    likes: "14.2K",
-    scrubDuration: 6,
-    gradient: "radial-gradient(120% 100% at 75% 10%, #ff9169 0%, #d3512f 48%, #2c1109 100%)",
-    pos: "top-[22%] right-[34%] sm:top-[16%]",
-    rotate: -6,
-    z: 30,
-    featured: true,
-  },
-  {
-    id: "c",
-    state: "rec",
-    count: "8,204",
-    caption: "before / after",
-    handle: "Northloom · Reel",
-    likes: "920",
-    scrubDuration: 11,
-    gradient: "radial-gradient(120% 100% at 20% 90%, #4fc7c2 0%, #1c6b6c 48%, #0a1e1e 100%)",
-    pos: "top-[46%] right-[0%] sm:top-[44%]",
-    rotate: -3,
-    z: 10,
-  },
-  {
-    id: "d",
-    state: "rec",
-    count: "61.4K",
-    caption: "the sound",
-    handle: "Booking.co · UGC",
-    likes: "3,100",
-    scrubDuration: 8,
-    gradient: "radial-gradient(120% 100% at 80% 80%, #e2c1ff 0%, #8a5fc4 45%, #1f1330 100%)",
-    pos: "top-[60%] right-[36%] sm:top-[58%]",
-    rotate: 7,
-    z: 5,
-  },
-];
-
-// Rotate travels with the card via Motion's `custom`, so every card can share
-// one variants object instead of each computing its own transition inline.
-const feedContainerVariants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.5 } },
-};
-
-const feedCardVariants: Variants = {
-  hidden: (rotate: number) => ({ opacity: 0, y: 50, rotate: rotate * 1.8 }),
-  visible: (rotate: number) => ({
-    opacity: 1,
-    y: 0,
-    rotate,
-    transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] as const },
-  }),
-};
-
-const FeedCard: React.FC<{ card: FeedCardData; index: number }> = ({ card, index }) => (
-  <motion.div
-    custom={card.rotate}
-    variants={feedCardVariants}
-    whileHover={{ y: -6, scale: 1.03, transition: { duration: 0.25 } }}
-    className={`absolute w-[124px] sm:w-[150px] lg:w-[172px] aspect-[9/16] rounded-2xl overflow-hidden border border-white/15 shadow-[0_24px_48px_-16px_rgba(0,0,0,0.65)] flex flex-col justify-between ${card.pos} ${card.featured ? "outline outline-2 outline-primary outline-offset-2 animate-feed-pulse" : ""}`}
-    style={{ zIndex: card.z }}
-  >
-    <div className="absolute inset-0" style={{ background: card.gradient }} />
-    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/5 to-black/30" />
-
-    <div className="relative z-10 flex items-start justify-between p-2.5 text-[#fff]">
-      <span className="flex items-center gap-1 text-[9px] font-bold tracking-wide bg-black/45 pl-1.5 pr-2 py-1 rounded-full">
-        <span className={`w-[5px] h-[5px] rounded-full bg-[#ff6b4a] ${card.state === "live" ? "animate-pulse" : ""}`} />
-        {card.state === "live" ? "LIVE" : "REC"}
-      </span>
-      <span className="text-[9px] font-semibold bg-black/45 px-2 py-1 rounded-full">{card.count}</span>
-    </div>
-
-    <div className="relative z-10 flex items-end justify-between gap-1.5 px-2.5 pb-1.5 text-[#fff]">
-      <span className="text-[10px] font-bold leading-snug max-w-[74%]">
-        {card.caption}
-        <span className="block text-[8.5px] font-medium text-[#ffffffa6] mt-0.5">{card.handle}</span>
-      </span>
-      <span className="flex flex-col items-center gap-1.5 shrink-0">
-        <span className="flex flex-col items-center gap-0.5">
-          <Heart className="w-3.5 h-3.5 fill-[#fff]" />
-          <span className="text-[8px] font-semibold tabular-nums">{card.likes}</span>
-        </span>
-        <MessageCircle className="w-3.5 h-3.5" />
-      </span>
-    </div>
-
-    <div className="relative z-10 h-[2px] mx-2.5 mb-2 rounded-full bg-[#ffffff33] overflow-hidden">
-      <div
-        className="h-full w-full bg-[#fff] origin-left animate-reel-scrub"
-        style={{ animationDuration: `${card.scrubDuration}s`, animationDelay: `${index * 0.6}s` }}
-      />
-    </div>
-  </motion.div>
-);
-
-// The cluster tilts toward the cursor (spring-smoothed) and drifts away as the
-// hero scrolls out of view — the two places Motion actually earns its keep
-// over plain CSS: physics-based response to input, and scroll-linked motion.
-const FeedCluster: React.FC = () => {
-  const clusterRef = useRef<HTMLDivElement>(null);
-  const pointerX = useMotionValue(0);
-  const pointerY = useMotionValue(0);
-  const springConfig = { stiffness: 150, damping: 20, mass: 0.5 };
-  const rotateX = useSpring(useTransform(pointerY, [-0.5, 0.5], [8, -8]), springConfig);
-  const rotateY = useSpring(useTransform(pointerX, [-0.5, 0.5], [-8, 8]), springConfig);
-
-  const { scrollYProgress } = useScroll({ target: clusterRef, offset: ["start start", "end start"] });
-  const scrollDrift = useTransform(scrollYProgress, [0, 1], [0, 72]);
-  const scrollFade = useTransform(scrollYProgress, [0, 1], [1, 0.35]);
-
-  const handlePointerMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    pointerX.set((e.clientX - rect.left) / rect.width - 0.5);
-    pointerY.set((e.clientY - rect.top) / rect.height - 0.5);
-  };
-  const handlePointerLeave = () => {
-    pointerX.set(0);
-    pointerY.set(0);
-  };
-
-  return (
-    <div
-      ref={clusterRef}
-      onMouseMove={handlePointerMove}
-      onMouseLeave={handlePointerLeave}
-      style={{ perspective: 1200 }}
-      className="relative h-[420px] sm:h-[480px] lg:h-[540px]"
-    >
-      <span
-        className="absolute z-0 right-[-4%] bottom-[-4%] font-bold text-transparent text-[18vw] sm:text-[10vw] lg:text-[6.5vw] leading-none select-none pointer-events-none hero-display"
-        style={{ WebkitTextStroke: "1px rgba(245,242,239,0.08)" }}
-        aria-hidden="true"
-      >
-        FYP
-      </span>
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        variants={feedContainerVariants}
-        style={{ rotateX, rotateY, y: scrollDrift, opacity: scrollFade }}
-        className="absolute inset-0"
-      >
-        {feedCards.map((card, i) => (
-          <FeedCard key={card.id} card={card} index={i} />
-        ))}
-      </motion.div>
-    </div>
-  );
-};
 
 interface PortfolioItemData {
   id: string;
@@ -292,67 +109,7 @@ export default function Home() {
 
   return (
     <>
-      {/* Hero — Feed Collision: headline the video columns interrupt, staged as a real scroll, not a bento grid */}
-      <section className="relative pt-32 pb-24 md:pt-44 md:pb-28 overflow-hidden border-b border-white/5 bg-background">
-
-        <div className="absolute inset-0 bg-background bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] z-0 pointer-events-none"></div>
-        {/* Soft lilac wash as a radial gradient, not filter: blur() — a 120px
-            blur on a large element re-rasterizes on scroll and was the main
-            source of hero scroll jank. Same falloff, no filter cost. */}
-        <div
-          className="absolute top-[-440px] left-[-440px] w-[1120px] h-[1120px] z-0 pointer-events-none"
-          style={{ background: "radial-gradient(circle closest-side, rgba(var(--color-primary-rgb), 0.1) 0%, rgba(var(--color-primary-rgb), 0.1) 18%, rgba(var(--color-primary-rgb), 0.05) 50%, transparent 100%)" }}
-        />
-
-        <div className="max-w-7xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-[1.05fr_1fr] gap-14 lg:gap-8 items-center">
-
-          {/* Left — headline */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
-          >
-            <h1 className="hero-display font-bold text-white mb-6 leading-[0.96] tracking-tight text-5xl md:text-6xl lg:text-7xl text-balance">
-              Stop posting.<br />
-              Start <span className="italic text-primary">scrolling</span> them.
-            </h1>
-
-            <p className="text-on-surface-variant text-lg sm:text-xl leading-relaxed max-w-lg mb-10">
-              Socialio turns your product into the feed people can't swipe past — scripted, shot, edited, and scheduled by a team that lives in the app, not a deck.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-10">
-              <Magnetic>
-                <Link to="/pricing" className="bg-white text-background px-8 py-4 rounded-lg font-bold text-sm hover:bg-primary transition-all duration-300 flex items-center justify-center gap-2 group">
-                  See plans & pricing <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </Magnetic>
-              <Magnetic>
-                <button
-                  type="button"
-                  onClick={() => document.getElementById("reel-showcase")?.scrollIntoView({ behavior: "smooth" })}
-                  className="border border-white/15 text-white px-8 py-4 rounded-lg font-bold text-sm hover:bg-white/5 transition-all duration-300 flex items-center justify-center gap-2"
-                >
-                  <Play className="w-4 h-4 text-primary" fill="currentColor" /> Watch The Reel
-                </button>
-              </Magnetic>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <div className="flex -space-x-2">
-                <span className="w-8 h-8 rounded-full border-2 border-background flex items-center justify-center text-[10px] font-bold text-white" style={{ background: "linear-gradient(135deg,#8a5fc4,#3a2b52)" }}>JM</span>
-                <span className="w-8 h-8 rounded-full border-2 border-background flex items-center justify-center text-[10px] font-bold text-white" style={{ background: "linear-gradient(135deg,#ff9169,#d3512f)" }}>RK</span>
-                <span className="w-8 h-8 rounded-full border-2 border-background flex items-center justify-center text-[10px] font-bold text-white" style={{ background: "linear-gradient(135deg,#4fc7c2,#1c6b6c)" }}>AT</span>
-              </div>
-              <p className="text-xs text-on-surface-variant"><span className="text-white font-bold">200+ brands</span> served</p>
-            </div>
-          </motion.div>
-
-          {/* Right — the feed the videos are colliding into */}
-          <FeedCluster />
-
-        </div>
-      </section>
+      <HeroScrollWord />
 
       <DeviceScrollShowcase />
       <AnalyticsShowcase />
@@ -378,7 +135,7 @@ export default function Home() {
           </div>
 
           {/* Right Content */}
-          <div className="col-span-12 md:col-span-8">
+          <div className="min-w-0 md:col-span-8">
              {servicesData.filter(s => s.id === activeSection).map((service, idx) => (
                 <motion.div 
                   key={service.id} 
@@ -486,8 +243,8 @@ export default function Home() {
       </section>
 
       {/* How it Works — an assembly line, staged as one, not three identical boxes */}
-      <section className="py-32 md:py-40 bg-background border-b border-white/5 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full relative z-10">
+      <section id="how-it-works" className="py-32 md:py-40 bg-background border-b border-white/5 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-6 w-full relative z-10">
 
           <div className="max-w-xl mb-20 md:mb-28">
             <span className="hero-display italic text-primary text-base block mb-4">The Process</span>
@@ -720,7 +477,7 @@ export default function Home() {
           className="absolute bottom-[-440px] right-[-440px] w-[1120px] h-[1120px] z-0 pointer-events-none"
           style={{ background: "radial-gradient(circle closest-side, rgba(255, 107, 74, 0.1) 0%, rgba(255, 107, 74, 0.1) 18%, rgba(255, 107, 74, 0.05) 50%, transparent 100%)" }}
         />
-        <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
+        <div className="max-w-7xl mx-auto px-6 relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-10">
           <div>
             <h2 className="hero-display font-bold text-white text-4xl md:text-6xl leading-[1.05] tracking-tight text-balance max-w-xl">
               Your competitors are still posting.<br />
