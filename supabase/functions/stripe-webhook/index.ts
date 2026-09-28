@@ -61,11 +61,26 @@ Deno.serve(async (req: Request) => {
     return new Response("ok (unhandled event type)", { status: 200 });
   }
 
+  // Stripe doesn't guarantee delivery order: an older "created (incomplete)"
+  // event can land after "updated (active)" and roll the status back (seen in
+  // test mode). For subscription events, apply the subscription's CURRENT
+  // state from Stripe instead of the event's snapshot, so order can't matter.
+  let payload: Stripe.Event = event;
+  if (event.type.startsWith("customer.subscription.")) {
+    const snapshot = event.data.object as Stripe.Subscription;
+    try {
+      const current = await stripe.subscriptions.retrieve(snapshot.id);
+      payload = { ...event, data: { ...event.data, object: current } } as Stripe.Event;
+    } catch (err) {
+      return new Response(`Couldn't fetch subscription: ${err instanceof Error ? err.message : "unknown"}`, { status: 500 });
+    }
+  }
+
   const adminClient = createClient(supabaseUrl, serviceRoleKey);
   const { error } = await adminClient.rpc(rpcName, {
     p_event_id: event.id,
     p_event_type: event.type,
-    p_payload: event as unknown as Record<string, unknown>,
+    p_payload: payload as unknown as Record<string, unknown>,
   });
   if (error) {
     // Non-2xx so Stripe retries — e.g. subscription.updated can legitimately

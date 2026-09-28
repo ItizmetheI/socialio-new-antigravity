@@ -202,6 +202,9 @@ Deno.serve(async (req: Request) => {
     session = await stripe.checkout.sessions.create({
       mode,
       line_items,
+      // Always charge and show USD (the site's prices). Adaptive pricing
+      // would show and record the buyer's local currency instead.
+      adaptive_pricing: { enabled: false },
       success_url: `${returnBase}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${returnBase}/checkout`,
       customer_email: callerData.user.email ?? undefined,

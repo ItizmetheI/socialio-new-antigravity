@@ -13,3 +13,4 @@ coverage/
 # not shared config
 supabase/.temp/
 supabase/.branches/
+*.state.json
