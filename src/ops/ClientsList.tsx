@@ -87,7 +87,31 @@ export default function ClientsList() {
   return (
     <div>
       <PageHeader title="Clients" description={`${rows.length} ${rows.length === 1 ? "client" : "clients"}. Open one for their plan, work, brand kit and results.`} />
-      <div className="overflow-x-auto">
+      {/* Phones: one row per client instead of a sideways-scrolling table. */}
+      <ul className="md:hidden divide-y divide-white/10 border-y border-white/10">
+        {rows.map(({ org, latestPlan, latestProposal, openCount, reviewCount }) => (
+          <li key={org.id}>
+            <Link to={`/ops/clients/${org.id}`} className="flex items-center justify-between gap-4 py-4 group">
+              <span className="min-w-0">
+                <span className="block font-bold text-white group-hover:text-primary transition-colors truncate">{org.name}</span>
+                <span className="block text-xs text-on-surface-variant">
+                  {openCount} open{reviewCount ? ` · ${reviewCount} in review` : ""}
+                </span>
+              </span>
+              <span className="shrink-0">
+                {latestPlan ? (
+                  <PlanStatusBadge status={latestPlan.status} />
+                ) : latestProposal ? (
+                  <ProposalStatusBadge status={latestProposal.status} />
+                ) : (
+                  <span className="text-xs text-on-surface-variant">No plan yet</span>
+                )}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      <div className="hidden md:block overflow-x-auto">
         <table className="w-full text-sm min-w-[40rem]">
           <thead>
             <tr className="text-left text-xs text-on-surface-variant border-b border-white/10">

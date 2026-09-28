@@ -11,6 +11,7 @@ import type {
   PlanItem,
   PlanFeedback,
   PerformanceReport,
+  ActivityEvent,
   Order,
   OrderItem,
   Subscription,
@@ -492,4 +493,14 @@ export const mockPayments: Payment[] = [
     currency: "usd",
     created_at: "2026-08-30T12:00:00Z",
   },
+];
+
+// Recent activity for the feeds and the notification bell in test mode.
+export const mockActivityEvents: ActivityEvent[] = [
+  { id: 6, org_id: ORG_NORTHWIND_ID, actor_id: TEST_STAFF_ID, kind: "stage_changed", request_id: "req-3", summary: '"Cold brew launch UGC set" is ready for review', is_internal: false, created_at: new Date(Date.now() - 25 * 60000).toISOString() },
+  { id: 5, org_id: ORG_NORTHWIND_ID, actor_id: TEST_STAFF_ID, kind: "file_delivered", request_id: "req-3", summary: 'New file on "Cold brew launch UGC set"', is_internal: false, created_at: new Date(Date.now() - 30 * 60000).toISOString() },
+  { id: 4, org_id: ORG_NORTHWIND_ID, actor_id: TEST_STAFF_ID, kind: "comment_added", request_id: "req-2", summary: 'New internal note on "Founder story UGC video"', is_internal: true, created_at: new Date(Date.now() - 3 * 3600000).toISOString() },
+  { id: 3, org_id: ORG_NORTHWIND_ID, actor_id: TEST_STAFF_ID, kind: "stage_changed", request_id: "req-2", summary: '"Founder story UGC video" is now in production', is_internal: false, created_at: new Date(Date.now() - 26 * 3600000).toISOString() },
+  { id: 2, org_id: ORG_NORTHWIND_ID, actor_id: null, kind: "payment_received", request_id: null, summary: "Payment received: 79.00 USD", is_internal: false, created_at: new Date(Date.now() - 4 * 86400000).toISOString() },
+  { id: 1, org_id: ORG_NORTHWIND_ID, actor_id: null, kind: "plan_approved", request_id: null, summary: "Plan v1 approved", is_internal: false, created_at: new Date(Date.now() - 6 * 86400000).toISOString() },
 ];

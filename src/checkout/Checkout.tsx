@@ -70,7 +70,7 @@ export default function Checkout() {
         <h1 className="hero-display font-bold text-3xl md:text-4xl text-white mb-2">Checkout</h1>
         <p className="text-on-surface-variant mb-10">Review your order, then pay securely on Stripe.</p>
 
-        <div className="grid lg:grid-cols-[minmax(0,1fr)_24rem] gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_24rem] gap-8 items-start">
           <section className="bg-surface-container border border-white/10 rounded-3xl p-6 md:p-8">
             <h2 className="font-bold text-white mb-6">Your order</h2>
             {[
@@ -128,7 +128,7 @@ export default function Checkout() {
                 <button
                   onClick={handleContinueToPayment}
                   disabled={isRedirecting}
-                  className="w-full py-4 bg-white text-background hover:bg-primary hover:text-[#fff] text-sm font-bold transition-colors flex justify-center items-center gap-2 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-primary w-full"
                 >
                   <CreditCard className="w-4 h-4" />
                   {isRedirecting ? "Opening secure checkout..." : "Pay securely"}
@@ -137,7 +137,7 @@ export default function Checkout() {
               ) : (
                 <div className="flex flex-col gap-3">
                   <p className="text-sm text-on-surface-variant text-center">Create an account (or sign in) so your order links to your dashboard.</p>
-                  <Link to="/app/signup" className="w-full py-4 bg-white text-background hover:bg-primary hover:text-[#fff] text-sm font-bold transition-colors text-center rounded-xl">
+                  <Link to="/app/signup" className="btn-primary w-full">
                     Create account
                   </Link>
                   <Link to="/app/login" state={{ from: { pathname: "/checkout" } }} className="w-full py-4 bg-white/5 hover:bg-white/10 text-white text-sm font-bold transition-colors text-center rounded-xl">

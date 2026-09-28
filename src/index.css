@@ -433,10 +433,34 @@ input[type="range"]::-moz-range-track {
 }
 
 
+/* `light:` variant for the few literal status colors (emerald/amber -300)
+   that are tuned for the dark background and wash out on the light one. */
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
 /* Horizontal tab rows that scroll on phones without a visible scrollbar. */
 @utility no-scrollbar {
   scrollbar-width: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+/* Shared form + button vocabulary for the dashboard and auth pages, so every
+   page gets the same input height, label, and button shape. Components layer:
+   a page can still override with a utility (w-full, self-start, ...).
+   Hover text uses on-primary, not white: in dark mode primary is a light
+   lavender where #fff text would sit at ~1.6:1 contrast. */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white text-background text-sm font-bold whitespace-nowrap transition-colors hover:bg-primary hover:text-on-primary disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:text-background;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-white/15 text-white text-sm font-bold whitespace-nowrap transition-colors hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .field {
+    @apply w-full min-w-0 bg-background border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-on-surface-variant/60 focus:outline-none focus:border-primary transition-colors;
+  }
+  .field-label {
+    @apply block text-[11px] font-bold uppercase tracking-widest text-on-surface-variant mb-2;
   }
 }

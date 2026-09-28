@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth/AuthContext";
 import Spinner from "../components/Spinner";
+import PageHeader from "../components/workspace/PageHeader";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
 import OnboardingAnswersView from "../components/OnboardingAnswersView";
@@ -81,7 +82,7 @@ export default function OnboardingReview() {
 
   return (
     <div>
-      <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-8">Onboarding</h1>
+      <PageHeader title="Onboarding" description="What new clients told us. Review it, then build their plan." />
       {actionError && (
         <div className="mb-6">
           <ErrorBanner message={actionError} />
@@ -94,7 +95,7 @@ export default function OnboardingReview() {
             <div key={onboarding.id} className={index !== rows.length - 1 ? "border-b border-white/5" : ""}>
               <button
                 onClick={() => setExpandedId(isExpanded ? null : onboarding.id)}
-                className="w-full flex items-center justify-between px-8 py-6 text-left hover:bg-white/[0.02] transition-colors"
+                className="w-full flex items-center justify-between gap-4 px-5 md:px-8 py-5 md:py-6 text-left hover:bg-white/[0.02] transition-colors"
               >
                 <div>
                   <div className="font-bold text-white">{org?.name ?? "Unknown org"}</div>
@@ -107,9 +108,9 @@ export default function OnboardingReview() {
                 <span
                   className={`text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full border ${
                     onboarding.status === "reviewed"
-                      ? "bg-emerald-400/10 text-emerald-300 border-emerald-400/20"
+                      ? "bg-emerald-400/10 text-emerald-300 light:text-emerald-700 border-emerald-400/20"
                       : onboarding.status === "submitted"
-                        ? "bg-amber-400/10 text-amber-300 border-amber-400/20"
+                        ? "bg-amber-400/10 text-amber-300 light:text-amber-700 border-amber-400/20"
                         : "bg-white/5 text-on-surface-variant border-white/10"
                   }`}
                 >
@@ -117,14 +118,14 @@ export default function OnboardingReview() {
                 </span>
               </button>
               {isExpanded && (
-                <div className="px-8 pb-8">
+                <div className="px-5 md:px-8 pb-6 md:pb-8">
                   <div className="bg-background/50 rounded-2xl p-6 mb-4">
                     <OnboardingAnswersView answers={onboarding.answers} />
                   </div>
                   {onboarding.status === "submitted" && (
                     <button
                       onClick={() => markReviewed(onboarding.id)}
-                      className="px-6 py-3 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all"
+                      className="btn-primary"
                     >
                       Mark reviewed
                     </button>

@@ -27,7 +27,7 @@ function AccountMenu({ name, role, onSignOut }: { name: string; role: string; on
   }, [isOpen]);
 
   return (
-    <div ref={ref} className="relative hidden md:block">
+    <div ref={ref} className="relative hidden lg:block">
       <button
         onClick={() => setIsOpen((open) => !open)}
         aria-expanded={isOpen}
@@ -87,11 +87,10 @@ export default function NavBar() {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  const isActive = (path: string) => {
-    return pathname === path
-      ? "text-primary font-bold pb-1 text-sm"
-      : "text-on-surface/70 hover:text-primary transition-colors duration-300 text-sm";
-  };
+  // One style for every top-level link (plain and dropdown alike).
+  const linkClass = (isOn: boolean) =>
+    `flex items-center gap-1 text-sm whitespace-nowrap transition-colors ${isOn ? "text-primary font-bold" : "text-on-surface-variant hover:text-primary"}`;
+  const isActive = (path: string) => linkClass(pathname === path);
 
   const isMobileActive = (path: string) => {
     return pathname === path 
@@ -105,17 +104,17 @@ export default function NavBar() {
         className={`fixed top-0 w-full z-40 transition-all duration-300 ${scrolled || isOnDashboard ? 'bg-background/95 backdrop-blur-md border-b border-white/10 shadow-sm py-0' : 'bg-transparent border-transparent py-2'}`}
         onMouseLeave={() => setActiveDropdown(null)}
       >
-        <div className="flex justify-between items-center max-w-7xl mx-auto px-6 h-20">
+        <div className="flex justify-between items-center gap-6 max-w-7xl mx-auto px-5 md:px-6 h-20">
           <div className="flex items-center">
             <Logo />
           </div>
-          <div className="hidden md:flex items-center gap-8 relative">
+          <div className="hidden lg:flex items-center gap-8 relative">
             <Link to="/" className={isActive("/")}>Home</Link>
             
             {/* Services Mega Menu Toggle */}
             <Link
               to="/services"
-              className={`flex items-center gap-1 transition-colors ${activeDropdown === 'services' || pathname.startsWith('/service') ? 'text-primary font-bold' : 'text-on-surface-variant hover:text-primary'}`}
+              className={linkClass(activeDropdown === 'services' || pathname.startsWith('/service'))}
               onMouseEnter={() => setActiveDropdown('services')}
             >
               Services <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === 'services' ? 'rotate-180' : ''}`} />
@@ -126,7 +125,7 @@ export default function NavBar() {
             {/* Company Mega Menu Toggle */}
             <Link
               to="/about"
-              className={`flex items-center gap-1 transition-colors ${activeDropdown === 'company' ? 'text-primary font-bold' : 'text-on-surface-variant hover:text-primary'}`}
+              className={linkClass(activeDropdown === 'company')}
               onMouseEnter={() => setActiveDropdown('company')}
             >
               Company <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === 'company' ? 'rotate-180' : ''}`} />
@@ -135,23 +134,24 @@ export default function NavBar() {
             {isSignedIn && (
               <Link
                 to={dashboardHome}
-                className={`inline-flex items-center gap-1.5 text-sm transition-colors ${isOnDashboard ? "text-primary font-bold" : "text-on-surface/70 hover:text-primary"}`}
+                className={`${linkClass(isOnDashboard)} gap-1.5`}
               >
                 <LayoutDashboard className="w-4 h-4" /> Dashboard
               </Link>
             )}
           </div>
-          <div className="flex items-center gap-4 md:gap-6">
-            <div className="hidden md:block">
+          <div className="flex items-center gap-3 lg:gap-5">
+            <div className="hidden lg:block">
               <ThemeToggle />
             </div>
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative text-on-surface-variant hover:text-primary transition-colors group"
+              aria-label={`Cart (${items.length} item${items.length === 1 ? "" : "s"})`}
+              className="relative w-10 h-10 flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors group"
             >
               <ShoppingBag className="w-5 h-5 group-hover:scale-110 transition-transform" />
               {items.length > 0 && (
-                <span className="absolute -top-2 -right-2 w-4 h-4 bg-primary text-background font-sans text-[10px] flex items-center justify-center rounded-full font-bold">
+                <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-primary text-on-primary font-sans text-[10px] flex items-center justify-center rounded-full font-bold">
                   {items.length}
                 </span>
               )}
@@ -160,17 +160,19 @@ export default function NavBar() {
               <AccountMenu name={profile?.full_name ?? ""} role={profile?.role ?? ""} onSignOut={handleSignOut} />
             ) : (
               <>
-                <Link to="/app/login" className="hidden md:inline-block border border-white/10 bg-transparent text-white px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-white/5 rounded-full">
+                <Link to="/app/login" className="hidden lg:inline-block whitespace-nowrap border border-white/10 bg-transparent text-white px-5 py-2 font-bold text-sm transition-colors duration-300 hover:bg-white/5 rounded-full">
                   Log in
                 </Link>
-                <Link to="/app/signup" className="hidden md:inline-block bg-white text-background px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-gray-200 rounded-full">
+                <Link to="/app/signup" className="hidden lg:inline-block whitespace-nowrap bg-white text-background px-5 py-2 font-bold text-sm transition-colors duration-300 hover:bg-primary hover:text-on-primary rounded-full">
                   Sign up
                 </Link>
               </>
             )}
-            <button 
-              className="md:hidden text-white"
+            <button
+              className="lg:hidden w-10 h-10 -mr-2 flex items-center justify-center text-white"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMobileMenuOpen}
             >
               {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -178,7 +180,7 @@ export default function NavBar() {
         </div>
 
         {/* Mega Menus Dropdowns directly attached to navbar for seamless hovering */}
-        <div className={`hidden md:block absolute top-full left-0 w-full bg-surface-container border-b border-white/10 shadow-2xl transition-all duration-300 overflow-hidden origin-top ${activeDropdown ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 h-0 pointer-events-none'}`}>
+        <div className={`hidden lg:block absolute top-full left-0 w-full bg-surface-container border-b border-white/10 shadow-2xl transition-all duration-300 overflow-hidden origin-top ${activeDropdown ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 h-0 pointer-events-none'}`}>
            <div className="max-w-7xl mx-auto px-6 py-8" onMouseLeave={() => setActiveDropdown(null)}>
               {activeDropdown === 'services' && (
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -229,8 +231,8 @@ export default function NavBar() {
         </div>
 
         {/* Mobile Menu Drawer */}
-        <div className={`md:hidden absolute top-full left-0 w-full bg-surface-container border-b border-white/10 shadow-2xl transition-all duration-300 overflow-hidden origin-top ${isMobileMenuOpen ? 'opacity-100 scale-y-100 h-[calc(100vh-80px)] overflow-y-auto' : 'opacity-0 scale-y-0 h-0 pointer-events-none'}`}>
-           <div className="px-6 py-8 flex flex-col gap-6">
+        <div className={`lg:hidden absolute top-full left-0 w-full bg-surface-container border-b border-white/10 shadow-2xl transition-all duration-300 overflow-hidden origin-top ${isMobileMenuOpen ? 'opacity-100 scale-y-100 h-[calc(100dvh-80px)] overflow-y-auto' : 'opacity-0 scale-y-0 h-0 pointer-events-none'}`}>
+           <div className="max-w-7xl mx-auto px-5 md:px-6 py-8 flex flex-col gap-6">
               <Link to="/" className={isMobileActive("/")}>Home</Link>
               <Link to="/services" className={isMobileActive("/services")}>Services</Link>
               <Link to="/case-studies" className={isMobileActive("/case-studies")}>Case Studies</Link>
@@ -241,19 +243,19 @@ export default function NavBar() {
               
               {isSignedIn ? (
                 <>
-                  <Link to={dashboardHome} className="text-center bg-primary text-[#fff] px-6 py-3 font-bold text-sm rounded-xl">
+                  <Link to={dashboardHome} className="btn-primary">
                     Dashboard
                   </Link>
-                  <button onClick={handleSignOut} className="text-center border border-white/20 bg-transparent text-white px-6 py-3 font-bold text-sm rounded-xl">
+                  <button onClick={handleSignOut} className="btn-secondary">
                     Sign out
                   </button>
                 </>
               ) : (
                 <>
-                  <Link to="/app/signup" className="text-center bg-primary text-[#fff] px-6 py-3 font-bold text-sm rounded-xl">
+                  <Link to="/app/signup" className="btn-primary">
                     Sign up
                   </Link>
-                  <Link to="/app/login" className="text-center border border-white/20 bg-transparent text-white px-6 py-3 font-bold text-sm rounded-xl">
+                  <Link to="/app/login" className="btn-secondary">
                     Log in
                   </Link>
                 </>

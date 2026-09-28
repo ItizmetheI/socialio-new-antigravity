@@ -5,6 +5,7 @@ import { servicesData, addOnsData } from "../data/services";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
+import PageHeader from "../components/workspace/PageHeader";
 import { formatCents, formatDate } from "../lib/format";
 import type { Order, OrderItem, Payment, Subscription } from "../lib/database.types";
 import type { ClientOutletContext } from "./ClientLayout";
@@ -82,9 +83,9 @@ export default function Billing() {
 
   return (
     <div className="max-w-4xl">
-      <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-8">Billing</h1>
+      <PageHeader title="Billing" description="Your subscription, orders, and payments." />
 
-      <section className="bg-surface-container border border-white/10 rounded-3xl p-6 md:p-8 mb-6">
+      <section className="bg-surface-container border border-white/10 rounded-3xl p-5 md:p-8 mb-10">
         <h2 className="font-bold text-white mb-4">Your subscription</h2>
         {subscription ? (
           <div className="flex flex-wrap items-center justify-between gap-4">
@@ -107,7 +108,7 @@ export default function Billing() {
         )}
       </section>
 
-      <section className="mb-6">
+      <section className="mb-10">
         <h2 className="font-bold text-white mb-4">Orders</h2>
         {orders.length === 0 ? (
           <EmptyState title="No orders yet" description="Purchases you make at checkout show up here." />
@@ -128,11 +129,11 @@ export default function Billing() {
                   {items
                     .filter((item) => item.order_id === order.id)
                     .map((item) => (
-                      <li key={item.id} className="flex justify-between text-sm">
-                        <span className="text-white">
+                      <li key={item.id} className="flex justify-between gap-4 text-sm">
+                        <span className="text-white min-w-0">
                           {itemTitle(item.service_id)} <span className="text-on-surface-variant">· {item.tier_label}</span>
                         </span>
-                        <span className="text-on-surface-variant">
+                        <span className="text-on-surface-variant shrink-0">
                           {formatCents(item.unit_amount * item.quantity, order.currency)}
                           {item.billing_interval === "month" ? "/mo" : ""}
                         </span>
@@ -150,7 +151,7 @@ export default function Billing() {
           <h2 className="font-bold text-white mb-4">Payment history</h2>
           <div className="bg-surface-container border border-white/10 rounded-2xl overflow-hidden">
             {payments.map((payment, i) => (
-              <div key={payment.id} className={`flex justify-between px-5 py-3 text-sm ${i !== payments.length - 1 ? "border-b border-white/5" : ""}`}>
+              <div key={payment.id} className={`flex justify-between gap-4 px-5 py-3 text-sm ${i !== payments.length - 1 ? "border-b border-white/5" : ""}`}>
                 <span className="text-white">{formatDate(payment.created_at)}</span>
                 <span className="flex gap-4">
                   <span className="text-on-surface-variant capitalize">{payment.status}</span>

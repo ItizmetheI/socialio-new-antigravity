@@ -34,7 +34,7 @@ function ReviewPanel({ onDecide }: { onDecide: (stage: RequestStage, note: strin
   };
 
   return (
-    <div className="mb-10 rounded-3xl border border-primary/30 bg-primary/5 p-6">
+    <div className="mb-10 rounded-3xl border border-primary/30 bg-primary/5 p-5 md:p-6">
       <h2 className="font-bold text-white mb-1">Ready for your review</h2>
       <p className="text-sm text-on-surface-variant mb-5">Look through the files below, then approve or ask for changes.</p>
       {mode === "changes" && (
@@ -44,26 +44,27 @@ function ReviewPanel({ onDecide }: { onDecide: (stage: RequestStage, note: strin
           placeholder="What should we change?"
           rows={3}
           autoFocus
-          className="mb-4 bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors resize-none"
+          aria-label="What should we change?"
+          className="field resize-none mb-4"
         />
       )}
-      {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
+      {error && <p className="text-error text-sm mb-4">{error}</p>}
       <div className="flex flex-wrap gap-3">
         {mode === "idle" ? (
           <>
-            <button onClick={() => decide("delivered")} disabled={isSaving} className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white text-background font-bold text-sm hover:bg-primary hover:text-[#fff] transition-colors disabled:opacity-50">
+            <button onClick={() => decide("delivered")} disabled={isSaving} className="btn-primary">
               <CheckCircle2 className="w-4 h-4" /> {isSaving ? "Saving..." : "Approve"}
             </button>
-            <button onClick={() => setMode("changes")} disabled={isSaving} className="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-white/15 text-white font-bold text-sm hover:bg-white/5 transition-colors disabled:opacity-50">
+            <button onClick={() => setMode("changes")} disabled={isSaving} className="btn-secondary">
               <RotateCcw className="w-4 h-4" /> Request changes
             </button>
           </>
         ) : (
           <>
-            <button onClick={() => decide("in_progress")} disabled={isSaving} className="px-5 py-3 rounded-xl bg-white text-background font-bold text-sm hover:bg-primary hover:text-[#fff] transition-colors disabled:opacity-50">
+            <button onClick={() => decide("in_progress")} disabled={isSaving} className="btn-primary">
               {isSaving ? "Sending..." : "Send changes"}
             </button>
-            <button onClick={() => { setMode("idle"); setError(""); }} disabled={isSaving} className="px-5 py-3 rounded-xl border border-white/15 text-white font-bold text-sm hover:bg-white/5 transition-colors">
+            <button onClick={() => { setMode("idle"); setError(""); }} disabled={isSaving} className="btn-secondary">
               Cancel
             </button>
           </>
@@ -166,8 +167,8 @@ export default function RequestDetail() {
       </Link>
       <div className="mb-8">
         <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">{stageLabel}</div>
-        <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-3">{request.title}</h1>
-        {request.description && <p className="text-on-surface-variant mb-4">{request.description}</p>}
+        <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-3 break-words">{request.title}</h1>
+        {request.description && <p className="text-on-surface-variant mb-4 break-words whitespace-pre-line">{request.description}</p>}
         <dl className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
           {request.format && (
             <div>
@@ -202,18 +203,18 @@ export default function RequestDetail() {
 
       {deliverables.length > 0 && (
         <div className="mb-10">
-          <h2 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Deliverables</h2>
+          <h2 className="font-bold text-white mb-4">Deliverables</h2>
           <DeliverableList deliverables={deliverables} />
         </div>
       )}
 
       <div>
-        <h2 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Comments</h2>
+        <h2 className="font-bold text-white mb-4">Comments</h2>
         <div className="flex flex-col gap-4 mb-6">
           {comments.length === 0 && <p className="text-on-surface-variant text-sm">No comments yet.</p>}
           {comments.map((comment) => (
             <div key={comment.id} className="bg-surface-container border border-white/10 rounded-2xl px-5 py-4">
-              <p className="text-white text-sm">{comment.body}</p>
+              <p className="text-white text-sm break-words whitespace-pre-line">{comment.body}</p>
               <div className="text-xs text-on-surface-variant mt-2">
                 {new Date(comment.created_at).toLocaleString()}
               </div>
@@ -222,20 +223,21 @@ export default function RequestDetail() {
         </div>
         <form onSubmit={postComment} className="flex flex-col gap-3">
           <textarea
+            aria-label="Add a comment"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="Add a comment..."
             rows={3}
-            className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors resize-none"
+            className="field resize-none"
           />
           <button
             type="submit"
             disabled={isPosting || !newComment.trim()}
-            className="self-end px-6 py-3 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+            className="btn-primary self-end"
           >
             {isPosting ? "Posting..." : "Post comment"}
           </button>
-          {commentError && <p className="text-red-400 text-sm">{commentError}</p>}
+          {commentError && <p className="text-error text-sm">{commentError}</p>}
         </form>
       </div>
     </div>

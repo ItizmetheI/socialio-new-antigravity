@@ -4,6 +4,7 @@ import { CheckCircle2 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
+import PageHeader from "../components/workspace/PageHeader";
 import { useAuth } from "../lib/auth/AuthContext";
 import BrandAssets from "./BrandAssets";
 import type { ClientOnboarding, OnboardingAnswers } from "../lib/database.types";
@@ -160,18 +161,18 @@ export default function Onboarding() {
 
   return (
     <div className="max-w-2xl">
-      <div className="flex items-center justify-between mb-2">
-        <h1 className="hero-display font-bold text-2xl md:text-3xl text-white">Tell us about your business</h1>
-      </div>
-      <p className="text-on-surface-variant mb-8">
-        {isLocked
-          ? "Reviewed by your account manager — reach out if anything needs to change."
-          : "This shapes the plan we curate for you. Save as you go, submit when ready."}
-      </p>
+      <PageHeader
+        title="Tell us about your business"
+        description={
+          isLocked
+            ? "Reviewed by your account manager — reach out if anything needs to change."
+            : "This shapes the plan we curate for you. Save as you go, submit when ready."
+        }
+      />
 
       {row?.status === "submitted" && (
         <div className="mb-8 flex items-center gap-2 text-primary font-bold text-sm border-l-2 border-primary pl-4 py-2">
-          <CheckCircle2 className="w-5 h-5" /> Submitted — we'll follow up once it's reviewed.
+          <CheckCircle2 className="w-5 h-5 shrink-0" /> Submitted — we'll follow up once it's reviewed.
         </div>
       )}
       {isLocked && (
@@ -180,39 +181,39 @@ export default function Onboarding() {
         </div>
       )}
 
-      <div className="bg-surface-container border border-white/10 rounded-3xl p-8 flex flex-col gap-6">
+      <div className="bg-surface-container border border-white/10 rounded-3xl p-5 md:p-8 flex flex-col gap-6">
         {FIELD_CONFIG.map((field) => (
           <div key={field.key}>
-            <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
+            <label htmlFor={`onboarding-${field.key}`} className="field-label">
               {field.label} {field.required && <span className="text-primary">*</span>}
             </label>
             {field.type === "textarea" ? (
               <textarea
+                id={`onboarding-${field.key}`}
                 rows={3}
                 disabled={isLocked}
                 value={answers[field.key] ?? ""}
                 onChange={(e) => setAnswers((prev) => ({ ...prev, [field.key]: e.target.value }))}
                 placeholder={field.placeholder}
-                className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors resize-none disabled:opacity-60"
+                className="field resize-none disabled:opacity-60"
               />
             ) : (
               <input
+                id={`onboarding-${field.key}`}
                 type="text"
                 disabled={isLocked}
                 value={answers[field.key] ?? ""}
                 onChange={(e) => setAnswers((prev) => ({ ...prev, [field.key]: e.target.value }))}
                 placeholder={field.placeholder}
-                className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors disabled:opacity-60"
+                className="field disabled:opacity-60"
               />
             )}
           </div>
         ))}
 
         <div>
-          <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-            Which platforms matter most?
-          </label>
-          <div className="flex flex-wrap gap-2">
+          <div id="onboarding-platforms" className="field-label">Which platforms matter most?</div>
+          <div className="flex flex-wrap gap-2" role="group" aria-labelledby="onboarding-platforms">
             {PLATFORM_OPTIONS.map((platform) => (
               <button
                 key={platform}
@@ -238,7 +239,7 @@ export default function Onboarding() {
             <button
               onClick={() => save("in_progress")}
               disabled={isSaving}
-              className="px-6 py-3 border border-white/20 text-white hover:bg-white/5 font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+              className="btn-secondary"
             >
               {isSaving ? "Saving..." : "Save draft"}
             </button>
@@ -246,7 +247,7 @@ export default function Onboarding() {
               onClick={() => save("submitted")}
               disabled={isSaving || !isComplete}
               title={!isComplete ? "Fill in the required fields first" : undefined}
-              className="px-6 py-3 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary"
             >
               {row?.status === "submitted" ? "Update submission" : "Submit"}
             </button>

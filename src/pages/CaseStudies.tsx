@@ -186,7 +186,7 @@ export default function CaseStudies() {
                           ))}
                        </div>
                        
-                       <Link to="/contact" className="w-full sm:w-auto px-6 py-3 bg-white text-background font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-primary hover:text-white transition-colors duration-300 flex items-center justify-center gap-2 group/btn">
+                       <Link to="/contact" className="w-full sm:w-auto px-6 py-3 bg-white text-background font-mono text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-primary hover:text-on-primary transition-colors duration-300 flex items-center justify-center gap-2 group/btn">
                          Discuss Similar Growth <ArrowUpRight className="w-4 h-4 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
                        </Link>
                     </div>

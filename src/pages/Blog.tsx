@@ -204,7 +204,7 @@ export default function Blog() {
                     {isSubmitting ? "Subscribing..." : "Subscribe"}
                   </button>
                 </form>
-                {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
+                {error && <p className="text-error text-xs mt-2">{error}</p>}
                 <p className="text-[11px] text-on-surface-variant mt-3 text-center sm:text-left">No spam. Unsubscribe anytime.</p>
               </>
             )}

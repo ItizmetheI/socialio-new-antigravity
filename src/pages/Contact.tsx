@@ -247,13 +247,13 @@ export default function Contact() {
               />
 
               {error && (
-                <div className="text-red-400 font-sans text-sm">{error}</div>
+                <div className="text-error font-sans text-sm">{error}</div>
               )}
 
               <button
                 type="submit"
                 disabled={status === "submitting"}
-                className="w-full py-4 mt-2 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(215,183,255,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-4 mt-2 bg-white text-background hover:bg-primary hover:text-on-primary font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_30px_rgba(215,183,255,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {status === "submitting" ? "Sending..." : "Send Message →"}
               </button>

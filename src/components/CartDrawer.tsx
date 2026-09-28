@@ -67,7 +67,8 @@ export default function CartDrawer() {
                       </div>
                       <button 
                         onClick={() => removeFromCart(item.id)}
-                        className="absolute right-4 bottom-4 p-1.5 text-on-surface-variant hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                        aria-label={`Remove ${item.title}`}
+                        className="absolute right-4 bottom-4 p-1.5 text-on-surface-variant hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors [@media(hover:hover)]:opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -85,14 +86,14 @@ export default function CartDrawer() {
                 </div>
                 
                 <Link 
-                  to="/contact" 
+                  to="/checkout"
                   onClick={() => setIsCartOpen(false)}
-                  className="w-full py-4 bg-white text-background hover:bg-primary hover:text-white font-sans text-sm font-bold transition-all flex justify-center items-center gap-2 rounded-xl"
+                  className="w-full py-4 bg-white text-background hover:bg-primary hover:text-on-primary font-sans text-sm font-bold transition-all flex justify-center items-center gap-2 rounded-xl"
                 >
                   Proceed to Checkout <ArrowRight className="w-4 h-4" />
                 </Link>
                 <p className="text-center font-sans text-xs text-on-surface-variant mt-4">
-                  No payment required right now. We'll finalize your stack on our intro call.
+                  Secure payment on Stripe. Prices in USD.
                 </p>
               </div>
             )}

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import Spinner from "../../components/Spinner";
+import PageHeader from "../../components/workspace/PageHeader";
 import EmptyState from "../../components/EmptyState";
 import ErrorBanner from "../../components/ErrorBanner";
 import { inviteUser } from "./inviteUser";
@@ -72,46 +73,38 @@ export default function UsersAdmin() {
 
   return (
     <div className="max-w-4xl">
-      <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-8">Team</h1>
+      <PageHeader title="Team" description="Staff who can see the board and client workspaces." />
 
-      <div className="bg-surface-container border border-white/10 rounded-3xl p-8 mb-10">
-        <h2 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-6">
-          Invite a teammate
-        </h2>
+      <div className="bg-surface-container border border-white/10 rounded-3xl p-5 md:p-8 mb-10">
+        <h2 className="font-bold text-white mb-5">Invite a teammate</h2>
         <form onSubmit={handleInvite} className="flex flex-col gap-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-                Email
-              </label>
-              <input
+              <label htmlFor="usersadmin-email" className="field-label">Email</label>
+              <input id="usersadmin-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="teammate@socialio.io"
-                className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+                className="field"
               />
             </div>
             <div>
-              <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-                Full name
-              </label>
-              <input
+              <label htmlFor="usersadmin-full-name" className="field-label">Full name</label>
+              <input id="usersadmin-full-name"
                 type="text"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Alex Rivera"
-                className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+                className="field"
               />
             </div>
             <div>
-              <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-                Role
-              </label>
-              <select
+              <label htmlFor="usersadmin-role" className="field-label">Role</label>
+              <select id="usersadmin-role"
                 value={role}
                 onChange={(e) => setRole(e.target.value as StaffRole)}
-                className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors appearance-none"
+                className="field appearance-none"
               >
                 <option value="internal">Internal</option>
                 <option value="admin">Admin</option>
@@ -125,7 +118,7 @@ export default function UsersAdmin() {
           <button
             type="submit"
             disabled={isInviting}
-            className="self-start px-6 py-3 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+            className="btn-primary self-start"
           >
             {isInviting ? "Sending..." : "Send invite"}
           </button>
@@ -146,7 +139,7 @@ export default function UsersAdmin() {
           {staff.map((member, index) => (
             <div
               key={member.id}
-              className={`flex items-center justify-between px-8 py-6 ${
+              className={`flex items-center justify-between gap-4 px-5 md:px-8 py-5 md:py-6 ${
                 index !== staff.length - 1 ? "border-b border-white/5" : ""
               }`}
             >
@@ -158,7 +151,7 @@ export default function UsersAdmin() {
                 onClick={() => toggleActive(member)}
                 className={`text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full border transition-colors ${
                   member.is_active
-                    ? "bg-emerald-400/10 text-emerald-300 border-emerald-400/20 hover:bg-emerald-400/20"
+                    ? "bg-emerald-400/10 text-emerald-300 light:text-emerald-700 border-emerald-400/20 hover:bg-emerald-400/20"
                     : "bg-white/5 text-on-surface-variant border-white/10 hover:bg-white/10"
                 }`}
               >

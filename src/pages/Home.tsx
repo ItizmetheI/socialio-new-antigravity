@@ -116,10 +116,10 @@ export default function Home() {
 
       {/* Compact Tabbed Capabilities Section */}
       <section className="bg-surface-container py-24 md:py-32 border-y border-white/5 relative">
-        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-12 gap-12 lg:gap-24 items-start">
+        <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-24 items-start">
           
           {/* Left Navigation */}
-          <div className="md:col-span-4">
+          <div>
             <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-6 block">[ Capabilities ]</span>
             <div className="flex flex-col gap-2">
               {servicesData.map((service, idx) => (
@@ -135,7 +135,7 @@ export default function Home() {
           </div>
 
           {/* Right Content */}
-          <div className="min-w-0 md:col-span-8">
+          <div className="min-w-0 md:col-span-2">
              {servicesData.filter(s => s.id === activeSection).map((service, idx) => (
                 <motion.div 
                   key={service.id} 

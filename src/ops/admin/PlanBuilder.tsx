@@ -6,6 +6,7 @@ import { formatDollars } from "../../lib/format";
 import { servicesData } from "../../data/services";
 import { useAuth } from "../../lib/auth/AuthContext";
 import Spinner from "../../components/Spinner";
+import PageHeader from "../../components/workspace/PageHeader";
 import ErrorBanner from "../../components/ErrorBanner";
 import type { Organization, Plan } from "../../lib/database.types";
 
@@ -173,18 +174,17 @@ export default function PlanBuilder() {
 
   return (
     <div className="max-w-4xl">
-      <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-8">
-        {isRevision ? "Revise plan" : "New plan"}
-      </h1>
+      <PageHeader
+        title={isRevision ? "Revise plan" : "New plan"}
+        description="Line items and prices the client will review and approve."
+      />
 
       <div className="mb-8">
-        <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-          Organization
-        </label>
-        <select
+        <label htmlFor="planbuilder-organization" className="field-label">Organization</label>
+        <select id="planbuilder-organization"
           value={orgId}
           onChange={(e) => setOrgId(e.target.value)}
-          className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full max-w-sm focus:outline-none focus:border-primary transition-colors appearance-none"
+          className="field max-w-sm appearance-none"
         >
           {orgs.length === 0 && <option value="">No organizations — invite a client first</option>}
           {orgs.map((org) => (
@@ -204,13 +204,11 @@ export default function PlanBuilder() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
         <div className="flex flex-col gap-3">
-          <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">
-            Add line item
-          </label>
-          <select
+          <label htmlFor="planbuilder-add-line-item" className="field-label mb-0">Add line item</label>
+          <select id="planbuilder-add-line-item"
             value={draft.serviceId ?? ""}
             onChange={(e) => setDraft((d) => ({ ...d, serviceId: e.target.value || null }))}
-            className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors appearance-none"
+            className="field appearance-none"
           >
             <option value="">Custom (no catalog service)</option>
             {servicesData.map((service) => (
@@ -222,65 +220,69 @@ export default function PlanBuilder() {
           <input
             type="text"
             placeholder="Deliverable, e.g. '10 Social Media Posts'"
+              aria-label="Deliverable"
             value={draft.deliverableLabel}
             onChange={(e) => setDraft((d) => ({ ...d, deliverableLabel: e.target.value }))}
-            className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+            className="field"
           />
           <div className="grid grid-cols-2 gap-3">
             <input
               type="number"
               min={1}
               placeholder="Qty"
+              aria-label="Qty"
               value={draft.quantity}
               onChange={(e) => setDraft((d) => ({ ...d, quantity: Number(e.target.value) || 1 }))}
-              className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+              className="field"
             />
             <input
               type="text"
               placeholder="Frequency, e.g. monthly"
+              aria-label="Frequency"
               value={draft.frequency}
               onChange={(e) => setDraft((d) => ({ ...d, frequency: e.target.value }))}
-              className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+              className="field"
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <input
               type="text"
               placeholder="Platform (optional)"
+              aria-label="Platform"
               value={draft.platform}
               onChange={(e) => setDraft((d) => ({ ...d, platform: e.target.value }))}
-              className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+              className="field"
             />
             <input
               type="number"
               min={0}
               placeholder="Price"
+              aria-label="Price"
               value={draft.price || ""}
               onChange={(e) => setDraft((d) => ({ ...d, price: Number(e.target.value) || 0 }))}
-              className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+              className="field"
             />
           </div>
           <textarea
             rows={2}
             placeholder="Notes (optional)"
+              aria-label="Notes"
             value={draft.notes}
             onChange={(e) => setDraft((d) => ({ ...d, notes: e.target.value }))}
-            className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors resize-none"
+            className="field resize-none"
           />
           <button
             type="button"
             onClick={addItem}
             disabled={!draft.deliverableLabel.trim()}
-            className="px-4 py-3 bg-surface-container border border-white/10 hover:border-primary/30 rounded-xl text-sm font-bold text-white transition-colors disabled:opacity-50"
+            className="btn-secondary"
           >
             Add to plan
           </button>
         </div>
 
         <div>
-          <div className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-            Line items
-          </div>
+          <div className="field-label">Line items</div>
           {items.length === 0 ? (
             <p className="text-on-surface-variant text-sm">Add deliverables on the left to build the plan.</p>
           ) : (
@@ -288,25 +290,26 @@ export default function PlanBuilder() {
               {items.map((item, index) => (
                 <div
                   key={item.key}
-                  className={`flex items-center justify-between px-5 py-4 ${
+                  className={`flex items-center justify-between gap-4 px-5 py-4 ${
                     index !== items.length - 1 ? "border-b border-white/5" : ""
                   }`}
                 >
-                  <div>
-                    <div className="text-sm font-bold text-white">{item.deliverableLabel}</div>
+                  <div className="min-w-0">
+                    <div className="text-sm font-bold text-white break-words">{item.deliverableLabel}</div>
                     <div className="text-xs text-on-surface-variant">
                       {item.quantity} × {item.frequency || "one-time"}
                       {item.platform ? ` · ${item.platform}` : ""}
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 shrink-0">
                     <span className="text-sm font-bold text-white">
                       {formatDollars(item.price * item.quantity)}
                     </span>
                     <button
                       type="button"
                       onClick={() => removeItem(item.key)}
-                      className="text-on-surface-variant hover:text-red-400 transition-colors"
+                      aria-label={`Remove ${item.deliverableLabel}`}
+                      className="p-1 text-on-surface-variant hover:text-error transition-colors"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -333,7 +336,7 @@ export default function PlanBuilder() {
         type="button"
         onClick={handleSubmit}
         disabled={isSubmitting || !orgId || items.length === 0}
-        className="px-8 py-4 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+        className="btn-primary"
       >
         {isSubmitting ? "Sending..." : isRevision ? "Send revision" : "Send plan"}
       </button>

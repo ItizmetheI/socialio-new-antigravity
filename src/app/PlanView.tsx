@@ -5,6 +5,7 @@ import { formatDollars } from "../lib/format";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
+import PageHeader from "../components/workspace/PageHeader";
 import { PlanStatusBadge } from "../components/StatusBadge";
 import { useAuth } from "../lib/auth/AuthContext";
 import type { Plan, PlanItem, PlanFeedback } from "../lib/database.types";
@@ -131,31 +132,32 @@ export default function PlanView() {
 
   return (
     <div className="max-w-3xl">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="hero-display font-bold text-2xl md:text-3xl text-white">Your plan{plan.version > 1 ? ` (v${plan.version})` : ""}</h1>
-        <PlanStatusBadge status={plan.status} />
-      </div>
+      <PageHeader
+        title={`Your plan${plan.version > 1 ? ` (v${plan.version})` : ""}`}
+        description="The scope and monthly price we curated for you."
+        action={<PlanStatusBadge status={plan.status} />}
+      />
 
       <div className="bg-surface-container border border-white/10 rounded-3xl overflow-hidden mb-8">
         {items.map((item, index) => (
           <div
             key={item.id}
-            className={`flex items-center justify-between px-8 py-6 ${
+            className={`flex items-start justify-between gap-4 px-5 md:px-8 py-5 md:py-6 ${
               index !== items.length - 1 ? "border-b border-white/5" : ""
             }`}
           >
-            <div>
-              <div className="font-bold text-white">{item.deliverable_label}</div>
+            <div className="min-w-0">
+              <div className="font-bold text-white break-words">{item.deliverable_label}</div>
               <div className="text-sm text-on-surface-variant">
                 {item.quantity} × {item.frequency || "one-time"}
                 {item.platform ? ` · ${item.platform}` : ""}
               </div>
               {item.notes && <div className="text-xs text-on-surface-variant mt-1">{item.notes}</div>}
             </div>
-            <div className="font-bold text-white">{formatDollars(item.price * item.quantity)}</div>
+            <div className="font-bold text-white shrink-0">{formatDollars(item.price * item.quantity)}</div>
           </div>
         ))}
-        <div className="flex items-center justify-between px-8 py-6 bg-white/[0.02]">
+        <div className="flex items-center justify-between gap-4 px-5 md:px-8 py-5 md:py-6 bg-white/[0.02]">
           <div className="font-bold text-white">Total</div>
           <div className="font-bold text-xl text-primary">{formatDollars(plan.total_price)}</div>
         </div>
@@ -168,31 +170,29 @@ export default function PlanView() {
       )}
 
       {canRespond && (
-        <div className="flex gap-4 mb-10">
+        <div className="flex flex-col sm:flex-row gap-3 mb-10">
           <button
             onClick={() => respond("approved")}
             disabled={isResponding}
-            className="flex-1 py-4 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+            className="btn-primary flex-1"
           >
             Approve
           </button>
           <button
             onClick={() => respond("changes_requested")}
             disabled={isResponding}
-            className="flex-1 py-4 border border-white/20 text-white hover:bg-white/5 font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+            className="btn-secondary flex-1"
           >
             Request changes
           </button>
         </div>
       )}
 
-      <h2 className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant font-bold mb-4">
-        Feedback
-      </h2>
+      <h2 className="font-bold text-white mb-4">Feedback</h2>
       <div className="flex flex-col gap-3 mb-4">
         {feedback.map((f) => (
           <div key={f.id} className="bg-surface-container border border-white/10 rounded-2xl px-5 py-4">
-            <p className="text-white text-sm">{f.body}</p>
+            <p className="text-white text-sm break-words whitespace-pre-line">{f.body}</p>
             <p className="text-xs text-on-surface-variant mt-2">{new Date(f.created_at).toLocaleString()}</p>
           </div>
         ))}
@@ -200,16 +200,17 @@ export default function PlanView() {
       </div>
       <div className="flex flex-col gap-3">
         <textarea
+          aria-label="Feedback on this plan"
           rows={3}
           value={feedbackBody}
           onChange={(e) => setFeedbackBody(e.target.value)}
           placeholder="Leave a note about this plan..."
-          className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors resize-none"
+          className="field resize-none"
         />
         <button
           onClick={postFeedback}
           disabled={isPostingFeedback || !feedbackBody.trim()}
-          className="self-start px-6 py-3 bg-white/5 hover:bg-white/10 text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+          className="btn-secondary self-start"
         >
           {isPostingFeedback ? "Posting..." : "Post feedback"}
         </button>

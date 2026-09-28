@@ -3,6 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth/AuthContext";
 import ErrorBanner from "../components/ErrorBanner";
+import PageHeader from "../components/workspace/PageHeader";
 import type { ClientOutletContext } from "./ClientLayout";
 
 const MIN_PASSWORD_LENGTH = 8;
@@ -65,30 +66,27 @@ export default function Settings() {
 
   return (
     <div className="max-w-xl">
-      <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-8">Settings</h1>
+      <PageHeader title="Settings" description="Your account details and password." />
 
-      <div className="bg-surface-container border border-white/10 rounded-3xl p-8">
+      <div className="bg-surface-container border border-white/10 rounded-3xl p-6 md:p-8">
         <div className="mb-6">
-          <div className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">
-            Organization
-          </div>
+          <div className="field-label mb-1">Organization</div>
           <div className="text-white font-bold">{orgName || "—"}</div>
         </div>
         <div className="mb-6">
-          <div className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Email</div>
+          <div className="field-label mb-1">Email</div>
           <div className="text-white font-bold break-all">{session?.user.email}</div>
         </div>
 
         <form onSubmit={handleSave} className="flex flex-col gap-4">
           <div>
-            <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-              Full name
-            </label>
+            <label htmlFor="settings-name" className="field-label">Full name</label>
             <input
+              id="settings-name"
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+              className="field"
             />
           </div>
           {error && <ErrorBanner message={error} />}
@@ -96,40 +94,38 @@ export default function Settings() {
           <button
             type="submit"
             disabled={isSaving}
-            className="self-start px-6 py-3 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+            className="btn-primary self-start"
           >
             {isSaving ? "Saving..." : "Save changes"}
           </button>
         </form>
       </div>
 
-      <div className="bg-surface-container border border-white/10 rounded-3xl p-8 mt-6">
+      <div className="bg-surface-container border border-white/10 rounded-3xl p-6 md:p-8 mt-6">
         <h2 className="font-bold text-white mb-6">Change password</h2>
         <form onSubmit={handlePasswordSave} className="flex flex-col gap-4">
           <div>
-            <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-              New password
-            </label>
+            <label htmlFor="settings-new-password" className="field-label">New password</label>
             <input
+              id="settings-new-password"
               type="password"
               autoComplete="new-password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="••••••••"
-              className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+              className="field"
             />
           </div>
           <div>
-            <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-              Confirm password
-            </label>
+            <label htmlFor="settings-confirm-password" className="field-label">Confirm password</label>
             <input
+              id="settings-confirm-password"
               type="password"
               autoComplete="new-password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="••••••••"
-              className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+              className="field"
             />
           </div>
           {passwordError && <ErrorBanner message={passwordError} />}
@@ -137,7 +133,7 @@ export default function Settings() {
           <button
             type="submit"
             disabled={isSavingPassword}
-            className="self-start px-6 py-3 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+            className="btn-primary self-start"
           >
             {isSavingPassword ? "Saving..." : "Update password"}
           </button>

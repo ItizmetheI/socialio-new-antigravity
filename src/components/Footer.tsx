@@ -68,7 +68,7 @@ export default function Footer() {
                            <ArrowRight className="w-5 h-5" />
                          </button>
                        </div>
-                       {error && <p className="text-red-400 text-xs mt-2">{error}</p>}
+                       {error && <p className="text-error text-xs mt-2">{error}</p>}
                      </div>
                    )}
                 </div>

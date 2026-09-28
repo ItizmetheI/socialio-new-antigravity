@@ -1,25 +1,28 @@
 import type { ReactNode } from "react";
 import { motion } from "motion/react";
 import NavBar from "./NavBar";
-import AuthFeedPanel from "./AuthFeedPanel";
+import AuthProductPreview from "./AuthProductPreview";
 
-// Log in / sign up / password pages live inside the site: same top nav as
-// every marketing page, form card on the left, brand panel beside it on
-// wide screens.
+// Log in / sign up / password pages: the site nav on top, the form on the
+// left, and on wide screens a preview of the dashboard they're signing into.
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       <NavBar />
-      <main className="max-w-6xl mx-auto px-5 md:px-6 pt-28 md:pt-32 pb-16 grid lg:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)] gap-10 items-center min-h-screen">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="w-full max-w-md mx-auto lg:mx-0"
-        >
-          {children}
-        </motion.div>
-        <AuthFeedPanel />
+      <main className="min-h-screen pt-20 grid lg:grid-cols-2">
+        <div className="flex items-center justify-center px-5 py-12 md:py-16">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className="w-full max-w-sm"
+          >
+            {children}
+          </motion.div>
+        </div>
+        <div className="hidden lg:block p-6 pl-0">
+          <AuthProductPreview />
+        </div>
       </main>
     </div>
   );

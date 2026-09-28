@@ -32,9 +32,8 @@ const EMPTY: Draft = {
   handles: {},
 };
 
-const fieldClass =
-  "bg-background border border-white/10 rounded-xl px-4 py-3 text-sm text-white w-full focus:outline-none focus:border-primary transition-colors";
-const labelClass = "block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold";
+const fieldClass = "field";
+const labelClass = "field-label";
 
 function RuleList({ title, items, onChange, placeholder }: { title: string; items: string[]; onChange: (next: string[]) => void; placeholder: string }) {
   const [draft, setDraft] = useState("");
@@ -172,7 +171,7 @@ export default function BrandKitEditor({ orgId }: { orgId: string }) {
 
   return (
     <div className="flex flex-col">
-      <section className="grid md:grid-cols-2 gap-6 pb-10">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6 pb-10">
         <h2 className="md:col-span-2 font-bold text-white -mb-2">Identity</h2>
         <div className="md:col-span-2">
           <label htmlFor="bk-tagline" className={labelClass}>Tagline</label>
@@ -191,13 +190,13 @@ export default function BrandKitEditor({ orgId }: { orgId: string }) {
       <section className="py-10 border-t border-white/10">
         <h2 className="font-bold text-white mb-1">Colours</h2>
         <p className="text-sm text-on-surface-variant mb-5">Our designers use exactly these in your graphics.</p>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
           {draft.colors.map((color, i) => (
             <div key={i} className="flex items-center gap-3 bg-background border border-white/10 rounded-2xl p-3">
               <input type="color" aria-label={`${color.label || "Colour"} picker`} value={HEX.test(color.hex) ? color.hex : "#000000"} onChange={(e) => setColor(i, { hex: e.target.value })} className="w-12 h-12 rounded-xl border-0 bg-transparent cursor-pointer shrink-0" />
               <div className="flex-1 min-w-0">
                 <input aria-label="Colour name" value={color.label} maxLength={40} onChange={(e) => setColor(i, { label: e.target.value })} className="bg-transparent text-sm font-bold text-white w-full focus:outline-none" />
-                <input aria-label="Hex code" value={color.hex} maxLength={7} onChange={(e) => setColor(i, { hex: e.target.value })} className={`bg-transparent text-xs font-mono w-full focus:outline-none ${HEX.test(color.hex) ? "text-on-surface-variant" : "text-red-400"}`} />
+                <input aria-label="Hex code" value={color.hex} maxLength={7} onChange={(e) => setColor(i, { hex: e.target.value })} className={`bg-transparent text-xs font-mono w-full focus:outline-none ${HEX.test(color.hex) ? "text-on-surface-variant" : "text-error"}`} />
               </div>
               <button type="button" aria-label={`Remove ${color.label || "colour"}`} onClick={() => update({ colors: draft.colors.filter((_, j) => j !== i) })} className="text-on-surface-variant hover:text-white">
                 <X className="w-4 h-4" />
@@ -212,14 +211,14 @@ export default function BrandKitEditor({ orgId }: { orgId: string }) {
         )}
       </section>
 
-      <section className="py-10 border-t border-white/10 grid md:grid-cols-2 gap-8">
+      <section className="py-10 border-t border-white/10 grid grid-cols-1 md:grid-cols-2 gap-8">
         <RuleList title="Always do" items={draft.dos} onChange={(dos) => update({ dos })} placeholder="e.g. Show the product in real hands" />
         <RuleList title="Never do" items={draft.donts} onChange={(donts) => update({ donts })} placeholder="e.g. No stock photos of handshakes" />
       </section>
 
       <section className="py-10 border-t border-white/10">
         <h2 className="font-bold text-white mb-5">Social handles</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {HANDLE_PLATFORMS.map((p) => (
             <div key={p}>
               <label htmlFor={`bk-${p}`} className={labelClass}>{platformLabel(p)}</label>
@@ -230,11 +229,11 @@ export default function BrandKitEditor({ orgId }: { orgId: string }) {
       </section>
 
       <div className="sticky bottom-4 z-20 flex flex-wrap items-center gap-4 bg-surface-container/95 backdrop-blur border border-white/10 rounded-2xl px-5 py-4 shadow-xl">
-        <button onClick={save} disabled={status.kind === "saving"} className="px-6 py-3 rounded-xl bg-white text-background hover:bg-primary hover:text-[#fff] font-bold text-sm transition-colors disabled:opacity-50">
+        <button onClick={save} disabled={status.kind === "saving"} className="btn-primary">
           {status.kind === "saving" ? "Saving..." : "Save brand kit"}
         </button>
-        {status.kind === "saved" && <span className="text-sm text-emerald-500">Saved.</span>}
-        {status.kind === "error" && <span className="text-sm text-red-400">{status.message}</span>}
+        {status.kind === "saved" && <span className="text-sm text-emerald-400 light:text-emerald-700">Saved.</span>}
+        {status.kind === "error" && <span className="text-sm text-error">{status.message}</span>}
         {status.kind === "idle" && savedAt && <span className="text-xs text-on-surface-variant">Last saved {new Date(savedAt).toLocaleString()}</span>}
       </div>
     </div>

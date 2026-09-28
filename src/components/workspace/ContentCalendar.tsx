@@ -96,7 +96,7 @@ export default function ContentCalendar({ requests, linkFor, orgNameById }: Prop
     });
 
   return (
-    <div className="grid xl:grid-cols-[minmax(0,1fr)_16rem] gap-10">
+    <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_16rem] gap-10">
       <section className="min-w-0">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-1">
@@ -112,7 +112,7 @@ export default function ContentCalendar({ requests, linkFor, orgNameById }: Prop
             aria-label="Platform"
             value={platform}
             onChange={(e) => setPlatform(e.target.value as Platform | "")}
-            className="bg-background border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-primary"
+            className="field text-sm sm:w-auto"
           >
             <option value="">All platforms</option>
             {PLATFORMS.map((p) => (
@@ -136,7 +136,7 @@ export default function ContentCalendar({ requests, linkFor, orgNameById }: Prop
                 <>
                   <div
                     className={`text-xs font-bold mb-1 w-6 h-6 flex items-center justify-center rounded-full ${
-                      day === today ? "bg-primary text-[#fff]" : "text-on-surface-variant"
+                      day === today ? "bg-primary text-on-primary" : "text-on-surface-variant"
                     }`}
                   >
                     {Number(day.slice(8))}

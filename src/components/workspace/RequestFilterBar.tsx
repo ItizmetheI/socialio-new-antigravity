@@ -10,20 +10,19 @@ type Props = {
   orgs?: { id: string; name: string }[];
 };
 
-const selectClass =
-  "bg-background border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-primary transition-colors";
+const selectClass = "field text-sm md:w-auto";
 
 export default function RequestFilterBar({ value, onChange, orgs }: Props) {
   return (
     <div className="flex flex-col md:flex-row gap-3 mb-8">
       <label className="relative flex-1">
         <span className="sr-only">Search</span>
-        <Search className="w-4 h-4 text-on-surface-variant absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+        <Search className="w-4 h-4 text-on-surface-variant absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
         <input
           value={value.search}
           onChange={(e) => onChange({ ...value, search: e.target.value })}
           placeholder="Search titles and briefs"
-          className={`${selectClass} w-full pl-9`}
+          className="field text-sm pl-10"
         />
       </label>
       <div className="grid grid-cols-2 md:flex gap-3">

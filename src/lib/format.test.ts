@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatCents, formatDate, formatDollars, localDateString } from "./format";
+import { formatCents, formatDate, formatDollars, localDateString, timeAgo } from "./format";
 
 describe("test environment", () => {
   it("runs west of UTC so date-only bugs surface", () => {
@@ -55,5 +55,18 @@ describe("localDateString", () => {
 
   it("zero-pads month and day", () => {
     expect(localDateString(new Date(2026, 0, 5))).toBe("2026-01-05");
+  });
+});
+
+describe("timeAgo", () => {
+  const now = new Date("2026-09-28T12:00:00Z").getTime();
+  it("reads naturally at each scale", () => {
+    expect(timeAgo("2026-09-28T11:59:40Z", now)).toBe("just now");
+    expect(timeAgo("2026-09-28T11:55:00Z", now)).toBe("5m ago");
+    expect(timeAgo("2026-09-28T09:00:00Z", now)).toBe("3h ago");
+    expect(timeAgo("2026-09-26T12:00:00Z", now)).toBe("2d ago");
+  });
+  it("never shows negative times for clock skew", () => {
+    expect(timeAgo("2026-09-28T12:00:30Z", now)).toBe("just now");
   });
 });

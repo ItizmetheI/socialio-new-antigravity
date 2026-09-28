@@ -85,7 +85,7 @@ export default function CheckoutSuccess() {
               </p>
               <Link
                 to="/app"
-                className="w-full py-4 bg-white text-background hover:bg-primary hover:text-white font-sans text-sm font-bold transition-all flex justify-center items-center rounded-xl"
+                className="btn-primary w-full"
               >
                 Go to dashboard
               </Link>

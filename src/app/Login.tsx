@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../lib/auth/AuthContext";
 import { useCart } from "../context/CartContext";
 import AuthLayout from "../components/AuthLayout";
+import GoogleButton from "../components/GoogleButton";
 
 export default function Login() {
   const { session, profile, isLoading, signIn } = useAuth();
@@ -41,55 +42,54 @@ export default function Login() {
 
   return (
     <AuthLayout>
-          <div className="bg-surface-container border border-white/10 rounded-3xl p-8 md:p-10 shadow-xl">
-            <h1 className="hero-display font-bold text-2xl md:text-3xl tracking-tight mb-2 text-white">
+          <div>
+            <h1 className="hero-display font-bold text-3xl tracking-tight mb-2 text-white">
               Welcome <span className="italic text-primary">back.</span>
             </h1>
-            <p className="text-on-surface-variant mb-8">
-              Your pipeline, content calendar, brand kit and results &mdash; all in one place.
-            </p>
+            <p className="text-on-surface-variant mb-8">Sign in to see your pipeline, calendar and results.</p>
+
+            <GoogleButton />
+            <div className="flex items-center gap-3 my-6 text-xs text-on-surface-variant">
+              <span className="h-px flex-1 bg-white/10" /> or use email <span className="h-px flex-1 bg-white/10" />
+            </div>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               <div>
-                <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-                  Email
-                </label>
-                <input
+                <label htmlFor="login-email" className="field-label">Email</label>
+                <input id="login-email"
                   type="email"
                   autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@company.com"
-                  className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+                  className="field"
                 />
               </div>
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">
-                    Password
-                  </label>
+                  <label htmlFor="login-password" className="field-label mb-0">Password</label>
                   <Link to="/app/forgot-password" className="text-xs text-primary hover:underline">
                     Forgot password?
                   </Link>
                 </div>
-                <input
+                <input id="login-password"
                   type="password"
                   autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+                  className="field"
                 />
               </div>
 
-              {error && <div className="text-red-400 text-sm">{error}</div>}
+              {error && <div className="text-error text-sm" role="alert">{error}</div>}
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full py-4 mt-2 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-primary w-full py-3.5 mt-1"
               >
-                {isSubmitting ? "Signing in..." : "Sign in →"}
+                {isSubmitting ? "Signing in..." : "Sign in"}
               </button>
             </form>
           </div>

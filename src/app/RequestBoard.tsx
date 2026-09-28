@@ -77,7 +77,7 @@ export default function RequestBoard() {
           profile && (
             <button
               onClick={() => setIsFormOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-background hover:bg-primary hover:text-[#fff] rounded-xl font-bold text-sm transition-colors"
+              className="btn-primary"
             >
               <Plus className="w-4 h-4" /> New request
             </button>

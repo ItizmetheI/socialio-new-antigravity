@@ -27,12 +27,12 @@ function OverviewPanels({ requests }: { requests: Request[] }) {
     .sort((a, b) => a.placed.day.localeCompare(b.placed.day))
     .slice(0, 4);
   return (
-    <div className="grid md:grid-cols-2 gap-x-12 gap-y-10 mb-12">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 mb-12">
       <section>
         <h2 className="flex items-center gap-2 font-bold text-white mb-3">
           Waiting on you
           {toReview.length > 0 && (
-            <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-primary text-[#fff]">{toReview.length}</span>
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-primary text-on-primary">{toReview.length}</span>
           )}
         </h2>
         {toReview.length === 0 ? (
@@ -41,8 +41,8 @@ function OverviewPanels({ requests }: { requests: Request[] }) {
           <ul className="divide-y divide-white/10 border-y border-white/10">
             {toReview.map((r) => (
               <li key={r.id} className="flex items-center justify-between gap-3 py-3.5">
-                <span className="text-sm font-bold text-white truncate">{r.title}</span>
-                <Link to={`/app/requests/${r.id}`} className="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-primary text-[#fff] hover:opacity-90">
+                <span className="text-sm font-bold text-white truncate min-w-0">{r.title}</span>
+                <Link to={`/app/requests/${r.id}`} className="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-primary text-on-primary hover:opacity-90">
                   Review
                 </Link>
               </li>
@@ -61,8 +61,8 @@ function OverviewPanels({ requests }: { requests: Request[] }) {
           <ul className="divide-y divide-white/10 border-y border-white/10">
             {upNext.map(({ request: r, placed }) => (
               <li key={r.id}>
-                <Link to={`/app/requests/${r.id}`} className="flex items-center justify-between gap-4 py-3.5 group">
-                  <span className="text-sm font-bold text-white group-hover:text-primary transition-colors truncate">{r.title}</span>
+                <Link to={`/app/requests/${r.id}`} className="flex flex-col sm:flex-row sm:items-center justify-between gap-x-4 gap-y-1 py-3.5 group">
+                  <span className="text-sm font-bold text-white group-hover:text-primary transition-colors truncate min-w-0">{r.title}</span>
                   <span className="text-xs text-on-surface-variant shrink-0">
                     {formatDate(placed.day)} · {placed.kind === "publish" ? "goes live" : "due"}
                   </span>
@@ -166,7 +166,7 @@ export default function DashboardHome() {
       />
 
       {needsOnboarding && (
-        <div className="bg-surface-container border border-white/10 rounded-3xl p-8 mb-10 flex items-center justify-between gap-6 flex-wrap">
+        <div className="bg-surface-container border border-white/10 rounded-3xl p-6 md:p-8 mb-10 flex items-center justify-between gap-6 flex-wrap">
           <div>
             <span className="text-xs font-bold uppercase tracking-wide px-3 py-1 rounded-full border bg-white/5 text-on-surface-variant border-white/10">
               Next step
@@ -179,7 +179,7 @@ export default function DashboardHome() {
           </div>
           <Link
             to="/app/onboarding"
-            className="px-6 py-3 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all"
+            className="btn-primary"
           >
             {onboarding?.status === "in_progress" ? "Continue" : "Get started"} &rarr;
           </Link>
@@ -187,7 +187,7 @@ export default function DashboardHome() {
       )}
 
       {!needsOnboarding && planPending && plan && (
-        <div className="bg-surface-container border border-white/10 rounded-3xl p-8 mb-10 flex items-center justify-between gap-6 flex-wrap">
+        <div className="bg-surface-container border border-white/10 rounded-3xl p-6 md:p-8 mb-10 flex items-center justify-between gap-6 flex-wrap">
           <div>
             <PlanStatusBadge status={plan.status} />
             <p className="text-on-surface-variant mt-4 max-w-md">
@@ -199,7 +199,7 @@ export default function DashboardHome() {
           {plan.status !== "changes_requested" && (
             <Link
               to="/app/plan"
-              className="px-6 py-3 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all"
+              className="btn-primary"
             >
               Review plan &rarr;
             </Link>
@@ -208,7 +208,7 @@ export default function DashboardHome() {
       )}
 
       {!needsOnboarding && !plan && proposal?.status === "pending" && (
-        <div className="bg-surface-container border border-white/10 rounded-3xl p-8 mb-10 flex items-center justify-between gap-6 flex-wrap">
+        <div className="bg-surface-container border border-white/10 rounded-3xl p-6 md:p-8 mb-10 flex items-center justify-between gap-6 flex-wrap">
           <div>
             <ProposalStatusBadge status={proposal.status} />
             <p className="text-on-surface-variant mt-4 max-w-md">
@@ -217,7 +217,7 @@ export default function DashboardHome() {
           </div>
           <Link
             to="/app/proposal"
-            className="px-6 py-3 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all"
+            className="btn-primary"
           >
             Review proposal &rarr;
           </Link>
@@ -260,9 +260,9 @@ export default function DashboardHome() {
                       <li key={request.id}>
                         <Link
                           to={`/app/requests/${request.id}`}
-                          className="flex items-center justify-between gap-4 py-4 group"
+                          className="flex flex-col sm:flex-row sm:items-center justify-between gap-x-4 gap-y-1 py-4 group"
                         >
-                          <span className="font-bold text-white text-sm group-hover:text-primary transition-colors truncate">{request.title}</span>
+                          <span className="font-bold text-white text-sm group-hover:text-primary transition-colors truncate min-w-0">{request.title}</span>
                           <span className="text-xs text-on-surface-variant shrink-0">
                             {stageLabel}
                             {request.due_date && ` · Due ${formatDate(request.due_date)}`}

@@ -7,9 +7,8 @@ import { PLATFORMS } from "../lib/database.types";
 import type { PerformanceReport, Platform } from "../lib/database.types";
 import { platformLabel } from "../components/workspace/requestMeta";
 
-const fieldClass =
-  "bg-background border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white w-full focus:outline-none focus:border-primary transition-colors";
-const labelClass = "block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold";
+const fieldClass = "field";
+const labelClass = "field-label";
 
 const lastMonth = () => {
   const d = new Date();
@@ -147,7 +146,7 @@ export default function ResultsEditor({ orgId }: { orgId: string }) {
             <ErrorBanner message={error} />
           </div>
         )}
-        <button type="submit" disabled={isSaving} className="px-5 py-2.5 rounded-xl bg-white text-background hover:bg-primary hover:text-[#fff] font-bold text-sm transition-colors disabled:opacity-50">
+        <button type="submit" disabled={isSaving} className="btn-primary">
           {isSaving ? "Saving..." : "Save month"}
         </button>
       </form>

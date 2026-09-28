@@ -166,7 +166,7 @@ export default function OpsOverview() {
       />
 
       {active.length > 0 && (
-        <div className="grid lg:grid-cols-2 gap-x-12 gap-y-10 mb-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10 mb-10">
           {active.map((p) => (
             <Panel key={p.title} title={p.title} count={p.rows.length}>
               {p.rows}
@@ -176,7 +176,7 @@ export default function OpsOverview() {
       )}
       {clear.length > 0 && (
         <p className="text-sm text-on-surface-variant">
-          <span className="text-emerald-500 font-bold">All clear:</span> {clear.join(", ")}.
+          <span className="text-emerald-400 light:text-emerald-700 font-bold">All clear:</span> {clear.join(", ")}.
         </p>
       )}
     </div>

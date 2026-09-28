@@ -14,9 +14,8 @@ const toLocalInput = (iso: string | null) => {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
-const fieldClass =
-  "bg-background border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white w-full focus:outline-none focus:border-primary transition-colors";
-const labelClass = "block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold";
+const fieldClass = "field";
+const labelClass = "field-label";
 
 export default function SchedulePanel({ request, onSaved }: Props) {
   const [dueDate, setDueDate] = useState(request.due_date ?? "");
@@ -48,7 +47,7 @@ export default function SchedulePanel({ request, onSaved }: Props) {
   return (
     <section className="bg-surface-container border border-white/10 rounded-3xl p-6 mb-10">
       <h2 className="font-bold text-white mb-5">Schedule &amp; format</h2>
-      <div className="grid sm:grid-cols-3 gap-4 mb-5">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
         <div>
           <label htmlFor="sched-due" className={labelClass}>Due date</label>
           <input id="sched-due" type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} className={fieldClass} />
@@ -93,12 +92,12 @@ export default function SchedulePanel({ request, onSaved }: Props) {
         <button
           onClick={save}
           disabled={status.kind === "saving"}
-          className="px-5 py-2.5 rounded-xl bg-white text-background hover:bg-primary hover:text-[#fff] font-bold text-sm transition-colors disabled:opacity-50"
+          className="btn-primary"
         >
           {status.kind === "saving" ? "Saving..." : "Save schedule"}
         </button>
-        {status.kind === "saved" && <span className="text-sm text-emerald-500">Saved.</span>}
-        {status.kind === "error" && <span className="text-sm text-red-400">{status.message}</span>}
+        {status.kind === "saved" && <span className="text-sm text-emerald-400 light:text-emerald-700">Saved.</span>}
+        {status.kind === "error" && <span className="text-sm text-error">{status.message}</span>}
       </div>
     </section>
   );

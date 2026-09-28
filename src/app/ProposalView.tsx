@@ -6,6 +6,7 @@ import { servicesData } from "../data/services";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
+import PageHeader from "../components/workspace/PageHeader";
 import ProposalStatusBadge from "../components/StatusBadge";
 import type { Proposal, ProposalItem } from "../lib/database.types";
 import type { ClientOutletContext } from "./ClientLayout";
@@ -105,29 +106,30 @@ export default function ProposalView() {
 
   return (
     <div className="max-w-3xl">
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="hero-display font-bold text-2xl md:text-3xl text-white">Your proposal</h1>
-        <ProposalStatusBadge status={proposal.status} />
-      </div>
+      <PageHeader
+        title="Your proposal"
+        description="The scope and pricing we put together for you."
+        action={<ProposalStatusBadge status={proposal.status} />}
+      />
 
       <div className="bg-surface-container border border-white/10 rounded-3xl overflow-hidden mb-8">
         {items.map((item, index) => (
           <div
             key={item.id}
-            className={`flex items-center justify-between px-8 py-6 ${
+            className={`flex items-start justify-between gap-4 px-5 md:px-8 py-5 md:py-6 ${
               index !== items.length - 1 ? "border-b border-white/5" : ""
             }`}
           >
-            <div>
-              <div className="font-bold text-white">{item.tier_label}</div>
+            <div className="min-w-0">
+              <div className="font-bold text-white break-words">{item.tier_label}</div>
               <div className="text-sm text-on-surface-variant">
                 {servicesData.find((s) => s.id === item.service_id)?.title ?? item.service_id}
               </div>
             </div>
-            <div className="font-bold text-white">{formatDollars(item.price)}</div>
+            <div className="font-bold text-white shrink-0">{formatDollars(item.price)}</div>
           </div>
         ))}
-        <div className="flex items-center justify-between px-8 py-6 bg-white/[0.02]">
+        <div className="flex items-center justify-between gap-4 px-5 md:px-8 py-5 md:py-6 bg-white/[0.02]">
           <div className="font-bold text-white">Total</div>
           <div className="font-bold text-xl text-primary">{formatDollars(proposal.total_price)}</div>
         </div>
@@ -140,18 +142,18 @@ export default function ProposalView() {
       )}
 
       {proposal.status === "pending" && (
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-3">
           <button
             onClick={() => respond("approved")}
             disabled={isResponding}
-            className="flex-1 py-4 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+            className="btn-primary flex-1"
           >
             Approve
           </button>
           <button
             onClick={() => respond("rejected")}
             disabled={isResponding}
-            className="flex-1 py-4 border border-white/20 text-white hover:bg-white/5 font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+            className="btn-secondary flex-1"
           >
             Reject
           </button>

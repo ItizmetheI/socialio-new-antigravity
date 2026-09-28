@@ -5,6 +5,7 @@ import { formatDollars } from "../../lib/format";
 import { servicesData } from "../../data/services";
 import { useAuth } from "../../lib/auth/AuthContext";
 import Spinner from "../../components/Spinner";
+import PageHeader from "../../components/workspace/PageHeader";
 import ErrorBanner from "../../components/ErrorBanner";
 import type { Organization } from "../../lib/database.types";
 
@@ -121,16 +122,14 @@ export default function ProposalBuilder() {
 
   return (
     <div className="max-w-4xl">
-      <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-8">New proposal</h1>
+      <PageHeader title="New proposal" description="Legacy proposals, for orgs that predate plans." />
 
       <div className="mb-8">
-        <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-          Organization
-        </label>
-        <select
+        <label htmlFor="proposalbuilder-organization" className="field-label">Organization</label>
+        <select id="proposalbuilder-organization"
           value={orgId}
           onChange={(e) => setOrgId(e.target.value)}
-          className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full max-w-sm focus:outline-none focus:border-primary transition-colors appearance-none"
+          className="field max-w-sm appearance-none"
         >
           {orgs.length === 0 && <option value="">No organizations — invite a client first</option>}
           {orgs.map((org) => (
@@ -143,13 +142,11 @@ export default function ProposalBuilder() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
         <div>
-          <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-            Service
-          </label>
-          <select
+          <label htmlFor="proposalbuilder-service" className="field-label">Service</label>
+          <select id="proposalbuilder-service"
             value={selectedServiceId}
             onChange={(e) => setSelectedServiceId(e.target.value)}
-            className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors appearance-none mb-4"
+            className="field appearance-none mb-4"
           >
             {servicesData.map((service) => (
               <option key={service.id} value={service.id}>
@@ -224,7 +221,7 @@ export default function ProposalBuilder() {
         type="button"
         onClick={handleSubmit}
         disabled={isSubmitting || !orgId || items.length === 0}
-        className="px-8 py-4 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+        className="btn-primary"
       >
         {isSubmitting ? "Sending..." : "Send proposal"}
       </button>

@@ -75,8 +75,8 @@ export default function BrandAssets({ orgId, onboardingId, profileId }: Props) {
           <div className="mb-5">
             <DeliverableList deliverables={assets} emptyText="No files yet." />
           </div>
-          {error && <p className="text-red-400 text-sm mb-4">{error}</p>}
-          <label className="inline-flex items-center gap-2 px-5 py-3 border border-white/20 rounded-xl text-sm font-bold text-white hover:bg-white/5 transition-colors cursor-pointer w-fit focus-within:outline focus-within:outline-2 focus-within:outline-primary">
+          {error && <p className="text-error text-sm mb-4">{error}</p>}
+          <label className="btn-secondary cursor-pointer w-fit focus-within:outline focus-within:outline-2 focus-within:outline-primary">
             <Upload className="w-4 h-4" />
             {isUploading ? "Uploading..." : "Upload files"}
             <input ref={inputRef} type="file" multiple onChange={upload} disabled={isUploading} className="sr-only" />

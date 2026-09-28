@@ -3,6 +3,7 @@ import { Mail, Copy, Check } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { servicesData } from "../data/services";
 import Spinner from "../components/Spinner";
+import PageHeader from "../components/workspace/PageHeader";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
 import type { ContactSubmission, LeadStatus, NewsletterSignup } from "../lib/database.types";
@@ -95,12 +96,10 @@ export default function LeadsInbox() {
 
   return (
     <div>
-      <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-2">Leads</h1>
-      <p className="text-on-surface-variant mb-8">
-        Everyone who used the contact form or joined the newsletter.
-      </p>
+      <PageHeader title="Leads" description="Everyone who used the contact form or joined the newsletter." />
 
-      <div className="flex gap-2 mb-8" role="tablist">
+      {/* Same text-tab language as the dashboard's own section tabs. */}
+      <div className="flex gap-6 border-b border-white/10 mb-8 overflow-x-auto no-scrollbar" role="tablist">
         {([
           ["contact", `Contact form (${leads.length})`],
           ["newsletter", `Newsletter (${signups.length})`],
@@ -110,13 +109,13 @@ export default function LeadsInbox() {
             role="tab"
             aria-selected={tab === value}
             onClick={() => setTab(value)}
-            className={`px-4 py-2 rounded-full text-sm font-bold border transition-colors ${
-              tab === value ? "bg-white text-background border-white" : "text-on-surface-variant border-white/10 hover:text-white"
+            className={`-mb-px py-3 text-sm whitespace-nowrap border-b-2 transition-colors ${
+              tab === value ? "border-primary text-white font-bold" : "border-transparent text-on-surface-variant hover:text-white"
             }`}
           >
             {label}
             {value === "contact" && newCount > 0 && (
-              <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded-full bg-primary text-[#fff]">{newCount} new</span>
+              <span className="ml-2 text-[10px] px-1.5 py-0.5 rounded-full bg-primary text-on-primary">{newCount} new</span>
             )}
           </button>
         ))}
@@ -134,15 +133,15 @@ export default function LeadsInbox() {
         ) : (
           <div className="flex flex-col gap-4">
             {leads.map((lead) => (
-              <div key={lead.id} className="bg-surface-container border border-white/10 rounded-2xl p-6">
+              <div key={lead.id} className="bg-surface-container border border-white/10 rounded-2xl p-5 md:p-6">
                 <div className="flex flex-wrap items-start justify-between gap-4 mb-3">
-                  <div>
-                    <div className="font-bold text-white">
+                  <div className="min-w-0">
+                    <div className="font-bold text-white break-words">
                       {lead.name}
                       {lead.company && <span className="text-on-surface-variant font-medium"> · {lead.company}</span>}
                     </div>
-                    <a href={`mailto:${lead.email}`} className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline">
-                      <Mail className="w-3.5 h-3.5" /> {lead.email}
+                    <a href={`mailto:${lead.email}`} className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline break-all">
+                      <Mail className="w-3.5 h-3.5 shrink-0" /> {lead.email}
                     </a>
                   </div>
                   <div className="flex items-center gap-3">
@@ -175,7 +174,7 @@ export default function LeadsInbox() {
                     )}
                   </div>
                 )}
-                <p className="text-sm text-white whitespace-pre-wrap">{lead.message}</p>
+                <p className="text-sm text-white whitespace-pre-wrap break-words">{lead.message}</p>
               </div>
             ))}
           </div>
@@ -188,7 +187,7 @@ export default function LeadsInbox() {
           <div>
             <button
               onClick={copyEmails}
-              className="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-lg border border-white/15 text-sm font-bold text-white hover:bg-white/5 transition-colors"
+              className="btn-secondary mb-4"
             >
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
               {copied ? "Copied" : "Copy all emails"}
@@ -197,10 +196,10 @@ export default function LeadsInbox() {
               {signups.map((s, i) => (
                 <div
                   key={s.id}
-                  className={`flex items-center justify-between px-6 py-3 text-sm ${i !== signups.length - 1 ? "border-b border-white/5" : ""}`}
+                  className={`flex items-center justify-between gap-4 px-5 md:px-6 py-3 text-sm ${i !== signups.length - 1 ? "border-b border-white/5" : ""}`}
                 >
-                  <span className="text-white">{s.email}</span>
-                  <span className="text-on-surface-variant text-xs">{new Date(s.created_at).toLocaleDateString()}</span>
+                  <span className="text-white truncate min-w-0">{s.email}</span>
+                  <span className="text-on-surface-variant text-xs shrink-0">{new Date(s.created_at).toLocaleDateString()}</span>
                 </div>
               ))}
             </div>

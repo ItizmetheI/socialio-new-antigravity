@@ -247,7 +247,7 @@ export default function ServiceDetail() {
               <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent -z-10" />
               <h2 className="hero-display text-3xl md:text-4xl font-bold text-white mb-4">Ready to get started with {service.title}?</h2>
               <p className="text-on-surface-variant font-sans mb-8 max-w-md mx-auto">Book a free call. We'll walk you through exactly what we'd do for your brand.</p>
-              <Link to="/contact" className="inline-block px-8 py-4 bg-white text-background font-mono text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors duration-300 rounded">
+              <Link to="/contact" className="inline-block px-8 py-4 bg-white text-background font-mono text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-colors duration-300 rounded">
                 Book a Free Strategy Call
               </Link>
             </div>
@@ -339,7 +339,7 @@ export default function ServiceDetail() {
 
               <button
                 onClick={handleAddToCart}
-                className="w-full py-4 bg-white text-background font-mono text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-colors duration-300 rounded-xl flex items-center justify-center gap-2 mb-3"
+                className="w-full py-4 bg-white text-background font-mono text-xs font-bold uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-colors duration-300 rounded-xl flex items-center justify-center gap-2 mb-3"
               >
                 <ShoppingCart className="w-4 h-4" /> Add to Cart
               </button>

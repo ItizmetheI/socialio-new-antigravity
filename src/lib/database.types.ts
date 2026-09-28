@@ -294,3 +294,25 @@ export interface PerformanceReport {
   created_at: string;
   updated_at: string;
 }
+
+// ---- Activity feed (schema_activity.sql) --------------------------------------
+export type ActivityKind =
+  | "request_created"
+  | "stage_changed"
+  | "comment_added"
+  | "file_delivered"
+  | "plan_sent"
+  | "plan_approved"
+  | "plan_changes_requested"
+  | "payment_received";
+
+export interface ActivityEvent {
+  id: number;
+  org_id: string;
+  actor_id: string | null;
+  kind: ActivityKind;
+  request_id: string | null;
+  summary: string;
+  is_internal: boolean;
+  created_at: string;
+}

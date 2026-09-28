@@ -22,17 +22,17 @@ export default function ForgotPassword() {
 
   return (
     <AuthLayout>
-        <div className="bg-surface-container border border-white/10 rounded-3xl p-8 md:p-10 shadow-xl">
+        <div>
           {submitted ? (
             <>
-              <h1 className="hero-display font-bold text-2xl md:text-3xl tracking-tight mb-2 text-white">Check your email.</h1>
-              <p className="text-on-surface-variant">
+              <h1 className="hero-display font-bold text-3xl tracking-tight mb-2 text-white">Check your email.</h1>
+              <p className="text-on-surface-variant break-words">
                 If an account exists for {email}, we sent a link to reset the password.
               </p>
             </>
           ) : (
             <>
-              <h1 className="hero-display font-bold text-2xl md:text-3xl tracking-tight mb-2 text-white">
+              <h1 className="hero-display font-bold text-3xl tracking-tight mb-2 text-white">
                 Reset your <span className="italic text-primary">password.</span>
               </h1>
               <p className="text-on-surface-variant mb-8">
@@ -40,24 +40,22 @@ export default function ForgotPassword() {
               </p>
               <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                 <div>
-                  <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-                    Email
-                  </label>
-                  <input
+                  <label htmlFor="forgotpassword-email" className="field-label">Email</label>
+                  <input id="forgotpassword-email"
                     type="email"
                     autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="you@company.com"
-                    className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+                    className="field"
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-4 mt-2 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-primary w-full py-3.5 mt-1"
                 >
-                  {isSubmitting ? "Sending..." : "Send reset link →"}
+                  {isSubmitting ? "Sending..." : "Send reset link"}
                 </button>
               </form>
             </>

@@ -157,14 +157,15 @@ export default function RequestDetail() {
       </Link>
       <div className="mb-8">
         <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">{org?.name ?? "—"}</div>
-        <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-3">{request.title}</h1>
-        {request.description && <p className="text-on-surface-variant mb-4">{request.description}</p>}
+        <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-3 break-words">{request.title}</h1>
+        {request.description && <p className="text-on-surface-variant mb-4 break-words whitespace-pre-line">{request.description}</p>}
+        <div className="flex flex-wrap gap-3">
         <select
           aria-label="Stage"
           value={request.stage}
           onChange={(e) => changeStage(e.target.value as RequestStage)}
           disabled={isChangingStage}
-          className="bg-background border border-white/10 rounded-xl px-4 py-2 text-white text-sm font-bold focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
+          className="field w-auto font-bold disabled:opacity-50"
         >
           {REQUEST_STAGES.map(({ value, label }) => (
             <option key={value} value={value}>
@@ -176,7 +177,7 @@ export default function RequestDetail() {
           value={request.assigned_to ?? ""}
           onChange={(e) => assign(e.target.value)}
           aria-label="Assigned to"
-          className="ml-3 bg-background border border-white/10 rounded-xl px-4 py-2 text-white text-sm font-bold focus:outline-none focus:border-primary transition-colors"
+          className="field w-auto font-bold"
         >
           <option value="">Unassigned</option>
           {staff.map((member) => (
@@ -185,6 +186,7 @@ export default function RequestDetail() {
             </option>
           ))}
         </select>
+        </div>
         {assignError && <div className="mt-3"><ErrorBanner message={assignError} /></div>}
         {actionError && <div className="mt-3"><ErrorBanner message={actionError} /></div>}
       </div>
@@ -192,7 +194,7 @@ export default function RequestDetail() {
       <SchedulePanel key={request.id} request={request} onSaved={setRequest} />
 
       <div className="mb-10">
-        <h2 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Deliverables</h2>
+        <h2 className="font-bold text-white mb-4">Deliverables</h2>
         <div className="mb-4">
           <DeliverableList deliverables={deliverables} emptyText="Nothing uploaded yet." />
         </div>
@@ -201,7 +203,7 @@ export default function RequestDetail() {
             <ErrorBanner message={uploadError} />
           </div>
         )}
-        <label className="inline-flex items-center gap-2 px-5 py-3 border border-white/20 rounded-xl text-sm font-bold text-white hover:bg-white/5 transition-colors cursor-pointer w-fit">
+        <label className="btn-secondary cursor-pointer w-fit">
           <Upload className="w-4 h-4" />
           {isUploading ? "Uploading..." : "Upload deliverable"}
           <input ref={fileInputRef} type="file" onChange={handleUpload} disabled={isUploading} className="hidden" />
@@ -209,19 +211,19 @@ export default function RequestDetail() {
       </div>
 
       <div>
-        <h2 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Comments</h2>
+        <h2 className="font-bold text-white mb-4">Comments</h2>
         <div className="flex flex-col gap-4 mb-6">
           {comments.length === 0 && <p className="text-on-surface-variant text-sm">No comments yet.</p>}
           {comments.map((comment) => (
             <div key={comment.id} className="bg-surface-container border border-white/10 rounded-2xl px-5 py-4">
               <div className="flex items-center gap-2 mb-2">
                 {comment.visibility === "internal" && (
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-amber-300 bg-amber-400/10 border border-amber-400/20 rounded-full px-2 py-0.5">
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-amber-300 light:text-amber-700 bg-amber-400/10 border border-amber-400/20 rounded-full px-2 py-0.5">
                     Internal
                   </span>
                 )}
               </div>
-              <p className="text-white text-sm">{comment.body}</p>
+              <p className="text-white text-sm break-words whitespace-pre-line">{comment.body}</p>
               <div className="text-xs text-on-surface-variant mt-2">
                 {new Date(comment.created_at).toLocaleString()}
               </div>
@@ -230,13 +232,14 @@ export default function RequestDetail() {
         </div>
         <form onSubmit={postComment} className="flex flex-col gap-3">
           <textarea
+            aria-label="Add a comment"
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
             placeholder="Add a comment..."
             rows={3}
-            className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors resize-none"
+            className="field resize-none"
           />
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <label className="flex items-center gap-2 text-sm text-on-surface-variant">
               <input
                 type="checkbox"
@@ -249,7 +252,7 @@ export default function RequestDetail() {
             <button
               type="submit"
               disabled={isPosting || !newComment.trim()}
-              className="px-6 py-3 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50"
+              className="btn-primary"
             >
               {isPosting ? "Posting..." : "Post comment"}
             </button>

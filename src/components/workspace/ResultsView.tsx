@@ -23,7 +23,7 @@ function Delta({ current, previous, isRate = false }: { current: number | null; 
   const change = isRate ? current - previous : ((current - previous) / previous) * 100;
   const isUp = change >= 0;
   return (
-    <span className={`text-xs font-bold ${isUp ? "text-emerald-500" : "text-red-400"}`}>
+    <span className={`text-xs font-bold ${isUp ? "text-emerald-400 light:text-emerald-700" : "text-error"}`}>
       {isUp ? "▲" : "▼"} {Math.abs(change).toFixed(1)}
       {isRate ? " pts" : "%"} vs last month
     </span>
@@ -78,7 +78,7 @@ export default function ResultsView({ reports }: { reports: PerformanceReport[] 
         <section className="mb-10">
           <h2 className="font-bold text-white mb-1">Followers by platform</h2>
           <p className="text-xs text-on-surface-variant mb-4">End-of-month follower count on each channel we manage.</p>
-          <div className="h-72">
+          <div className="h-72 [contain:inline-size]">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
                 <CartesianGrid stroke="rgba(128,128,128,0.15)" vertical={false} />
@@ -95,8 +95,11 @@ export default function ResultsView({ reports }: { reports: PerformanceReport[] 
         </section>
       )}
 
-      <section className="overflow-x-auto">
+      <section>
         <h2 className="font-bold text-white mb-3">Monthly breakdown</h2>
+        {/* inline-size containment keeps the 36rem table from widening the
+            page's grid track; it scrolls sideways inside this box instead. */}
+        <div className="overflow-x-auto [contain:inline-size]">
         <table className="w-full text-sm min-w-[36rem]">
           <thead>
             <tr className="text-left text-xs text-on-surface-variant border-b border-white/10">
@@ -129,6 +132,7 @@ export default function ResultsView({ reports }: { reports: PerformanceReport[] 
               ))}
           </tbody>
         </table>
+        </div>
       </section>
     </div>
   );

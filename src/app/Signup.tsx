@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
+import GoogleButton from "../components/GoogleButton";
 import { useAuth } from "../lib/auth/AuthContext";
 import { useCart } from "../context/CartContext";
 
@@ -26,8 +27,8 @@ export default function Signup() {
       setError("Fill in every field.");
       return;
     }
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters.");
+    if (password.length < 8 || !/[a-z]/i.test(password) || !/\d/.test(password)) {
+      setError("Use at least 8 characters, with at least one letter and one number.");
       return;
     }
     setError("");
@@ -46,8 +47,8 @@ export default function Signup() {
   if (awaitingConfirmation && !session) {
     return (
       <AuthLayout>
-        <div className="bg-surface-container border border-white/10 rounded-3xl p-8 md:p-10 shadow-xl">
-          <h1 className="hero-display font-bold text-2xl md:text-3xl tracking-tight text-white mb-3">
+        <div>
+          <h1 className="hero-display font-bold text-3xl tracking-tight text-white mb-3">
             Check your <span className="italic text-primary">email.</span>
           </h1>
           <p className="text-on-surface-variant">
@@ -62,63 +63,64 @@ export default function Signup() {
 
   return (
     <AuthLayout>
-        <div className="bg-surface-container border border-white/10 rounded-3xl p-8 md:p-10 shadow-xl">
-          <h1 className="hero-display font-bold text-2xl md:text-3xl tracking-tight mb-2 text-white">
+        <div>
+          <h1 className="hero-display font-bold text-3xl tracking-tight mb-2 text-white">
             Create your <span className="italic text-primary">account.</span>
           </h1>
           <p className="text-on-surface-variant mb-8">
             {items.length > 0 ? "One step before checkout." : "Your pipeline, calendar, brand kit and results in one place."}
           </p>
 
+          <GoogleButton label="Sign up with Google" />
+          <div className="flex items-center gap-3 my-6 text-xs text-on-surface-variant">
+            <span className="h-px flex-1 bg-white/10" /> or use email <span className="h-px flex-1 bg-white/10" />
+          </div>
+
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             <div>
-              <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-                Full name
-              </label>
-              <input
+              <label htmlFor="signup-full-name" className="field-label">Full name</label>
+              <input id="signup-full-name"
                 type="text"
                 autoComplete="name"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Jane Doe"
-                className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+                className="field"
               />
             </div>
             <div>
-              <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-                Email
-              </label>
-              <input
+              <label htmlFor="signup-email" className="field-label">Email</label>
+              <input id="signup-email"
                 type="email"
                 autoComplete="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
-                className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+                className="field"
               />
             </div>
             <div>
-              <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
-                Password
-              </label>
-              <input
+              <label htmlFor="signup-password" className="field-label">Password</label>
+              <input id="signup-password"
                 type="password"
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
+                aria-describedby="signup-password-hint"
+                className="field"
               />
+              <p id="signup-password-hint" className="text-xs text-on-surface-variant mt-1.5">At least 8 characters, with a letter and a number.</p>
             </div>
 
-            {error && <div className="text-red-400 text-sm">{error}</div>}
+            {error && <div className="text-error text-sm" role="alert">{error}</div>}
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-4 mt-2 bg-white text-background hover:bg-primary hover:text-white font-mono text-xs font-bold uppercase tracking-widest rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-primary w-full py-3.5 mt-1"
             >
-              {isSubmitting ? "Creating account..." : "Create account →"}
+              {isSubmitting ? "Creating account..." : "Create account"}
             </button>
           </form>
         </div>

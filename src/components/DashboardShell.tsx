@@ -34,7 +34,7 @@ export default function DashboardShell({ sections, children }: Props) {
         <nav
           ref={tabsRef}
           aria-label="Dashboard sections"
-          className="max-w-7xl mx-auto px-3 md:px-3 flex items-center overflow-x-auto no-scrollbar -mb-px"
+          className="max-w-7xl mx-auto px-2 md:px-3 flex items-center overflow-x-auto no-scrollbar -mb-px max-lg:[mask-image:linear-gradient(to_right,transparent,black_20px,black_calc(100%-20px),transparent)]"
         >
           {sections.map((section, i) => (
             <div key={section.heading ?? i} className="flex items-center">

@@ -137,7 +137,7 @@ export default function About() {
             <p className="text-on-surface-variant font-sans text-lg max-w-2xl mx-auto">The principles that dictate how we hire, build, and scale your brand.</p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {values.map((value, index) => (
               <motion.div 
                 key={index}
@@ -210,7 +210,7 @@ export default function About() {
             <p className="font-sans text-on-surface-variant text-lg max-w-xl mx-auto mb-10 relative z-10">
               One subscription. One dedicated team. Boundless growth. Hop on a free 30-minute strategy call to explore the model.
             </p>
-            <Link to="/contact" className="relative z-10 inline-flex px-8 py-5 bg-white text-background font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary hover:text-white transition-all duration-300 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(215,183,255,0.4)] hover:-translate-y-1 items-center gap-3">
+            <Link to="/contact" className="relative z-10 inline-flex px-8 py-5 bg-white text-background font-mono text-sm font-bold uppercase tracking-widest hover:bg-primary hover:text-on-primary transition-all duration-300 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(215,183,255,0.4)] hover:-translate-y-1 items-center gap-3">
               Book Your Strategy Session <Zap className="w-4 h-4" />
             </Link>
           </div>

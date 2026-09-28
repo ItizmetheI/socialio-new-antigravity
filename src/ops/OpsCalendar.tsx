@@ -44,7 +44,7 @@ export default function OpsCalendar() {
             aria-label="Client"
             value={orgId}
             onChange={(e) => setOrgId(e.target.value)}
-            className="bg-background border border-white/10 rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-primary"
+            className="field text-sm sm:w-auto"
           >
             <option value="">All clients</option>
             {orgs.map((o) => (

@@ -17,6 +17,7 @@ import {
   mockPlanItems,
   mockPlanFeedback,
   mockPerformanceReports,
+  mockActivityEvents,
   mockOrders,
   mockOrderItems,
   mockSubscriptions,
@@ -51,6 +52,8 @@ const TABLES: Record<string, Row[]> = {
   newsletter_signups: [],
   brand_kits: [],
   performance_reports: mockPerformanceReports as unknown as Row[],
+  activity_events: mockActivityEvents as unknown as Row[],
+  activity_reads: [],
 };
 
 // Column defaults the real schema fills in on insert.
@@ -203,11 +206,12 @@ class MockQueryBuilder implements PromiseLike<MockResult> {
     // The mock has no RLS layer at all, so without this, test mode leaks
     // internal notes into the client view — replicate just this one rule
     // rather than simulating RLS generally.
-    if (this.table === "comments") {
+    // Same idea for the activity feed: clients never see internal events.
+    if (this.table === "comments" || this.table === "activity_events") {
       const identityKey = getStoredTestIdentityKey();
       const role = identityKey ? TEST_IDENTITIES[identityKey].role : null;
       if (role === "client") {
-        rows = rows.filter((row) => row.visibility === "client");
+        rows = rows.filter((row) => (this.table === "comments" ? row.visibility === "client" : !row.is_internal));
       }
     }
     if (this.orderCol) {
