@@ -11,7 +11,9 @@ export default function Contact() {
     company: "",
     service: "",
     budget: "",
-    message: ""
+    message: "",
+    // Honeypot: hidden from people, filled in by form-spamming bots.
+    website: ""
   });
 
   const [error, setError] = useState("");
@@ -19,19 +21,31 @@ export default function Contact() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email || !formData.message) {
+    const name = formData.name.trim();
+    const email = formData.email.trim().toLowerCase();
+    const message = formData.message.trim();
+    if (!name || !email || !message) {
       setError("Please fill out your name, email, and message.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setError("That email address doesn't look right.");
+      return;
+    }
+    // Bots fill every field; pretend it worked and store nothing.
+    if (formData.website) {
+      setStatus("success");
       return;
     }
     setError("");
     setStatus("submitting");
     const { error: submitError } = await supabase.from("contact_submissions").insert({
-      name: formData.name,
-      email: formData.email,
-      company: formData.company || null,
+      name,
+      email,
+      company: formData.company.trim() || null,
       service: formData.service || null,
       budget: formData.budget || null,
-      message: formData.message,
+      message,
     });
     if (submitError) {
       setStatus("idle");
@@ -135,6 +149,8 @@ export default function Contact() {
                   <input 
                     type="text" 
                     value={formData.name}
+                    maxLength={200}
+                    autoComplete="name"
                     onChange={e => setFormData({...formData, name: e.target.value})}
                     placeholder="John Doe"
                     className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary font-sans transition-colors"
@@ -147,6 +163,8 @@ export default function Contact() {
                   <input 
                     type="email" 
                     value={formData.email}
+                    maxLength={320}
+                    autoComplete="email"
                     onChange={e => setFormData({...formData, email: e.target.value})}
                     placeholder="john@company.com"
                     className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary font-sans transition-colors"
@@ -161,6 +179,8 @@ export default function Contact() {
                 <input 
                   type="text" 
                   value={formData.company}
+                  maxLength={200}
+                  autoComplete="organization"
                   onChange={e => setFormData({...formData, company: e.target.value})}
                   placeholder="Acme Corp"
                   className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary font-sans transition-colors"
@@ -208,11 +228,23 @@ export default function Contact() {
                 <textarea 
                   rows={4}
                   value={formData.message}
+                  maxLength={5000}
                   onChange={e => setFormData({...formData, message: e.target.value})}
                   placeholder="Tell us about your current growth bottlenecks..."
                   className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary font-sans transition-colors resize-none"
                 ></textarea>
               </div>
+
+              <input
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                value={formData.website}
+                onChange={e => setFormData({...formData, website: e.target.value})}
+                className="absolute -left-[9999px] w-px h-px opacity-0"
+              />
 
               {error && (
                 <div className="text-red-400 font-sans text-sm">{error}</div>
