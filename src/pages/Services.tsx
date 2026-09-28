@@ -69,11 +69,11 @@ export default function Services() {
                >
                  <Link 
                    to={`/service/${service.id}`} 
-                   className="group flex flex-col h-full bg-surface-container border border-white/5 rounded-3xl p-8 hover:bg-surface-container-high hover:border-white/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 relative overflow-hidden"
+                   className="group flex flex-col h-full bg-surface-container border border-white/5 rounded-3xl p-6 md:p-8 hover:bg-surface-container-high hover:border-white/20 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-300 relative overflow-hidden"
                  >
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6 mb-6">
-                       <div className="flex gap-5">
-                         <div className="w-14 h-14 shrink-0 rounded-2xl flex items-center justify-center border border-white/10 bg-white/5 text-primary transition-transform group-hover:scale-110 duration-300">
+                       <div className="flex gap-4 md:gap-5 min-w-0">
+                         <div className="w-12 h-12 md:w-14 md:h-14 shrink-0 rounded-2xl flex items-center justify-center border border-white/10 bg-white/5 text-primary transition-transform group-hover:scale-110 duration-300">
                             {styling.icon}
                          </div>
                          <div>
@@ -104,7 +104,7 @@ export default function Services() {
                     <div className="grid grid-cols-2 gap-4 mb-8">
                        {(service as any).proofs?.slice(0, 2).map((proof: any, idx: number) => (
                          <div key={idx} className="bg-background/50 rounded-xl p-4 border border-white/5">
-                            <div className="text-2xl font-black text-white font-sans">{proof.value}</div>
+                            <div className="text-xl md:text-2xl font-black text-white font-sans">{proof.value}</div>
                             <div className="text-xs text-on-surface-variant font-medium">{proof.label}</div>
                          </div>
                        ))}
@@ -126,7 +126,7 @@ export default function Services() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mt-24 p-10 md:p-14 border border-white/10 bg-surface-container rounded-3xl relative overflow-hidden text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-10 shadow-2xl"
+          className="mt-24 p-6 sm:p-10 md:p-14 border border-white/10 bg-surface-container rounded-3xl relative overflow-hidden text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-10 shadow-2xl"
         >
 
            <div className="relative z-10 max-w-xl">

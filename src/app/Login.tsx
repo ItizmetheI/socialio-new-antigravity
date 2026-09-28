@@ -46,7 +46,7 @@ export default function Login() {
             <h1 className="hero-display font-bold text-3xl tracking-tight mb-2 text-white">
               Welcome <span className="italic text-primary">back.</span>
             </h1>
-            <p className="text-on-surface-variant mb-8">Sign in to see your pipeline, calendar and results.</p>
+            <p className="text-on-surface-variant mb-8">Sign in to your Socialio account.</p>
 
             <GoogleButton />
             <div className="flex items-center gap-3 my-6 text-xs text-on-surface-variant">

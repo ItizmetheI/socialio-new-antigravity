@@ -68,7 +68,7 @@ export default function Signup() {
             Create your <span className="italic text-primary">account.</span>
           </h1>
           <p className="text-on-surface-variant mb-8">
-            {items.length > 0 ? "One step before checkout." : "Your pipeline, calendar, brand kit and results in one place."}
+            {items.length > 0 ? "One step before checkout." : "Content that stops the scroll, made for your brand."}
           </p>
 
           <GoogleButton label="Sign up with Google" />

@@ -1,10 +1,10 @@
 import type { ReactNode } from "react";
 import { motion } from "motion/react";
 import NavBar from "./NavBar";
-import AuthProductPreview from "./AuthProductPreview";
+import AuthWorkShowcase from "./AuthWorkShowcase";
 
 // Log in / sign up / password pages: the site nav on top, the form on the
-// left, and on wide screens a preview of the dashboard they're signing into.
+// left, and on wide screens the work itself (real showcase clips).
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
@@ -20,8 +20,8 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
             {children}
           </motion.div>
         </div>
-        <div className="hidden lg:block p-6 pl-0">
-          <AuthProductPreview />
+        <div className="hidden lg:block p-6 pl-0 h-[calc(100vh-5rem)] sticky top-20">
+          <AuthWorkShowcase />
         </div>
       </main>
     </div>

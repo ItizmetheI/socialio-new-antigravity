@@ -104,7 +104,7 @@ export default function Contact() {
             </div>
           </div>
 
-          <div className="bg-surface-container border border-white/10 rounded-3xl p-8 flex flex-col gap-6 shadow-2xl mt-4">
+          <div className="bg-surface-container border border-white/10 rounded-3xl p-6 md:p-8 flex flex-col gap-6 shadow-2xl mt-4">
              <div className="border-b border-white/5 pb-6">
                <div className="hero-display text-4xl text-white font-bold mb-2">200+</div>
                <div className="font-mono text-xs uppercase tracking-widest text-primary">Brands Served</div>
@@ -125,7 +125,7 @@ export default function Contact() {
           initial={{ opacity: 0, x: 30 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-surface-container border border-white/10 p-8 md:p-12 rounded-3xl shadow-xl relative overflow-hidden"
+          className="bg-surface-container border border-white/10 p-5 sm:p-8 md:p-12 rounded-3xl shadow-xl relative overflow-hidden"
         >
           {status === "success" ? (
             <motion.div 
