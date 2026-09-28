@@ -7,7 +7,7 @@ import ErrorBanner from "../components/ErrorBanner";
 import DeliverableList from "../components/DeliverableList";
 import OnboardingAnswersView from "../components/OnboardingAnswersView";
 import { PlanStatusBadge } from "../components/StatusBadge";
-import { formatCents, formatDate } from "../lib/format";
+import { formatCents, formatDate, formatDollars } from "../lib/format";
 import { REQUEST_STAGES } from "../lib/database.types";
 import type {
   ClientOnboarding,
@@ -179,7 +179,7 @@ export default function ClientDetail() {
             <>
               <div className="flex items-center justify-between mb-4">
                 <PlanStatusBadge status={plan.status} />
-                <span className="font-bold text-white">${plan.total_price.toLocaleString()}</span>
+                <span className="font-bold text-white">{formatDollars(plan.total_price)}</span>
               </div>
               <ul className="flex flex-col gap-2">
                 {planItems.map((item) => (
@@ -188,7 +188,7 @@ export default function ClientDetail() {
                       {item.quantity} × {item.deliverable_label}
                       <span className="text-on-surface-variant"> · {item.frequency ?? "one-time"}{item.platform ? ` · ${item.platform}` : ""}</span>
                     </span>
-                    <span className="text-on-surface-variant">${(item.price * item.quantity).toLocaleString()}</span>
+                    <span className="text-on-surface-variant">{formatDollars(item.price * item.quantity)}</span>
                   </li>
                 ))}
               </ul>

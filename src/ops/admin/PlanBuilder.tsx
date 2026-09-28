@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Trash2 } from "lucide-react";
 import { supabase } from "../../lib/supabase";
+import { formatDollars } from "../../lib/format";
 import { servicesData } from "../../data/services";
 import { useAuth } from "../../lib/auth/AuthContext";
 import Spinner from "../../components/Spinner";
@@ -300,7 +301,7 @@ export default function PlanBuilder() {
                   </div>
                   <div className="flex items-center gap-3">
                     <span className="text-sm font-bold text-white">
-                      ${(item.price * item.quantity).toLocaleString()}
+                      {formatDollars(item.price * item.quantity)}
                     </span>
                     <button
                       type="button"
@@ -314,7 +315,7 @@ export default function PlanBuilder() {
               ))}
               <div className="flex items-center justify-between px-5 py-4 bg-white/[0.02]">
                 <span className="text-sm font-bold text-white">Total</span>
-                <span className="text-sm font-bold text-primary">${total.toLocaleString()}</span>
+                <span className="text-sm font-bold text-primary">{formatDollars(total)}</span>
               </div>
             </div>
           )}

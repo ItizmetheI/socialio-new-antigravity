@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Trash2 } from "lucide-react";
 import { supabase } from "../../lib/supabase";
+import { formatDollars } from "../../lib/format";
 import { servicesData } from "../../data/services";
 import { useAuth } from "../../lib/auth/AuthContext";
 import Spinner from "../../components/Spinner";
@@ -166,7 +167,7 @@ export default function ProposalBuilder() {
                 className="flex items-center justify-between px-4 py-3 bg-surface-container border border-white/10 hover:border-primary/30 rounded-xl text-left transition-colors"
               >
                 <span className="text-sm text-white">{step.label}</span>
-                <span className="text-sm font-bold text-primary">${step.price.toLocaleString()}</span>
+                <span className="text-sm font-bold text-primary">{formatDollars(step.price)}</span>
               </button>
             ))}
           </div>
@@ -192,7 +193,7 @@ export default function ProposalBuilder() {
                     <div className="text-xs text-on-surface-variant">{item.serviceId}</div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-sm font-bold text-white">${item.price.toLocaleString()}</span>
+                    <span className="text-sm font-bold text-white">{formatDollars(item.price)}</span>
                     <button
                       type="button"
                       onClick={() => removeItem(item.key)}
@@ -205,7 +206,7 @@ export default function ProposalBuilder() {
               ))}
               <div className="flex items-center justify-between px-5 py-4 bg-white/[0.02]">
                 <span className="text-sm font-bold text-white">Total</span>
-                <span className="text-sm font-bold text-primary">${total.toLocaleString()}</span>
+                <span className="text-sm font-bold text-primary">{formatDollars(total)}</span>
               </div>
             </div>
           )}

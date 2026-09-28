@@ -3,6 +3,12 @@ export function formatCents(cents: number, currency = "usd") {
   return new Intl.NumberFormat("en-US", { style: "currency", currency: currency.toUpperCase() }).format(cents / 100);
 }
 
+// Plan and proposal prices are stored as dollars (numeric(10,2)), not cents.
+// toLocaleString() would drop trailing zeros ("$99.9"), so format as currency.
+export function formatDollars(amount: number) {
+  return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(amount);
+}
+
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
 
 // Date-only columns (due_date) come back as "2026-09-30", which `new Date`

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { formatDollars } from "../lib/format";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
@@ -151,12 +152,12 @@ export default function PlanView() {
               </div>
               {item.notes && <div className="text-xs text-on-surface-variant mt-1">{item.notes}</div>}
             </div>
-            <div className="font-bold text-white">${(item.price * item.quantity).toLocaleString()}</div>
+            <div className="font-bold text-white">{formatDollars(item.price * item.quantity)}</div>
           </div>
         ))}
         <div className="flex items-center justify-between px-8 py-6 bg-white/[0.02]">
           <div className="font-bold text-white">Total</div>
-          <div className="font-bold text-xl text-primary">${plan.total_price.toLocaleString()}</div>
+          <div className="font-bold text-xl text-primary">{formatDollars(plan.total_price)}</div>
         </div>
       </div>
 

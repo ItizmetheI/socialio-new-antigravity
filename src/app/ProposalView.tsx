@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { formatDollars } from "../lib/format";
 import { servicesData } from "../data/services";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
@@ -123,12 +124,12 @@ export default function ProposalView() {
                 {servicesData.find((s) => s.id === item.service_id)?.title ?? item.service_id}
               </div>
             </div>
-            <div className="font-bold text-white">${item.price.toLocaleString()}</div>
+            <div className="font-bold text-white">{formatDollars(item.price)}</div>
           </div>
         ))}
         <div className="flex items-center justify-between px-8 py-6 bg-white/[0.02]">
           <div className="font-bold text-white">Total</div>
-          <div className="font-bold text-xl text-primary">${proposal.total_price.toLocaleString()}</div>
+          <div className="font-bold text-xl text-primary">{formatDollars(proposal.total_price)}</div>
         </div>
       </div>
 
