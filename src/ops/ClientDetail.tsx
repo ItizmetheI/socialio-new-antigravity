@@ -6,6 +6,8 @@ import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
 import DeliverableList from "../components/DeliverableList";
 import OnboardingAnswersView from "../components/OnboardingAnswersView";
+import BrandKitEditor from "../components/workspace/BrandKitEditor";
+import ResultsEditor from "./ResultsEditor";
 import { PlanStatusBadge } from "../components/StatusBadge";
 import { formatCents, formatDate, formatDollars } from "../lib/format";
 import { REQUEST_STAGES } from "../lib/database.types";
@@ -135,7 +137,7 @@ export default function ClientDetail() {
   const openRequests = requests.filter((r) => r.stage !== "delivered").length;
 
   return (
-    <div className="p-6 md:p-10 max-w-6xl">
+    <div className="p-5 md:p-10 max-w-6xl">
       <Link to="/ops/clients" className="inline-flex items-center gap-1.5 text-sm text-on-surface-variant hover:text-white mb-6">
         <ArrowLeft className="w-4 h-4" /> All clients
       </Link>
@@ -239,6 +241,18 @@ export default function ClientDetail() {
                 ))}
               </div>
             )}
+          </Section>
+        </div>
+
+        <div className="lg:col-span-2">
+          <Section title="Results">
+            <ResultsEditor orgId={org.id} />
+          </Section>
+        </div>
+
+        <div className="lg:col-span-2">
+          <Section title="Brand kit">
+            <BrandKitEditor orgId={org.id} />
           </Section>
         </div>
 

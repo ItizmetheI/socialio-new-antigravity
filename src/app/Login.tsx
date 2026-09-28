@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { motion } from "motion/react";
-import Logo from "../components/Logo";
 import { useAuth } from "../lib/auth/AuthContext";
-import AuthFeedPanel from "../components/AuthFeedPanel";
+import AuthLayout from "../components/AuthLayout";
 
 export default function Login() {
   const { session, profile, isLoading, signIn } = useAuth();
@@ -35,25 +33,13 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex">
-      <AuthFeedPanel />
-
-      <div className="flex-1 flex items-center justify-center px-6 py-32">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-md"
-        >
-          <div className="flex justify-center mb-10 lg:hidden">
-            <Logo />
-          </div>
+    <AuthLayout>
           <div className="bg-surface-container border border-white/10 rounded-3xl p-8 md:p-10 shadow-xl">
             <h1 className="hero-display font-bold text-3xl tracking-tight mb-2 text-white">
               Welcome <span className="italic text-primary">back.</span>
             </h1>
             <p className="text-on-surface-variant mb-8">
-              Track proposals, requests, and deliverables in one place.
+              Your pipeline, content calendar, brand kit and results &mdash; all in one place.
             </p>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -107,8 +93,6 @@ export default function Login() {
               Create one
             </Link>
           </p>
-        </motion.div>
-      </div>
-    </div>
+    </AuthLayout>
   );
 }

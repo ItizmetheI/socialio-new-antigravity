@@ -1,77 +1,38 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
-import { DndContext, useDroppable, useDraggable, type DragEndEvent } from "@dnd-kit/core";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { DndContext, PointerSensor, useDroppable, useDraggable, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { supabase } from "../lib/supabase";
-import { formatDate } from "../lib/format";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
+import RequestCard from "../components/workspace/RequestCard";
+import RequestFilterBar from "../components/workspace/RequestFilterBar";
+import { EMPTY_FILTERS, filterRequests } from "../components/workspace/requestMeta";
 import { REQUEST_STAGES } from "../lib/database.types";
-import type { Request, RequestStage, Organization } from "../lib/database.types";
+import type { Request, RequestStage, Organization, Profile } from "../lib/database.types";
 
 type LoadState = "loading" | "error" | "ready";
 
-function BoardCard({ request, orgName }: { request: Request; orgName: string }) {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
-    id: request.id,
-  });
-
-  const style = transform
-    ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`, zIndex: 10 }
-    : undefined;
+function BoardCard({ request, orgName, assigneeName }: { request: Request; orgName: string; assigneeName?: string }) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: request.id });
+  const style = transform ? { transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`, zIndex: 10 } : undefined;
 
   return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...listeners}
-      {...attributes}
-      className={`bg-surface-container border border-white/10 rounded-2xl p-4 cursor-grab active:cursor-grabbing ${
-        isDragging ? "opacity-50" : ""
-      }`}
-    >
-      <div className="text-xs font-bold text-primary mb-1 truncate">{orgName}</div>
-      <Link
-        to={`/ops/requests/${request.id}`}
-        onClick={(e) => e.stopPropagation()}
-        className="font-bold text-white text-sm hover:text-primary transition-colors block mb-1"
-      >
-        {request.title}
-      </Link>
-      {request.due_date && (
-        <div className="text-xs text-on-surface-variant">Due {formatDate(request.due_date)}</div>
-      )}
+    <div ref={setNodeRef} style={style} {...listeners} {...attributes} className={`cursor-grab active:cursor-grabbing ${isDragging ? "opacity-60" : ""}`}>
+      <RequestCard request={request} to={`/ops/requests/${request.id}`} orgName={orgName} assigneeName={assigneeName} />
     </div>
   );
 }
 
-function BoardColumn({
-  stage,
-  label,
-  requests,
-  orgNameById,
-}: {
-  stage: RequestStage;
-  label: string;
-  requests: Request[];
-  orgNameById: Map<string, string>;
-}) {
+function BoardColumn({ stage, label, children, count }: { stage: RequestStage; label: string; children: ReactNode; count: number }) {
   const { setNodeRef, isOver } = useDroppable({ id: stage });
-
   return (
-    <div
-      ref={setNodeRef}
-      className={`flex flex-col gap-3 rounded-2xl p-3 transition-colors ${isOver ? "bg-primary/5" : ""}`}
-    >
-      <div className="text-xs font-bold uppercase tracking-widest text-on-surface-variant px-1">
-        {label} <span className="text-white/30">({requests.length})</span>
-      </div>
-      <div className="flex flex-col gap-3 min-h-[80px]">
-        {requests.map((request) => (
-          <BoardCard key={request.id} request={request} orgName={orgNameById.get(request.org_id) ?? "—"} />
-        ))}
-      </div>
-    </div>
+    <section ref={setNodeRef} className={`rounded-2xl border p-3 transition-colors ${isOver ? "bg-primary/5 border-primary/30" : "bg-white/[0.02] border-white/5"}`}>
+      <h2 className="flex items-center justify-between text-xs font-bold uppercase tracking-widest text-on-surface-variant px-1 mb-3">
+        {label}
+        <span className="text-white/40">{count}</span>
+      </h2>
+      <div className="flex flex-col gap-3 min-h-[80px]">{children}</div>
+    </section>
   );
 }
 
@@ -79,15 +40,22 @@ export default function OpsBoard() {
   const [state, setState] = useState<LoadState>("loading");
   const [requests, setRequests] = useState<Request[]>([]);
   const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const [staff, setStaff] = useState<Profile[]>([]);
   const [actionError, setActionError] = useState("");
+  const [filters, setFilters] = useState(EMPTY_FILTERS);
+  // A drag ends with a click on the card underneath; swallow that one so
+  // dropping a card doesn't also open it.
+  const justDragged = useRef(false);
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
   useEffect(() => {
     let isMounted = true;
     setState("loading");
     Promise.all([
       supabase.from("requests").select("*").order("created_at", { ascending: false }),
-      supabase.from("organizations").select("*"),
-    ]).then(([requestsRes, orgsRes]) => {
+      supabase.from("organizations").select("*").order("name"),
+      supabase.from("profiles").select("*").in("role", ["internal", "admin"]),
+    ]).then(([requestsRes, orgsRes, staffRes]) => {
       if (!isMounted) return;
       if (requestsRes.error || orgsRes.error) {
         setState("error");
@@ -95,6 +63,7 @@ export default function OpsBoard() {
       }
       setRequests((requestsRes.data ?? []) as Request[]);
       setOrganizations((orgsRes.data ?? []) as Organization[]);
+      setStaff((staffRes.data ?? []) as Profile[]);
       setState("ready");
     });
     return () => {
@@ -109,6 +78,8 @@ export default function OpsBoard() {
   }, [organizations]);
 
   const handleDragEnd = async (event: DragEndEvent) => {
+    justDragged.current = true;
+    setTimeout(() => (justDragged.current = false), 0);
     const { active, over } = event;
     if (!over) return;
     const requestId = active.id as string;
@@ -151,25 +122,44 @@ export default function OpsBoard() {
     );
   }
 
+  const visible = filterRequests(requests, filters);
+  const staffName = (id: string | null) => (id ? staff.find((m) => m.id === id)?.full_name ?? undefined : undefined);
+
   return (
     <div className="p-5 md:p-10">
-      <h1 className="hero-display font-bold text-3xl text-white mb-8">Board</h1>
+      <h1 className="hero-display font-bold text-3xl text-white mb-1">Board</h1>
+      <p className="text-on-surface-variant text-sm mb-8">Drag a card to move it between stages. Click it to open.</p>
       {actionError && (
         <div className="mb-6">
           <ErrorBanner message={actionError} />
         </div>
       )}
-      <DndContext onDragEnd={handleDragEnd}>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {REQUEST_STAGES.map(({ value, label }) => (
-            <BoardColumn
-              key={value}
-              stage={value}
-              label={label}
-              requests={requests.filter((r) => r.stage === value)}
-              orgNameById={orgNameById}
-            />
-          ))}
+      <RequestFilterBar value={filters} onChange={setFilters} orgs={organizations} />
+      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5"
+          onClickCapture={(e) => {
+            if (justDragged.current) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }}
+        >
+          {REQUEST_STAGES.map(({ value, label }) => {
+            const stageRequests = visible.filter((r) => r.stage === value);
+            return (
+              <BoardColumn key={value} stage={value} label={label} count={stageRequests.length}>
+                {stageRequests.map((request) => (
+                  <BoardCard
+                    key={request.id}
+                    request={request}
+                    orgName={orgNameById.get(request.org_id) ?? "—"}
+                    assigneeName={staffName(request.assigned_to)}
+                  />
+                ))}
+              </BoardColumn>
+            );
+          })}
         </div>
       </DndContext>
     </div>

@@ -2,7 +2,9 @@ import React, { useState } from "react";
 import { supabase } from "../lib/supabase";
 import { localDateString } from "../lib/format";
 import { servicesData } from "../data/services";
-import type { Request } from "../lib/database.types";
+import { CONTENT_FORMATS, PLATFORMS } from "../lib/database.types";
+import type { ContentFormat, Platform, Request } from "../lib/database.types";
+import { PLATFORM_COLORS } from "../components/workspace/requestMeta";
 
 const TITLE_MAX = 120;
 const DESCRIPTION_MAX = 2000;
@@ -23,6 +25,8 @@ export default function NewRequestForm({ orgId, profileId, onCreated, onCancel }
   const [description, setDescription] = useState("");
   const [serviceType, setServiceType] = useState(servicesData[0].id);
   const [dueDate, setDueDate] = useState("");
+  const [format, setFormat] = useState<ContentFormat | "">("");
+  const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const today = localDateString();
@@ -50,6 +54,8 @@ export default function NewRequestForm({ orgId, profileId, onCreated, onCancel }
         description: description.trim() || null,
         service_type: serviceType,
         due_date: dueDate || null,
+        format: format || null,
+        platforms,
       })
       .select()
       .single();
@@ -101,6 +107,41 @@ export default function NewRequestForm({ orgId, profileId, onCreated, onCancel }
         <div>
           <label htmlFor="req-due" className={labelClass}>Needed by (optional)</label>
           <input id="req-due" type="date" min={today} value={dueDate} onChange={(e) => setDueDate(e.target.value)} className={inputClass} />
+        </div>
+      </div>
+      <div className="grid sm:grid-cols-2 gap-5">
+        <div>
+          <label htmlFor="req-format" className={labelClass}>Format (optional)</label>
+          <select id="req-format" value={format} onChange={(e) => setFormat(e.target.value as ContentFormat | "")} className={inputClass}>
+            <option value="">Not sure yet</option>
+            {CONTENT_FORMATS.map((f) => (
+              <option key={f.value} value={f.value}>
+                {f.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <div className={labelClass}>Where will it go?</div>
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Platforms">
+            {PLATFORMS.map((p) => {
+              const isOn = platforms.includes(p.value);
+              return (
+                <button
+                  key={p.value}
+                  type="button"
+                  aria-pressed={isOn}
+                  onClick={() => setPlatforms((cur) => (isOn ? cur.filter((x) => x !== p.value) : [...cur, p.value]))}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-colors ${
+                    isOn ? "bg-white text-background border-white" : "border-white/10 text-on-surface-variant hover:text-white"
+                  }`}
+                >
+                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: PLATFORM_COLORS[p.value] }} />
+                  {p.label}
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
       {error && <p className="text-red-400 text-sm">{error}</p>}

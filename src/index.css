@@ -432,3 +432,11 @@ input[type="range"]::-moz-range-track {
   }
 }
 
+
+/* Horizontal tab rows that scroll on phones without a visible scrollbar. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

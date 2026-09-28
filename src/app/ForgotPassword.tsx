@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "motion/react";
-import Logo from "../components/Logo";
+import AuthLayout from "../components/AuthLayout";
 import { useAuth } from "../lib/auth/AuthContext";
 
 export default function ForgotPassword() {
@@ -22,16 +21,7 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-6 py-32">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
-      >
-        <div className="flex justify-center mb-10">
-          <Logo />
-        </div>
+    <AuthLayout>
         <div className="bg-surface-container border border-white/10 rounded-3xl p-8 md:p-10 shadow-xl">
           {submitted ? (
             <>
@@ -79,7 +69,6 @@ export default function ForgotPassword() {
             Back to sign in
           </Link>
         </p>
-      </motion.div>
-    </div>
+    </AuthLayout>
   );
 }

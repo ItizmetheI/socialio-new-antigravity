@@ -16,6 +16,7 @@ import {
   mockPlans,
   mockPlanItems,
   mockPlanFeedback,
+  mockPerformanceReports,
 } from "./fixtures";
 import { getStoredTestIdentityKey, TEST_IDENTITIES } from "./testAuth";
 
@@ -44,6 +45,8 @@ const TABLES: Record<string, Row[]> = {
   onboarding_assets: [],
   contact_submissions: [],
   newsletter_signups: [],
+  brand_kits: [],
+  performance_reports: mockPerformanceReports as unknown as Row[],
 };
 
 let idCounter = 0;
@@ -60,7 +63,8 @@ class MockQueryBuilder implements PromiseLike<MockResult> {
   private orderCol?: string;
   private orderAscending = true;
   private limitCount?: number;
-  private mode: "select" | "insert" | "update" = "select";
+  private mode: "select" | "insert" | "update" | "upsert" | "delete" = "select";
+  private conflictCols: string[] = [];
   private payload?: Row | Row[];
   private singleFlag = false;
   private maybeSingleFlag = false;
@@ -121,6 +125,18 @@ class MockQueryBuilder implements PromiseLike<MockResult> {
     return this;
   }
 
+  upsert(payload: Row | Row[], opts?: { onConflict?: string }) {
+    this.mode = "upsert";
+    this.payload = payload;
+    this.conflictCols = (opts?.onConflict ?? "id").split(",").map((c) => c.trim());
+    return this;
+  }
+
+  delete() {
+    this.mode = "delete";
+    return this;
+  }
+
   private matches(row: Row): boolean {
     return this.filters.every(({ col, op, val }) => {
       if (op === "eq") return row[col] === val;
@@ -149,8 +165,26 @@ class MockQueryBuilder implements PromiseLike<MockResult> {
 
     if (this.mode === "update") {
       const matched = store.filter((row) => this.matches(row));
-      matched.forEach((row) => Object.assign(row, this.payload));
-      return { data: matched, error: null };
+      matched.forEach((row) => Object.assign(row, this.payload, { updated_at: new Date().toISOString() }));
+      return { data: this.singleFlag ? matched[0] ?? null : matched, error: null };
+    }
+
+    if (this.mode === "upsert") {
+      const rows = Array.isArray(this.payload) ? this.payload : [this.payload!];
+      const saved = rows.map((row) => {
+        const existing = store.find((r) => this.conflictCols.every((c) => r[c] === row[c]));
+        if (existing) return Object.assign(existing, row, { updated_at: new Date().toISOString() });
+        const inserted = { id: nextId(this.table), created_at: new Date().toISOString(), updated_at: new Date().toISOString(), ...row };
+        store.push(inserted);
+        return inserted;
+      });
+      return { data: this.singleFlag ? saved[0] : saved, error: null };
+    }
+
+    if (this.mode === "delete") {
+      const remaining = store.filter((row) => !this.matches(row));
+      store.splice(0, store.length, ...remaining);
+      return { data: [], error: null };
     }
 
     let rows = store.filter((row) => this.matches(row));

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "motion/react";
-import Logo from "../components/Logo";
+import AuthLayout from "../components/AuthLayout";
 import { useAuth } from "../lib/auth/AuthContext";
 import { useCart } from "../context/CartContext";
 
@@ -46,38 +45,29 @@ export default function Signup() {
 
   if (awaitingConfirmation && !session) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center px-6 py-32 text-center">
-        <div className="max-w-md">
-          <div className="flex justify-center mb-10">
-            <Logo />
-          </div>
-          <h1 className="hero-display font-bold text-2xl text-white mb-3">Check your email</h1>
+      <AuthLayout>
+        <div className="bg-surface-container border border-white/10 rounded-3xl p-8 md:p-10 shadow-xl">
+          <h1 className="hero-display font-bold text-3xl tracking-tight text-white mb-3">
+            Check your <span className="italic text-primary">email.</span>
+          </h1>
           <p className="text-on-surface-variant">
-            We sent a confirmation link to {email}. Click it, then sign back in to continue
-            {items.length > 0 ? " to checkout." : "."}
+            We sent a confirmation link to <span className="text-white font-bold">{email.trim()}</span>. Open it and
+            you&apos;ll be signed straight in{items.length > 0 ? " and taken to checkout" : ""}.
           </p>
+          <p className="text-sm text-on-surface-variant mt-4">Nothing after a few minutes? Check your spam folder.</p>
         </div>
-      </div>
+      </AuthLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-6 py-32">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
-      >
-        <div className="flex justify-center mb-10">
-          <Logo />
-        </div>
+    <AuthLayout>
         <div className="bg-surface-container border border-white/10 rounded-3xl p-8 md:p-10 shadow-xl">
           <h1 className="hero-display font-bold text-3xl tracking-tight mb-2 text-white">
             Create your <span className="italic text-primary">account.</span>
           </h1>
           <p className="text-on-surface-variant mb-8">
-            {items.length > 0 ? "One step before checkout." : "Track requests and deliverables in one place."}
+            {items.length > 0 ? "One step before checkout." : "Your pipeline, calendar, brand kit and results in one place."}
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-5">
@@ -139,7 +129,6 @@ export default function Signup() {
             Sign in
           </Link>
         </p>
-      </motion.div>
-    </div>
+    </AuthLayout>
   );
 }

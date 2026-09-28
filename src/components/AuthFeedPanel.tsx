@@ -1,5 +1,4 @@
 import { PenTool, Video, TrendingUp, Search } from "lucide-react";
-import Logo from "./Logo";
 
 // Decorative only — deliberately no fake numbers or "live" framing (this
 // site already had a fake LIVE_EVENTS ticker removed earlier for reading as
@@ -31,15 +30,11 @@ function ReelBlock({ icon: Icon, label, bg, fg }: (typeof BLOCKS)[number]) {
 
 export default function AuthFeedPanel() {
   return (
-    <div className="hidden lg:flex w-[42%] relative bg-[#0c0712] border-r border-white/5 flex-col p-12 overflow-hidden">
+    <div className="hidden lg:flex relative bg-[#0c0712] rounded-3xl border border-white/5 flex-col p-10 overflow-hidden h-[640px]">
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
 
-      <div className="relative z-10">
-        <Logo />
-      </div>
-
       <div className="relative z-10 flex-1 flex items-center my-10 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]">
-        <div className="w-full max-w-[300px] mx-auto h-[560px] overflow-hidden">
+        <div className="w-full max-w-[300px] mx-auto h-[440px] overflow-hidden">
           <div className="flex flex-col gap-4 animate-slide-up" style={{ animationDuration: "20s" }}>
             {[...BLOCKS, ...BLOCKS].map((block, i) => (
               <ReelBlock key={i} {...block} />

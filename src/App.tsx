@@ -25,6 +25,10 @@ const Signup = lazy(() => import('./app/Signup'));
 const ForgotPassword = lazy(() => import('./app/ForgotPassword'));
 const SetPassword = lazy(() => import('./lib/auth/SetPassword'));
 const Checkout = lazy(() => import('./checkout/Checkout'));
+const CalendarPage = lazy(() => import('./app/CalendarPage'));
+const BrandKitPage = lazy(() => import('./app/BrandKitPage'));
+const ResultsPage = lazy(() => import('./app/ResultsPage'));
+const OpsCalendar = lazy(() => import('./ops/OpsCalendar'));
 const CheckoutSuccess = lazy(() => import('./checkout/CheckoutSuccess'));
 const ClientLayout = lazy(() => import('./app/ClientLayout'));
 const DashboardHome = lazy(() => import('./app/DashboardHome'));
@@ -149,11 +153,15 @@ function DashboardRoutes() {
           <Route path="requests" element={<RequestBoard />} />
           <Route path="requests/:id" element={<RequestDetail />} />
           <Route path="billing" element={<Billing />} />
+          <Route path="calendar" element={<CalendarPage />} />
+          <Route path="brand" element={<BrandKitPage />} />
+          <Route path="results" element={<ResultsPage />} />
           <Route path="settings" element={<Settings />} />
         </Route>
         <Route path="/ops" element={<OpsLayout />}>
           <Route index element={<OpsOverview />} />
           <Route path="board" element={<OpsBoard />} />
+          <Route path="calendar" element={<OpsCalendar />} />
           <Route path="clients" element={<ClientsList />} />
           <Route path="clients/:orgId" element={<ClientDetail />} />
           <Route path="onboarding" element={<OnboardingReview />} />

@@ -123,7 +123,7 @@ export default function OpsOverview() {
   const paidThisMonth = payments.filter((p) => p.created_at >= monthStart).reduce((sum, p) => sum + p.amount, 0);
 
   return (
-    <div className="p-6 md:p-10 max-w-6xl">
+    <div className="p-5 md:p-10 max-w-6xl">
       <h1 className="hero-display font-bold text-3xl text-white mb-8">Overview</h1>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">

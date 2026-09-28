@@ -6,6 +6,7 @@ import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
 import DeliverableList, { DELIVERABLES_BUCKET, storagePathFor } from "../components/DeliverableList";
 import { useAuth } from "../lib/auth/AuthContext";
+import SchedulePanel from "./SchedulePanel";
 import { REQUEST_STAGES } from "../lib/database.types";
 import type { Request, Comment, Deliverable, RequestStage, CommentVisibility, Organization, Profile } from "../lib/database.types";
 
@@ -184,6 +185,8 @@ export default function RequestDetail() {
         {assignError && <div className="mt-3"><ErrorBanner message={assignError} /></div>}
         {actionError && <div className="mt-3"><ErrorBanner message={actionError} /></div>}
       </div>
+
+      <SchedulePanel key={request.id} request={request} onSaved={setRequest} />
 
       <div className="mb-10">
         <h2 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-4">Deliverables</h2>

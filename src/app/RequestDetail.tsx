@@ -5,6 +5,8 @@ import { supabase } from "../lib/supabase";
 import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
 import DeliverableList from "../components/DeliverableList";
+import { formatLabel, platformLabel } from "../components/workspace/requestMeta";
+import { formatDate } from "../lib/format";
 import { useAuth } from "../lib/auth/AuthContext";
 import { REQUEST_STAGES } from "../lib/database.types";
 import type { Request, Comment, Deliverable, RequestStage } from "../lib/database.types";
@@ -162,7 +164,35 @@ export default function RequestDetail() {
       <div className="mb-8">
         <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">{stageLabel}</div>
         <h1 className="hero-display font-bold text-3xl text-white mb-3">{request.title}</h1>
-        {request.description && <p className="text-on-surface-variant">{request.description}</p>}
+        {request.description && <p className="text-on-surface-variant mb-4">{request.description}</p>}
+        <dl className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
+          {request.format && (
+            <div>
+              <dt className="text-xs text-on-surface-variant">Format</dt>
+              <dd className="text-white font-bold">{formatLabel(request.format)}</dd>
+            </div>
+          )}
+          {request.platforms.length > 0 && (
+            <div>
+              <dt className="text-xs text-on-surface-variant">Platforms</dt>
+              <dd className="text-white font-bold">{request.platforms.map(platformLabel).join(", ")}</dd>
+            </div>
+          )}
+          {request.due_date && (
+            <div>
+              <dt className="text-xs text-on-surface-variant">Due</dt>
+              <dd className="text-white font-bold">{formatDate(request.due_date)}</dd>
+            </div>
+          )}
+          {request.publish_at && (
+            <div>
+              <dt className="text-xs text-on-surface-variant">Goes live</dt>
+              <dd className="text-white font-bold">
+                {new Date(request.publish_at).toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+              </dd>
+            </div>
+          )}
+        </dl>
       </div>
 
       {request.stage === "review" && <ReviewPanel onDecide={decide} />}

@@ -1,19 +1,73 @@
-import { Link, useLocation } from "react-router-dom";
-import { ShoppingBag, ChevronDown, MonitorPlay, Menu, X, LayoutDashboard } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { ShoppingBag, ChevronDown, MonitorPlay, Menu, X, LayoutDashboard, LogOut, Settings } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import CartDrawer from "./CartDrawer";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { servicesData } from "../data/services";
 import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
 import { useAuth } from "../lib/auth/AuthContext";
 
+// Signed-in account button: who you're signed in as, settings, sign out.
+function AccountMenu({ name, role, onSignOut }: { name: string; role: string; onSignOut: () => void }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const close = (e: MouseEvent | KeyboardEvent) => {
+      if (e instanceof KeyboardEvent ? e.key === "Escape" : !ref.current?.contains(e.target as Node)) setIsOpen(false);
+    };
+    document.addEventListener("mousedown", close);
+    document.addEventListener("keydown", close);
+    return () => {
+      document.removeEventListener("mousedown", close);
+      document.removeEventListener("keydown", close);
+    };
+  }, [isOpen]);
+
+  return (
+    <div ref={ref} className="relative hidden md:block">
+      <button
+        onClick={() => setIsOpen((open) => !open)}
+        aria-expanded={isOpen}
+        aria-label="Account menu"
+        className="w-9 h-9 rounded-full bg-primary/15 text-primary font-bold text-sm flex items-center justify-center hover:bg-primary/25 transition-colors"
+      >
+        {(name.trim()[0] ?? "?").toUpperCase()}
+      </button>
+      {isOpen && (
+        <div className="absolute right-0 mt-3 w-56 bg-surface-container border border-white/10 rounded-2xl shadow-2xl p-2">
+          <div className="px-3 py-2 border-b border-white/10 mb-1">
+            <div className="text-sm font-bold text-white truncate">{name || "Your account"}</div>
+            <div className="text-xs text-on-surface-variant capitalize">{role === "internal" ? "Team" : role}</div>
+          </div>
+          {role === "client" && (
+            <Link to="/app/settings" onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-on-surface-variant hover:text-white hover:bg-white/5">
+              <Settings className="w-4 h-4" /> Settings
+            </Link>
+          )}
+          <button onClick={onSignOut} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-on-surface-variant hover:text-white hover:bg-white/5">
+            <LogOut className="w-4 h-4" /> Sign out
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function NavBar() {
   const { pathname } = useLocation();
   const { items, setIsCartOpen } = useCart();
-  const { session, profile } = useAuth();
+  const { session, profile, signOut } = useAuth();
+  const navigate = useNavigate();
+  const isSignedIn = !!(session && profile);
   const dashboardHome = profile?.role === "client" ? "/app" : "/ops";
+  const isOnDashboard = pathname === "/app" || pathname.startsWith("/app/") || pathname.startsWith("/ops");
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/", { replace: true });
+  };
 
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -48,7 +102,7 @@ export default function NavBar() {
   return (
     <>
       <nav 
-        className={`fixed top-0 w-full z-40 transition-all duration-300 ${scrolled ? 'bg-background/95 backdrop-blur-md border-b border-white/10 shadow-sm py-0' : 'bg-transparent border-transparent py-2'}`}
+        className={`fixed top-0 w-full z-40 transition-all duration-300 ${scrolled || isOnDashboard ? 'bg-background/95 backdrop-blur-md border-b border-white/10 shadow-sm py-0' : 'bg-transparent border-transparent py-2'}`}
         onMouseLeave={() => setActiveDropdown(null)}
       >
         <div className="flex justify-between items-center max-w-7xl mx-auto px-6 h-20">
@@ -78,6 +132,14 @@ export default function NavBar() {
               Company <ChevronDown className={`w-4 h-4 transition-transform ${activeDropdown === 'company' ? 'rotate-180' : ''}`} />
             </Link>
             <Link to="/pricing" className={isActive("/pricing")}>Pricing</Link>
+            {isSignedIn && (
+              <Link
+                to={dashboardHome}
+                className={`inline-flex items-center gap-1.5 text-sm transition-colors ${isOnDashboard ? "text-primary font-bold" : "text-on-surface/70 hover:text-primary"}`}
+              >
+                <LayoutDashboard className="w-4 h-4" /> Dashboard
+              </Link>
+            )}
           </div>
           <div className="flex items-center gap-4 md:gap-6">
             <div className="hidden md:block">
@@ -94,20 +156,15 @@ export default function NavBar() {
                 </span>
               )}
             </button>
-            {session && profile ? (
-              <Link
-                to={dashboardHome}
-                className="hidden md:inline-flex items-center gap-2 bg-white text-background px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-gray-200 rounded-full"
-              >
-                <LayoutDashboard className="w-4 h-4" /> Dashboard
-              </Link>
+            {isSignedIn ? (
+              <AccountMenu name={profile?.full_name ?? ""} role={profile?.role ?? ""} onSignOut={handleSignOut} />
             ) : (
               <>
                 <Link to="/app/login" className="hidden md:inline-block border border-white/10 bg-transparent text-white px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-white/5 rounded-full">
-                  Client Login
+                  Log in
                 </Link>
-                <Link to="/contact" className="hidden md:inline-block bg-white text-background px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-gray-200 rounded-full">
-                  Get Started
+                <Link to="/app/signup" className="hidden md:inline-block bg-white text-background px-6 py-2 font-bold text-sm transition-all duration-300 hover:bg-gray-200 rounded-full">
+                  Sign up
                 </Link>
               </>
             )}
@@ -182,17 +239,22 @@ export default function NavBar() {
               
               <div className="h-[1px] bg-white/10 my-2 w-full"></div>
               
-              {session && profile ? (
-                <Link to={dashboardHome} className="text-center bg-primary text-background px-6 py-3 font-bold text-sm">
-                  Dashboard
-                </Link>
+              {isSignedIn ? (
+                <>
+                  <Link to={dashboardHome} className="text-center bg-primary text-[#fff] px-6 py-3 font-bold text-sm rounded-xl">
+                    Dashboard
+                  </Link>
+                  <button onClick={handleSignOut} className="text-center border border-white/20 bg-transparent text-white px-6 py-3 font-bold text-sm rounded-xl">
+                    Sign out
+                  </button>
+                </>
               ) : (
                 <>
-                  <Link to="/contact" className="text-center bg-primary text-background px-6 py-3 font-bold text-sm">
-                    Get Started
+                  <Link to="/app/signup" className="text-center bg-primary text-[#fff] px-6 py-3 font-bold text-sm rounded-xl">
+                    Sign up
                   </Link>
-                  <Link to="/app/login" className="text-center border border-white/20 bg-transparent text-white px-6 py-3 font-bold text-sm">
-                    Client Login
+                  <Link to="/app/login" className="text-center border border-white/20 bg-transparent text-white px-6 py-3 font-bold text-sm rounded-xl">
+                    Log in
                   </Link>
                 </>
               )}

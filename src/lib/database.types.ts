@@ -84,6 +84,9 @@ export interface Request {
   assigned_to: string | null;
   created_by: string;
   due_date: string | null;
+  format: ContentFormat | null;
+  platforms: Platform[];
+  publish_at: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -234,4 +237,57 @@ export interface NewsletterSignup {
   id: string;
   email: string;
   created_at: string;
+}
+
+// ---- Workspace (schema_workspace.sql) ----------------------------------------
+export type ContentFormat = "carousel" | "reel" | "graphic" | "ugc_video" | "seo_article" | "other";
+export type Platform = "instagram" | "tiktok" | "linkedin" | "x" | "facebook" | "youtube" | "blog";
+
+export const CONTENT_FORMATS: { value: ContentFormat; label: string }[] = [
+  { value: "carousel", label: "Carousel" },
+  { value: "reel", label: "Reel / short video" },
+  { value: "graphic", label: "Single graphic" },
+  { value: "ugc_video", label: "UGC video" },
+  { value: "seo_article", label: "SEO article" },
+  { value: "other", label: "Other" },
+];
+
+export const PLATFORMS: { value: Platform; label: string }[] = [
+  { value: "instagram", label: "Instagram" },
+  { value: "tiktok", label: "TikTok" },
+  { value: "linkedin", label: "LinkedIn" },
+  { value: "x", label: "X / Twitter" },
+  { value: "facebook", label: "Facebook" },
+  { value: "youtube", label: "YouTube" },
+  { value: "blog", label: "Blog" },
+];
+
+export type BrandColor = { label: string; hex: string };
+
+export interface BrandKit {
+  org_id: string;
+  tagline: string | null;
+  colors: BrandColor[];
+  voice: string | null;
+  audience: string | null;
+  dos: string[];
+  donts: string[];
+  handles: Partial<Record<Platform, string>>;
+  updated_at: string;
+  updated_by: string | null;
+}
+
+export interface PerformanceReport {
+  id: string;
+  org_id: string;
+  period_month: string;
+  platform: Platform;
+  followers: number | null;
+  reach: number | null;
+  engagement_rate: number | null;
+  posts_published: number | null;
+  notes: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
 }
