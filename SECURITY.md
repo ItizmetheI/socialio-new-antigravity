@@ -92,30 +92,59 @@ these from the UI; only the webhook-driven SQL functions may.
 push that touched credentials this session, all unpushed commit diffs were
 grepped for the literal secret strings.
 
+## Hardening added 2026-09-28 (all applied live, all regression-tested)
+
+- **Payment handlers locked** (`schema_security_lock_functions.sql`): the
+  Stripe handler functions were executable by anyone via `/rest/v1/rpc`
+  (Postgres grants EXECUTE to PUBLIC by default) — a visitor could mark
+  their own order paid. Now `service_role` only; default privileges on new
+  functions tightened.
+- **Webhook ordering**: subscription events apply the subscription's
+  current state fetched from Stripe, so out-of-order delivery can't roll a
+  paid subscription back to `incomplete`. First invoice isn't double-counted
+  (`schema_commerce_fix_first_invoice.sql`). Checkout is USD-only.
+- **Deactivation revokes access** (`schema_security_audit.sql`):
+  `is_staff()`, `is_admin()`, `my_org_id()` require `is_active`; the
+  invite and checkout functions refuse deactivated accounts.
+- **Uploads**: 50 MB per file, allow-listed file types (no HTML/JS).
+- **Public forms**: DB-enforced length/format limits
+  (`schema_leads_limits.sql`), per-email and global flood limits, bot
+  honeypot on the contact form.
+- **CORS**: Edge Functions allow only the site's own origins
+  (`supabase/functions/_shared/cors.ts`); Stripe returns customers to the
+  origin they paid from.
+- **Checkout**: max 20 cart items, prices always resolved server-side.
+
+## Regression suites (run against the live project)
+
+```bash
+# SUPABASE_URL, SUPABASE_SERVICE_KEY, SUPABASE_ANON_KEY in the environment
+node scripts/verify_rls.mjs
+node scripts/verify_plans_rls.mjs
+node scripts/verify_onboarding_rls.mjs
+node scripts/verify_leads_and_review.mjs
+node scripts/verify_deliverables_access.mjs
+node scripts/verify_workspace_rls.mjs
+node scripts/verify_ledger_rls.mjs
+node scripts/verify_webhook_idempotency.mjs
+node scripts/verify_function_lockdown.mjs
+node scripts/verify_security_audit.mjs
+node --experimental-strip-types scripts/verify_upload_names.mjs
+# + STRIPE_SECRET_KEY (sk_test_ only): full test-mode purchase
+node scripts/e2e_checkout.mjs start|verify|cleanup
+```
+
+Every suite creates throwaway users/orgs and deletes them, pass or fail.
+
 ## Known gaps — not silently omitted, just not built yet
 
-- **CORS**: Edge Functions currently allow `Access-Control-Allow-Origin: *`
-  (matching the pre-existing `invite-client` convention). Should be
-  tightened to the production origin once one is confirmed — see
-  `public/_headers` for the same "needs a real domain" note on CSP.
-- **Rate limiting**: Supabase Auth has its own built-in limits on
-  sign-in/sign-up/password-reset (project-level, not app-configurable).
-  Cloudflare (the hosting layer) can add rate-limiting rules for
-  `/checkout`, `/app/signup`, `/app/forgot-password` — not configured yet,
-  needs the Cloudflare dashboard.
-- **Audit log**: `stripe_events.payload` is a de facto append-only payment
-  audit trail (locked by zero-grant RLS), but there's no general audit log
-  for plan approvals / admin actions yet — that's Phase 5 scope per
-  `steady-crafting-wren.md`.
-- **Pagination**: no admin list view in this codebase is unbounded yet
-  (Phase 1 added none), but this needs an explicit audit once Phase 5's
-  admin `orders`/`payments` views are built.
-- **File uploads**: the private `deliverables` Storage bucket's RLS
-  (org-scoped path prefix, no public bucket) is the template Phase 2's
-  `onboarding_assets` will reuse — not itself a new surface, but not yet
-  security-tested by the scripts above.
+- **Auth password policy**: server minimum is 6 characters; the site's
+  forms require 8. Raise `password_min_length` to 8 and require letters +
+  digits in Supabase → Authentication → Policies (owner action).
+- **Rate limiting at the edge**: Supabase Auth has built-in limits;
+  Cloudflare rules for `/checkout`, `/app/signup`, `/app/forgot-password`
+  aren't configured yet (Cloudflare dashboard).
+- **Audit log**: `stripe_events.payload` is an append-only payment trail;
+  there's no general audit log for admin actions yet.
 - **No independent security review has been done.** This document
   describes the mechanisms actually in the code, not a compliance claim.
-  Stripe Checkout being hosted (never touching raw card data in this app)
-  reduces PCI scope but doesn't eliminate the value of a real review before
-  onboarding paying clients at scale.

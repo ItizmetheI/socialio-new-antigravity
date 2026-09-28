@@ -11,6 +11,8 @@ import { allowedOrigin, corsHeadersFor } from "../_shared/cors.ts";
 import Stripe from "npm:stripe@17";
 import { servicesData, addOnsData } from "../../../src/data/services.ts";
 
+const MAX_CART_ITEMS = 20;
+
 interface CartLineInput {
   serviceId: string;
   levelLabel: string;
@@ -91,11 +93,14 @@ Deno.serve(async (req: Request) => {
 
   const { data: profile, error: profileError } = await adminClient
     .from("profiles")
-    .select("id, org_id, role, full_name")
+    .select("id, org_id, role, full_name, is_active")
     .eq("id", callerData.user.id)
     .single();
   if (profileError || !profile) {
     return jsonResponse({ error: "Profile not found" }, 404);
+  }
+  if (profile.is_active === false) {
+    return jsonResponse({ error: "This account is deactivated" }, 403);
   }
   if (profile.role !== "client") {
     return jsonResponse({ error: "Only client accounts can check out" }, 403);
@@ -107,8 +112,12 @@ Deno.serve(async (req: Request) => {
   } catch {
     return jsonResponse({ error: "Invalid JSON body" }, 400);
   }
-  if (!body.items || body.items.length === 0) {
+  if (!Array.isArray(body.items) || body.items.length === 0) {
     return jsonResponse({ error: "Cart is empty" }, 400);
+  }
+  // Nobody needs more; stops a single request from building a huge order.
+  if (body.items.length > MAX_CART_ITEMS) {
+    return jsonResponse({ error: `A cart can hold at most ${MAX_CART_ITEMS} items` }, 400);
   }
 
   const resolved: ResolvedLine[] = [];

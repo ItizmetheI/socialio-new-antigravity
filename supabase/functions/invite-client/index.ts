@@ -59,10 +59,11 @@ Deno.serve(async (req: Request) => {
 
   const { data: callerProfile, error: callerProfileError } = await adminClient
     .from("profiles")
-    .select("role")
+    .select("role, is_active")
     .eq("id", callerData.user.id)
     .single();
-  if (callerProfileError || callerProfile?.role !== "admin") {
+  // A deactivated admin can't invite anyone (matches is_admin() in SQL).
+  if (callerProfileError || callerProfile?.role !== "admin" || callerProfile.is_active === false) {
     return jsonResponse({ error: "Admin access required" }, 403);
   }
 
