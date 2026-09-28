@@ -8,7 +8,7 @@ export function safeFileName(fileName: string) {
     .replace(/[^\w.() -]+/g, "-")
     .replace(/-{2,}/g, "-")
     .trim();
-  const name = cleaned.replace(/^-+/, "");
+  const name = cleaned.replace(/^[-\s]+/, "");
   // A name that was all non-Latin ("日本語.txt") is left as just ".txt".
   return !name || name.startsWith(".") ? `file${name}` : name;
 }
