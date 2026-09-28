@@ -15,6 +15,7 @@ export type ClientOutletContext = {
 
 const LEAD_NAV_ITEMS = [
   { to: "/app", label: "Overview", end: true },
+  { to: "/app/account", label: "Account", end: false },
   { to: "/app/requests", label: "Pipeline", end: false },
   { to: "/app/calendar", label: "Calendar", end: false },
   { to: "/app/brand", label: "Brand kit", end: false },

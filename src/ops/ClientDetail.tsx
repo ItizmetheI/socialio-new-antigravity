@@ -8,6 +8,8 @@ import DeliverableList from "../components/DeliverableList";
 import OnboardingAnswersView from "../components/OnboardingAnswersView";
 import StatStrip from "../components/workspace/StatStrip";
 import BrandKitEditor from "../components/workspace/BrandKitEditor";
+import LedgerLines from "../components/workspace/LedgerLines";
+import { computeLedger, loadLedgerData, type LedgerData } from "../components/workspace/LedgerData";
 import ResultsEditor from "./ResultsEditor";
 import { PlanStatusBadge } from "../components/StatusBadge";
 import { formatCents, formatDate, formatDollars } from "../lib/format";
@@ -16,9 +18,7 @@ import type {
   ClientOnboarding,
   Deliverable,
   OnboardingAsset,
-  Order,
   Organization,
-  Payment,
   Plan,
   PlanItem,
   Profile,
@@ -32,14 +32,16 @@ type ClientData = {
   onboarding: ClientOnboarding | null;
   plan: Plan | null;
   planItems: PlanItem[];
-  requests: Request[];
+  ledger: LedgerData; // orders, order lines, payments and requests
   deliverables: Deliverable[];
   assets: OnboardingAsset[];
   members: Profile[];
   staff: Profile[];
-  orders: Order[];
-  payments: Payment[];
 };
+
+type RequestPatch = Partial<Pick<Request, "order_item_id" | "units">>;
+
+const MAX_UNITS = 100;
 
 function Section({ title, action, children }: { title: string; action?: ReactNode; children: ReactNode }) {
   return (
@@ -54,22 +56,20 @@ function Section({ title, action, children }: { title: string; action?: ReactNod
 }
 
 async function loadClient(orgId: string): Promise<ClientData | null> {
-  const [orgRes, onboardingRes, planRes, requestsRes, membersRes, staffRes, ordersRes, paymentsRes] = await Promise.all([
+  const [orgRes, onboardingRes, planRes, membersRes, staffRes, ledger] = await Promise.all([
     supabase.from("organizations").select("*").eq("id", orgId).single(),
     supabase.from("client_onboarding").select("*").eq("org_id", orgId).maybeSingle(),
     supabase.from("plans").select("*").eq("org_id", orgId).neq("status", "superseded").order("created_at", { ascending: false }).limit(1).maybeSingle(),
-    supabase.from("requests").select("*").eq("org_id", orgId).order("created_at", { ascending: false }),
     supabase.from("profiles").select("*").eq("org_id", orgId),
     supabase.from("profiles").select("*").in("role", ["internal", "admin"]),
-    supabase.from("orders").select("*").eq("org_id", orgId).order("created_at", { ascending: false }),
-    supabase.from("payments").select("*").eq("org_id", orgId).order("created_at", { ascending: false }),
+    loadLedgerData(orgId),
   ]);
-  if (orgRes.error || onboardingRes.error || planRes.error || requestsRes.error || membersRes.error || staffRes.error || ordersRes.error || paymentsRes.error) {
+  if (orgRes.error || onboardingRes.error || planRes.error || membersRes.error || staffRes.error || !ledger) {
     return null;
   }
 
   const plan = planRes.data as Plan | null;
-  const requests = (requestsRes.data ?? []) as Request[];
+  const requests = ledger.requests;
   const onboarding = onboardingRes.data as ClientOnboarding | null;
   const [itemsRes, deliverablesRes, assetsRes] = await Promise.all([
     plan ? supabase.from("plan_items").select("*").eq("plan_id", plan.id) : Promise.resolve({ data: [], error: null }),
@@ -87,13 +87,11 @@ async function loadClient(orgId: string): Promise<ClientData | null> {
     onboarding,
     plan,
     planItems: (itemsRes.data ?? []) as PlanItem[],
-    requests,
+    ledger,
     deliverables: (deliverablesRes.data ?? []) as Deliverable[],
     assets: (assetsRes.data ?? []) as OnboardingAsset[],
     members: (membersRes.data ?? []) as Profile[],
     staff: (staffRes.data ?? []) as Profile[],
-    orders: (ordersRes.data ?? []) as Order[],
-    payments: (paymentsRes.data ?? []) as Payment[],
   };
 }
 
@@ -101,6 +99,7 @@ export default function ClientDetail() {
   const { orgId } = useParams<{ orgId: string }>();
   const [state, setState] = useState<LoadState>("loading");
   const [data, setData] = useState<ClientData | null>(null);
+  const [ledgerError, setLedgerError] = useState("");
 
   useEffect(() => {
     if (!orgId) return;
@@ -132,7 +131,22 @@ export default function ClientDetail() {
     );
   }
 
-  const { org, onboarding, plan, planItems, requests, deliverables, assets, members, staff, orders, payments } = data;
+  const { org, onboarding, plan, planItems, ledger, deliverables, assets, members, staff } = data;
+  const { requests, orders, payments } = ledger;
+  const lines = computeLedger(ledger);
+
+  // Staff decide which purchased line a request draws down, and how many units.
+  const saveRequest = async (id: string, patch: RequestPatch) => {
+    setLedgerError("");
+    const { error } = await supabase.from("requests").update(patch).eq("id", id);
+    if (error) {
+      setLedgerError("Couldn't update that request. Try again.");
+      return;
+    }
+    setData((cur) =>
+      cur && { ...cur, ledger: { ...cur.ledger, requests: cur.ledger.requests.map((r) => (r.id === id ? { ...r, ...patch } : r)) } },
+    );
+  };
   const staffName = (id: string | null) => (id ? staff.find((s) => s.id === id)?.full_name ?? "Unknown" : "Unassigned");
   const paidTotal = payments.filter((p) => p.status === "succeeded").reduce((sum, p) => sum + p.amount, 0);
   const openRequests = requests.filter((r) => r.stage !== "delivered").length;
@@ -214,26 +228,65 @@ export default function ClientDetail() {
         </Section>
 
         <div className="lg:col-span-2">
+          <Section title="Ledger">
+            {lines.length === 0 ? <p className="text-sm text-on-surface-variant">No paid orders yet.</p> : <LedgerLines lines={lines} />}
+          </Section>
+        </div>
+
+        <div className="lg:col-span-2">
           <Section title={`Requests (${requests.length})`}>
+            {ledgerError && <p className="text-red-400 text-sm mb-3">{ledgerError}</p>}
             {requests.length === 0 ? (
               <p className="text-sm text-on-surface-variant">No requests yet.</p>
             ) : (
               <div className="flex flex-col divide-y divide-white/5">
                 {requests.map((r) => (
-                  <Link
-                    key={r.id}
-                    to={`/ops/requests/${r.id}`}
-                    className="flex flex-wrap items-center justify-between gap-3 py-3 hover:bg-white/[0.03] -mx-2 px-2 rounded-lg transition-colors"
-                  >
-                    <span className="font-bold text-white text-sm">{r.title}</span>
-                    <span className="flex items-center gap-4 text-xs text-on-surface-variant">
+                  <div key={r.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
+                    <Link to={`/ops/requests/${r.id}`} className="font-bold text-white text-sm hover:underline min-w-0 truncate">
+                      {r.title}
+                    </Link>
+                    <span className="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-on-surface-variant">
                       <span>{staffName(r.assigned_to)}</span>
                       <span>Due {formatDate(r.due_date)}</span>
                       <span className="font-bold uppercase tracking-wide text-primary">
                         {REQUEST_STAGES.find((s) => s.value === r.stage)?.label ?? r.stage}
                       </span>
+                      {lines.length > 0 && (
+                        <select
+                          aria-label={`Order line for ${r.title}`}
+                          value={r.order_item_id ?? ""}
+                          onChange={(e) => saveRequest(r.id, { order_item_id: e.target.value || null })}
+                          className="bg-background border border-white/10 rounded-lg px-2 py-1 text-white max-w-[12rem]"
+                        >
+                          <option value="">No line</option>
+                          {lines.map((l) => (
+                            <option key={l.item.id} value={l.item.id}>
+                              {l.title} · {l.item.tier_label}
+                            </option>
+                          ))}
+                        </select>
+                      )}
+                      <label className="flex items-center gap-1.5">
+                        Units
+                        <input
+                          key={`${r.id}-${r.units}`}
+                          type="number"
+                          min={1}
+                          max={MAX_UNITS}
+                          defaultValue={r.units}
+                          onBlur={(e) => {
+                            const units = Number(e.target.value);
+                            if (!Number.isInteger(units) || units < 1 || units > MAX_UNITS) {
+                              e.target.value = String(r.units);
+                              return;
+                            }
+                            if (units !== r.units) saveRequest(r.id, { units });
+                          }}
+                          className="w-14 bg-background border border-white/10 rounded-lg px-2 py-1 text-white"
+                        />
+                      </label>
                     </span>
-                  </Link>
+                  </div>
                 ))}
               </div>
             )}

@@ -26,6 +26,7 @@ interface ResolvedLine {
   itemType: "service" | "addon";
   billingInterval: "month" | "one_time";
   unitAmount: number; // cents
+  units: number; // pieces of work this line buys (the ledger counts delivered work against it)
 }
 
 // Resolves a client-submitted cart line against the real, server-side catalog.
@@ -44,6 +45,7 @@ function resolveLine(input: CartLineInput): ResolvedLine | null {
       itemType: "service",
       billingInterval: "month",
       unitAmount: Math.round(step.price * 100),
+      units: step.amount,
     };
   }
   const addon = addOnsData.find((a) => a.id === input.serviceId);
@@ -55,6 +57,7 @@ function resolveLine(input: CartLineInput): ResolvedLine | null {
     itemType: "addon",
     billingInterval: "one_time",
     unitAmount: Math.round(addon.price * 100),
+    units: 1,
   };
 }
 
@@ -183,6 +186,7 @@ Deno.serve(async (req: Request) => {
       item_type: line.itemType,
       billing_interval: line.billingInterval,
       unit_amount: line.unitAmount,
+      units: line.units,
       quantity: 1,
     })),
   );

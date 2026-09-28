@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { localDateString } from "../lib/format";
 import { servicesData } from "../data/services";
 import { CONTENT_FORMATS, PLATFORMS } from "../lib/database.types";
 import type { ContentFormat, Platform, Request } from "../lib/database.types";
 import { PLATFORM_COLORS } from "../components/workspace/requestMeta";
+import { computeLedger, loadLedgerData, type LedgerLine } from "../components/workspace/LedgerData";
 
 const TITLE_MAX = 120;
 const DESCRIPTION_MAX = 2000;
@@ -29,7 +30,23 @@ export default function NewRequestForm({ orgId, profileId, onCreated, onCancel }
   const [platforms, setPlatforms] = useState<Platform[]>([]);
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [lines, setLines] = useState<LedgerLine[]>([]);
+  // null = follow the chosen service to its matching purchased line.
+  const [lineChoice, setLineChoice] = useState<string | null>(null);
   const today = localDateString();
+
+  useEffect(() => {
+    let isMounted = true;
+    // Optional field: if the ledger can't load, the form still works without it.
+    loadLedgerData(orgId).then((data) => {
+      if (isMounted && data) setLines(computeLedger(data).filter((l) => l.remaining > 0));
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [orgId]);
+
+  const orderItemId = lineChoice ?? lines.find((l) => l.item.service_id === serviceType)?.item.id ?? "";
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +73,7 @@ export default function NewRequestForm({ orgId, profileId, onCreated, onCancel }
         due_date: dueDate || null,
         format: format || null,
         platforms,
+        order_item_id: orderItemId || null,
       })
       .select()
       .single();
@@ -96,7 +114,10 @@ export default function NewRequestForm({ orgId, profileId, onCreated, onCancel }
       <div className="grid sm:grid-cols-2 gap-5">
         <div>
           <label htmlFor="req-service" className={labelClass}>Service</label>
-          <select id="req-service" value={serviceType} onChange={(e) => setServiceType(e.target.value)} className={inputClass}>
+          <select id="req-service" value={serviceType} onChange={(e) => {
+              setServiceType(e.target.value);
+              setLineChoice(null);
+            }} className={inputClass}>
             {servicesData.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.title}
@@ -109,6 +130,19 @@ export default function NewRequestForm({ orgId, profileId, onCreated, onCancel }
           <input id="req-due" type="date" min={today} value={dueDate} onChange={(e) => setDueDate(e.target.value)} className={inputClass} />
         </div>
       </div>
+      {lines.length > 0 && (
+        <div>
+          <label htmlFor="req-line" className={labelClass}>Counts toward (optional)</label>
+          <select id="req-line" value={orderItemId} onChange={(e) => setLineChoice(e.target.value)} className={inputClass}>
+            <option value="">Nothing specific</option>
+            {lines.map((l) => (
+              <option key={l.item.id} value={l.item.id}>
+                {l.title} · {l.item.tier_label} ({l.remaining} left)
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
       <div className="grid sm:grid-cols-2 gap-5">
         <div>
           <label htmlFor="req-format" className={labelClass}>Format (optional)</label>

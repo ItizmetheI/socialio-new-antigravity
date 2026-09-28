@@ -11,6 +11,10 @@ import type {
   PlanItem,
   PlanFeedback,
   PerformanceReport,
+  Order,
+  OrderItem,
+  Subscription,
+  Payment,
 } from "../database.types";
 
 export const TEST_STAFF_ID = "staff-priya";
@@ -72,6 +76,8 @@ export const mockRequests: Request[] = [
     format: "carousel",
     platforms: ["instagram", "linkedin"],
     publish_at: null,
+    order_item_id: "oi-northwind-posts",
+    units: 3,
     created_at: "2026-09-01T00:00:00Z",
     updated_at: "2026-09-01T00:00:00Z",
   },
@@ -90,6 +96,8 @@ export const mockRequests: Request[] = [
     format: "ugc_video",
     platforms: ["tiktok", "instagram"],
     publish_at: "2026-10-08T16:00:00Z",
+    order_item_id: null,
+    units: 1,
     created_at: "2026-08-20T00:00:00Z",
     updated_at: "2026-09-05T00:00:00Z",
   },
@@ -108,6 +116,8 @@ export const mockRequests: Request[] = [
     format: "reel",
     platforms: ["instagram", "tiktok"],
     publish_at: "2026-10-01T14:30:00Z",
+    order_item_id: null,
+    units: 1,
     created_at: "2026-08-22T00:00:00Z",
     updated_at: "2026-09-12T00:00:00Z",
   },
@@ -126,10 +136,77 @@ export const mockRequests: Request[] = [
     format: "graphic",
     platforms: ["linkedin"],
     publish_at: "2026-09-15T13:00:00Z",
+    order_item_id: "oi-northwind-posts",
+    units: 4,
     created_at: "2026-08-25T00:00:00Z",
     updated_at: "2026-09-09T00:00:00Z",
   },
 ];
+
+// This billing period (Aug 30 – Sep 30) against the order ledger below.
+export const mockLedgerRequests: Request[] = [
+  {
+    id: "req-5",
+    org_id: ORG_NORTHWIND_ID,
+    proposal_item_id: null,
+    plan_item_id: null,
+    title: "Cold brew launch teaser posts",
+    description: "Four teaser graphics counting down to the cold brew drop. Keep the can front and centre.",
+    service_type: "social-media-posts",
+    stage: "delivered",
+    assigned_to: "staff-morgan",
+    created_by: "client-northwind",
+    due_date: "2026-09-12",
+    format: "graphic",
+    platforms: ["instagram"],
+    publish_at: "2026-09-14T15:00:00Z",
+    order_item_id: "oi-northwind-posts",
+    units: 4,
+    created_at: "2026-09-03T00:00:00Z",
+    updated_at: "2026-09-11T00:00:00Z",
+  },
+  {
+    id: "req-6",
+    org_id: ORG_NORTHWIND_ID,
+    proposal_item_id: null,
+    plan_item_id: null,
+    title: "Barista tips carousel",
+    description: "Two carousels with at-home cold brew tips from our head barista.",
+    service_type: "social-media-posts",
+    stage: "in_progress",
+    assigned_to: "staff-morgan",
+    created_by: "client-northwind",
+    due_date: "2026-10-03",
+    format: "carousel",
+    platforms: ["instagram", "linkedin"],
+    publish_at: null,
+    order_item_id: "oi-northwind-posts",
+    units: 2,
+    created_at: "2026-09-18T00:00:00Z",
+    updated_at: "2026-09-20T00:00:00Z",
+  },
+  {
+    id: "req-7",
+    org_id: ORG_NORTHWIND_ID,
+    proposal_item_id: null,
+    plan_item_id: null,
+    title: "Instagram + TikTok profile audit",
+    description: "Audit both profiles before the launch push. Bio, highlights, pinned posts, link in bio.",
+    service_type: "platform-audit",
+    stage: "in_progress",
+    assigned_to: TEST_STAFF_ID,
+    created_by: "client-northwind",
+    due_date: "2026-10-01",
+    format: "other",
+    platforms: ["instagram", "tiktok"],
+    publish_at: null,
+    order_item_id: "oi-northwind-audit",
+    units: 1,
+    created_at: "2026-09-01T00:00:00Z",
+    updated_at: "2026-09-02T00:00:00Z",
+  },
+];
+mockRequests.push(...mockLedgerRequests);
 
 export const mockComments: Comment[] = [
   {
@@ -330,5 +407,89 @@ export const mockPerformanceReports: PerformanceReport[] = [
     created_by: TEST_STAFF_ID,
     created_at: "2026-09-01T00:00:00Z",
     updated_at: "2026-09-01T00:00:00Z",
+  },
+];
+
+// Northwind's checkout: a monthly 10-post line plus a one-time audit add-on.
+export const mockOrders: Order[] = [
+  {
+    id: "order-northwind-1",
+    org_id: ORG_NORTHWIND_ID,
+    created_by: "client-northwind",
+    status: "paid",
+    currency: "usd",
+    amount_subtotal: 17800,
+    amount_total: 17800,
+    stripe_checkout_session_id: null,
+    stripe_customer_id: null,
+    stripe_subscription_id: "sub_northwind",
+    created_at: "2026-07-30T12:00:00Z",
+    paid_at: "2026-07-30T12:00:00Z",
+  },
+];
+
+export const mockOrderItems: OrderItem[] = [
+  {
+    id: "oi-northwind-posts",
+    order_id: "order-northwind-1",
+    service_id: "social-media-posts",
+    tier_label: "10 Posts",
+    item_type: "service",
+    billing_interval: "month",
+    unit_amount: 7900,
+    quantity: 1,
+    units: 10,
+  },
+  {
+    id: "oi-northwind-audit",
+    order_id: "order-northwind-1",
+    service_id: "platform-audit",
+    tier_label: "One-time",
+    item_type: "addon",
+    billing_interval: "one_time",
+    unit_amount: 9900,
+    quantity: 1,
+    units: 1,
+  },
+];
+
+export const mockSubscriptions: Subscription[] = [
+  {
+    id: "subscription-northwind",
+    org_id: ORG_NORTHWIND_ID,
+    order_id: "order-northwind-1",
+    stripe_subscription_id: "sub_northwind",
+    status: "active",
+    current_period_end: "2026-09-30T12:00:00Z",
+    cancel_at_period_end: false,
+    created_at: "2026-07-30T12:00:00Z",
+    updated_at: "2026-08-30T12:00:00Z",
+  },
+];
+
+export const mockPayments: Payment[] = [
+  {
+    id: "payment-northwind-1",
+    org_id: ORG_NORTHWIND_ID,
+    order_id: "order-northwind-1",
+    subscription_id: null,
+    stripe_payment_intent_id: null,
+    stripe_invoice_id: null,
+    status: "succeeded",
+    amount: 17800,
+    currency: "usd",
+    created_at: "2026-07-30T12:00:00Z",
+  },
+  {
+    id: "payment-northwind-2",
+    org_id: ORG_NORTHWIND_ID,
+    order_id: null,
+    subscription_id: "subscription-northwind",
+    stripe_payment_intent_id: null,
+    stripe_invoice_id: null,
+    status: "succeeded",
+    amount: 7900,
+    currency: "usd",
+    created_at: "2026-08-30T12:00:00Z",
   },
 ];

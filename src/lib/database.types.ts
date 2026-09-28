@@ -87,6 +87,8 @@ export interface Request {
   format: ContentFormat | null;
   platforms: Platform[];
   publish_at: string | null;
+  order_item_id: string | null; // schema_ledger.sql: the purchased line this draws down
+  units: number; // pieces of that line this request uses (staff-only)
   created_at: string;
   updated_at: string;
 }
@@ -185,6 +187,7 @@ export interface OrderItem {
   billing_interval: BillingInterval;
   unit_amount: number; // cents
   quantity: number;
+  units: number | null; // schema_ledger.sql: 10 for "10 Posts"; null until checkout writes it
 }
 
 export interface Subscription {

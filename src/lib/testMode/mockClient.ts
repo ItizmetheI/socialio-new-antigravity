@@ -17,6 +17,10 @@ import {
   mockPlanItems,
   mockPlanFeedback,
   mockPerformanceReports,
+  mockOrders,
+  mockOrderItems,
+  mockSubscriptions,
+  mockPayments,
 } from "./fixtures";
 import { getStoredTestIdentityKey, TEST_IDENTITIES } from "./testAuth";
 
@@ -35,18 +39,23 @@ const TABLES: Record<string, Row[]> = {
   plans: mockPlans as unknown as Row[],
   plan_items: mockPlanItems as unknown as Row[],
   plan_feedback: mockPlanFeedback as unknown as Row[],
+  orders: mockOrders as unknown as Row[],
+  order_items: mockOrderItems as unknown as Row[],
+  subscriptions: mockSubscriptions as unknown as Row[],
+  payments: mockPayments as unknown as Row[],
   // Insert-only tables with no fixture backstory needed — an empty table is
   // the realistic starting state, and it lets these forms actually "succeed"
   // in test mode instead of failing on an unregistered table.
-  orders: [],
-  order_items: [],
-  subscriptions: [],
-  payments: [],
   onboarding_assets: [],
   contact_submissions: [],
   newsletter_signups: [],
   brand_kits: [],
   performance_reports: mockPerformanceReports as unknown as Row[],
+};
+
+// Column defaults the real schema fills in on insert.
+const INSERT_DEFAULTS: Record<string, Row> = {
+  requests: { order_item_id: null, units: 1 },
 };
 
 let idCounter = 0;
@@ -157,6 +166,7 @@ class MockQueryBuilder implements PromiseLike<MockResult> {
       const inserted = rows.map((row) => ({
         id: nextId(this.table),
         created_at: new Date().toISOString(),
+        ...INSERT_DEFAULTS[this.table],
         ...row,
       }));
       store.push(...inserted);

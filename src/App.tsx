@@ -39,6 +39,7 @@ const RequestBoard = lazy(() => import('./app/RequestBoard'));
 const RequestDetail = lazy(() => import('./app/RequestDetail'));
 const Settings = lazy(() => import('./app/Settings'));
 const Billing = lazy(() => import('./app/Billing'));
+const AccountPage = lazy(() => import('./app/AccountPage'));
 const OpsLayout = lazy(() => import('./ops/OpsLayout'));
 const OpsBoard = lazy(() => import('./ops/OpsBoard'));
 const OpsOverview = lazy(() => import('./ops/OpsOverview'));
@@ -152,6 +153,7 @@ function DashboardRoutes() {
           <Route path="proposal" element={<ProposalView />} />
           <Route path="requests" element={<RequestBoard />} />
           <Route path="requests/:id" element={<RequestDetail />} />
+          <Route path="account" element={<AccountPage />} />
           <Route path="billing" element={<Billing />} />
           <Route path="calendar" element={<CalendarPage />} />
           <Route path="brand" element={<BrandKitPage />} />
