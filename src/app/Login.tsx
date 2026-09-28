@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../lib/auth/AuthContext";
+import { useCart } from "../context/CartContext";
 import AuthLayout from "../components/AuthLayout";
 
 export default function Login() {
   const { session, profile, isLoading, signIn } = useAuth();
+  const { items } = useCart();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -14,10 +16,15 @@ export default function Login() {
 
   useEffect(() => {
     if (isLoading || !session || !profile) return;
+    // Signed in to finish buying: go straight back to checkout.
+    if (profile.role === "client" && items.length > 0) {
+      navigate("/checkout", { replace: true });
+      return;
+    }
     const home = profile.role === "client" ? "/app" : "/ops";
     const from = (location.state as { from?: { pathname?: string } } | null)?.from?.pathname;
     navigate(from && from.startsWith(home) ? from : home, { replace: true });
-  }, [isLoading, session, profile, location.state, navigate]);
+  }, [isLoading, session, profile, items.length, location.state, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

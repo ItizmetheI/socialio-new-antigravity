@@ -7,13 +7,9 @@
 // src/data/services.ts, the same file the pricing pages render from, so a
 // tampered request body can never buy anything below the real price.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { allowedOrigin, corsHeadersFor } from "../_shared/cors.ts";
 import Stripe from "npm:stripe@17";
 import { servicesData, addOnsData } from "../../../src/data/services.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://socialio.io",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
 
 interface CartLineInput {
   serviceId: string;
@@ -28,13 +24,6 @@ interface ResolvedLine {
   itemType: "service" | "addon";
   billingInterval: "month" | "one_time";
   unitAmount: number; // cents
-}
-
-function jsonResponse(body: unknown, status: number): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
 }
 
 // Resolves a client-submitted cart line against the real, server-side catalog.
@@ -68,6 +57,10 @@ function resolveLine(input: CartLineInput): ResolvedLine | null {
 }
 
 Deno.serve(async (req: Request) => {
+  const corsHeaders = corsHeadersFor(req);
+  const jsonResponse = (body: unknown, status: number): Response =>
+    new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
@@ -200,13 +193,17 @@ Deno.serve(async (req: Request) => {
     quantity: 1,
   }));
 
+  // Send the customer back to the copy of the site they checked out from
+  // (only if it's one of ours), else the configured SITE_URL.
+  const returnBase = allowedOrigin(req) ?? siteUrl;
+
   let session: Stripe.Checkout.Session;
   try {
     session = await stripe.checkout.sessions.create({
       mode,
       line_items,
-      success_url: `${siteUrl}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${siteUrl}/checkout`,
+      success_url: `${returnBase}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${returnBase}/checkout`,
       customer_email: callerData.user.email ?? undefined,
       metadata: { org_id: orgId, order_id: order.id },
     });

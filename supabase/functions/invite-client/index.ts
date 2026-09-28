@@ -12,11 +12,7 @@
 // role/org_id specifically go in app_metadata, not user_metadata — see the
 // comment at the inviteUserByEmail call below.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://socialio.io",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import { corsHeadersFor } from "../_shared/cors.ts";
 
 type InviteRole = "client" | "internal" | "admin";
 
@@ -28,14 +24,11 @@ interface InviteRequestBody {
   orgName?: string;
 }
 
-function jsonResponse(body: unknown, status: number): Response {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { ...corsHeaders, "Content-Type": "application/json" },
-  });
-}
-
 Deno.serve(async (req: Request) => {
+  const corsHeaders = corsHeadersFor(req);
+  const jsonResponse = (body: unknown, status: number): Response =>
+    new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }

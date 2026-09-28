@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { supabase } from "../lib/supabase";
-import { formatDate } from "../lib/format";
+import { formatDate, localDateString } from "../lib/format";
+import { calendarDay, platformLabel } from "../components/workspace/requestMeta";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
@@ -11,6 +12,63 @@ import type { ClientOnboarding, Plan, Proposal, Request } from "../lib/database.
 import type { ClientOutletContext } from "./ClientLayout";
 
 type LoadState = "loading" | "error" | "ready";
+
+// What a client needs at a glance: work waiting on their review, and
+// what's going out next.
+function OverviewPanels({ requests }: { requests: Request[] }) {
+  const toReview = requests.filter((r) => r.stage === "review");
+  const today = localDateString();
+  const upNext = requests
+    .filter((r) => r.stage !== "delivered")
+    .map((r) => ({ request: r, placed: calendarDay(r) }))
+    .filter((x): x is { request: Request; placed: NonNullable<ReturnType<typeof calendarDay>> } => !!x.placed && x.placed.day >= today)
+    .sort((a, b) => a.placed.day.localeCompare(b.placed.day))
+    .slice(0, 4);
+  return (
+    <div className="grid md:grid-cols-2 gap-4 mb-10">
+      <section className={`rounded-3xl p-6 border ${toReview.length ? "border-primary/40 bg-primary/5" : "border-white/10 bg-surface-container"}`}>
+        <h2 className="font-bold text-white mb-4">Waiting on you</h2>
+        {toReview.length === 0 ? (
+          <p className="text-sm text-on-surface-variant">Nothing to review right now.</p>
+        ) : (
+          <ul className="flex flex-col gap-3">
+            {toReview.map((r) => (
+              <li key={r.id} className="flex items-center justify-between gap-3">
+                <span className="text-sm font-bold text-white truncate">{r.title}</span>
+                <Link to={`/app/requests/${r.id}`} className="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-primary text-[#fff] hover:opacity-90">
+                  Review
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+      <section className="rounded-3xl p-6 border border-white/10 bg-surface-container">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="font-bold text-white">Up next</h2>
+          <Link to="/app/calendar" className="text-xs text-primary hover:underline">Calendar &rarr;</Link>
+        </div>
+        {upNext.length === 0 ? (
+          <p className="text-sm text-on-surface-variant">Nothing scheduled yet.</p>
+        ) : (
+          <ul className="flex flex-col gap-3">
+            {upNext.map(({ request: r, placed }) => (
+              <li key={r.id}>
+                <Link to={`/app/requests/${r.id}`} className="block group">
+                  <div className="text-xs text-on-surface-variant">
+                    {formatDate(placed.day)} · {placed.kind === "publish" ? "goes live" : "due"}
+                    {r.platforms.length > 0 && ` · ${r.platforms.map(platformLabel).join(", ")}`}
+                  </div>
+                  <div className="text-sm font-bold text-white group-hover:text-primary transition-colors truncate">{r.title}</div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+    </div>
+  );
+}
 
 export default function DashboardHome() {
   const { orgId } = useOutletContext<ClientOutletContext>();
@@ -174,6 +232,8 @@ export default function DashboardHome() {
               </div>
             ))}
           </div>
+
+          <OverviewPanels requests={requests} />
 
           {requests.length === 0 ? (
             <EmptyState

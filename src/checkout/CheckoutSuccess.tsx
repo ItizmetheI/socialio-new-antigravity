@@ -3,7 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { CheckCircle2 } from "lucide-react";
 import { useCart } from "../context/CartContext";
 import { supabase } from "../lib/supabase";
-import Logo from "../components/Logo";
+import NavBar from "../components/NavBar";
 import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
 import type { OrderStatus } from "../lib/database.types";
@@ -63,11 +63,9 @@ export default function CheckoutSuccess() {
   }, [status, clearCart]);
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-6 py-32 text-center">
-      <div className="w-full max-w-md">
-        <div className="flex justify-center mb-10">
-          <Logo />
-        </div>
+    <div className="min-h-screen bg-background">
+      <NavBar />
+      <div className="w-full max-w-md mx-auto px-5 pt-36 pb-20 text-center">
         <div className="bg-surface-container border border-white/10 rounded-3xl p-8 md:p-10 shadow-xl">
           {status === "pending" && (
             <>

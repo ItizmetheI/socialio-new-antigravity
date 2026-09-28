@@ -30,6 +30,7 @@ export default function CartDrawer() {
               </h2>
               <button 
                 onClick={() => setIsCartOpen(false)}
+                aria-label="Close cart"
                 className="p-2 hover:bg-white/10 rounded-full transition-colors text-on-surface-variant hover:text-white"
               >
                 <X className="w-5 h-5" />
