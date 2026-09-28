@@ -26,11 +26,11 @@ export default function AnalyticsShowcase() {
           className="mb-16 max-w-2xl"
         >
           <h2 className="hero-display text-[clamp(2.5rem,5vw,4rem)] font-bold tracking-tight leading-[1.1] text-white">
-            From fleeting views <br className="hidden md:block" />
-            to <span className="italic text-primary">compounded retention.</span>
+            Stop Guessing. <br className="hidden md:block" />
+            <span className="italic text-primary">Start Scaling.</span>
           </h2>
           <p className="text-lg text-on-surface-variant max-w-lg mt-6 leading-relaxed">
-            Our architecture turns passive scrolling into active, measurable participation loops — and it beats the standard content model by 3.4x.
+            We create content that captures attention, sparks engagement, and keeps your brand visible across every platform; while you focus on growing your business.
           </p>
         </motion.div>
 

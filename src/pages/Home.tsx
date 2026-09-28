@@ -249,7 +249,7 @@ export default function Home() {
           <div className="max-w-xl mb-20 md:mb-28">
             <span className="hero-display italic text-primary text-base block mb-4">The Process</span>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight text-balance leading-[1.05]">
-              We turned the agency model into an assembly line.
+              Premium social media management without the agency overhead.
             </h2>
             <p className="text-on-surface-variant text-lg leading-relaxed">
               No endless email chains. No ambiguous deliverables. Just a structured sprint built around outcomes, not hours billed.
