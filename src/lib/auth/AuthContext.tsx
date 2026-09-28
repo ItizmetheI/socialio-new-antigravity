@@ -131,7 +131,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const { error } = await supabase.auth.signUp({
       email: email.trim(),
       password,
-      options: { data: { full_name: fullName.trim() } },
+      // Confirmation link returns to the site they signed up on (must be in
+      // Supabase Auth's redirect allow-list, else it falls back to Site URL).
+      options: { data: { full_name: fullName.trim() }, emailRedirectTo: `${window.location.origin}/app` },
     });
     return { error: authErrorMessage(error) };
   };
