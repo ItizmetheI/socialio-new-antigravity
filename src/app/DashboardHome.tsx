@@ -2,9 +2,11 @@ import React, { useEffect, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { formatDate, localDateString } from "../lib/format";
-import { calendarDay, platformLabel } from "../components/workspace/requestMeta";
+import { calendarDay } from "../components/workspace/requestMeta";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
+import PageHeader from "../components/workspace/PageHeader";
+import StatStrip from "../components/workspace/StatStrip";
 import ErrorBanner from "../components/ErrorBanner";
 import ProposalStatusBadge, { PlanStatusBadge } from "../components/StatusBadge";
 import { REQUEST_STAGES } from "../lib/database.types";
@@ -25,15 +27,20 @@ function OverviewPanels({ requests }: { requests: Request[] }) {
     .sort((a, b) => a.placed.day.localeCompare(b.placed.day))
     .slice(0, 4);
   return (
-    <div className="grid md:grid-cols-2 gap-4 mb-10">
-      <section className={`rounded-3xl p-6 border ${toReview.length ? "border-primary/40 bg-primary/5" : "border-white/10 bg-surface-container"}`}>
-        <h2 className="font-bold text-white mb-4">Waiting on you</h2>
+    <div className="grid md:grid-cols-2 gap-x-12 gap-y-10 mb-12">
+      <section>
+        <h2 className="flex items-center gap-2 font-bold text-white mb-3">
+          Waiting on you
+          {toReview.length > 0 && (
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-primary text-[#fff]">{toReview.length}</span>
+          )}
+        </h2>
         {toReview.length === 0 ? (
-          <p className="text-sm text-on-surface-variant">Nothing to review right now.</p>
+          <p className="text-sm text-on-surface-variant border-y border-white/10 py-4">Nothing to review right now.</p>
         ) : (
-          <ul className="flex flex-col gap-3">
+          <ul className="divide-y divide-white/10 border-y border-white/10">
             {toReview.map((r) => (
-              <li key={r.id} className="flex items-center justify-between gap-3">
+              <li key={r.id} className="flex items-center justify-between gap-3 py-3.5">
                 <span className="text-sm font-bold text-white truncate">{r.title}</span>
                 <Link to={`/app/requests/${r.id}`} className="shrink-0 text-xs font-bold px-3 py-1.5 rounded-full bg-primary text-[#fff] hover:opacity-90">
                   Review
@@ -43,23 +50,22 @@ function OverviewPanels({ requests }: { requests: Request[] }) {
           </ul>
         )}
       </section>
-      <section className="rounded-3xl p-6 border border-white/10 bg-surface-container">
-        <div className="flex items-center justify-between mb-4">
+      <section>
+        <div className="flex items-center justify-between mb-3">
           <h2 className="font-bold text-white">Up next</h2>
           <Link to="/app/calendar" className="text-xs text-primary hover:underline">Calendar &rarr;</Link>
         </div>
         {upNext.length === 0 ? (
-          <p className="text-sm text-on-surface-variant">Nothing scheduled yet.</p>
+          <p className="text-sm text-on-surface-variant border-y border-white/10 py-4">Nothing scheduled yet.</p>
         ) : (
-          <ul className="flex flex-col gap-3">
+          <ul className="divide-y divide-white/10 border-y border-white/10">
             {upNext.map(({ request: r, placed }) => (
               <li key={r.id}>
-                <Link to={`/app/requests/${r.id}`} className="block group">
-                  <div className="text-xs text-on-surface-variant">
+                <Link to={`/app/requests/${r.id}`} className="flex items-center justify-between gap-4 py-3.5 group">
+                  <span className="text-sm font-bold text-white group-hover:text-primary transition-colors truncate">{r.title}</span>
+                  <span className="text-xs text-on-surface-variant shrink-0">
                     {formatDate(placed.day)} · {placed.kind === "publish" ? "goes live" : "due"}
-                    {r.platforms.length > 0 && ` · ${r.platforms.map(platformLabel).join(", ")}`}
-                  </div>
-                  <div className="text-sm font-bold text-white group-hover:text-primary transition-colors truncate">{r.title}</div>
+                  </span>
                 </Link>
               </li>
             ))}
@@ -71,7 +77,7 @@ function OverviewPanels({ requests }: { requests: Request[] }) {
 }
 
 export default function DashboardHome() {
-  const { orgId } = useOutletContext<ClientOutletContext>();
+  const { orgId, orgName } = useOutletContext<ClientOutletContext>();
   const [state, setState] = useState<LoadState>("loading");
   const [onboarding, setOnboarding] = useState<ClientOnboarding | null>(null);
   const [plan, setPlan] = useState<Plan | null>(null);
@@ -118,7 +124,7 @@ export default function DashboardHome() {
 
   if (state === "loading") {
     return (
-      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -126,7 +132,7 @@ export default function DashboardHome() {
 
   if (state === "error") {
     return (
-      <div className="p-5 md:p-10">
+      <div>
         <ErrorBanner message="Couldn't load your dashboard. Try refreshing." />
       </div>
     );
@@ -145,16 +151,19 @@ export default function DashboardHome() {
   const isApproved = plan?.status === "approved" || (!plan && proposal?.status === "approved");
 
   return (
-    <div className="p-5 md:p-10 max-w-5xl">
-      <h1 className="hero-display font-bold text-3xl text-white mb-8">
-        {needsOnboarding
-          ? "Let's get to know your business."
-          : planPending
-            ? "Your plan is ready."
-            : !plan && proposal?.status === "pending"
-              ? "Your proposal is ready."
-              : "Overview"}
-      </h1>
+    <div>
+      <PageHeader
+        title={
+          needsOnboarding
+            ? "Let's get to know your business."
+            : planPending
+              ? "Your plan is ready."
+              : !plan && proposal?.status === "pending"
+                ? "Your proposal is ready."
+                : orgName || "Overview"
+        }
+        description={isApproved && !needsOnboarding ? "Where everything stands today." : undefined}
+      />
 
       {needsOnboarding && (
         <div className="bg-surface-container border border-white/10 rounded-3xl p-8 mb-10 flex items-center justify-between gap-6 flex-wrap">
@@ -224,14 +233,7 @@ export default function DashboardHome() {
 
       {!needsOnboarding && isApproved && (
         <>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-            {stageCounts.map(({ label, count }) => (
-              <div key={label} className="bg-surface-container border border-white/10 rounded-2xl p-6">
-                <div className="text-3xl font-bold text-white mb-1">{count}</div>
-                <div className="text-xs uppercase tracking-widest text-on-surface-variant font-bold">{label}</div>
-              </div>
-            ))}
-          </div>
+          <StatStrip stats={stageCounts.map(({ label, count }) => ({ label, value: count, isAccent: label === "Review" && count > 0 }))} />
 
           <OverviewPanels requests={requests} />
 
@@ -248,29 +250,28 @@ export default function DashboardHome() {
                   View all &rarr;
                 </Link>
               </div>
-              <div className="flex flex-col gap-3">
+              <ul className="divide-y divide-white/10 border-y border-white/10">
                 {[...requests]
                   .sort((a, b) => b.updated_at.localeCompare(a.updated_at))
                   .slice(0, 5)
                   .map((request) => {
                     const stageLabel = REQUEST_STAGES.find((s) => s.value === request.stage)?.label ?? request.stage;
                     return (
-                      <Link
-                        key={request.id}
-                        to={`/app/requests/${request.id}`}
-                        className="bg-surface-container border border-white/10 hover:border-primary/30 rounded-2xl p-5 flex items-center justify-between gap-4 transition-colors"
-                      >
-                        <div>
-                          <div className="font-bold text-white text-sm mb-1">{request.title}</div>
-                          <div className="text-xs text-on-surface-variant">
+                      <li key={request.id}>
+                        <Link
+                          to={`/app/requests/${request.id}`}
+                          className="flex items-center justify-between gap-4 py-4 group"
+                        >
+                          <span className="font-bold text-white text-sm group-hover:text-primary transition-colors truncate">{request.title}</span>
+                          <span className="text-xs text-on-surface-variant shrink-0">
                             {stageLabel}
                             {request.due_date && ` · Due ${formatDate(request.due_date)}`}
-                          </div>
-                        </div>
-                      </Link>
+                          </span>
+                        </Link>
+                      </li>
                     );
                   })}
-              </div>
+              </ul>
             </div>
           )}
         </>

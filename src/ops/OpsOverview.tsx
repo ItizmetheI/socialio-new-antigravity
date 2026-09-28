@@ -5,6 +5,8 @@ import { supabase } from "../lib/supabase";
 import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
 import { formatCents, formatDate, localDateString } from "../lib/format";
+import PageHeader from "../components/workspace/PageHeader";
+import StatStrip from "../components/workspace/StatStrip";
 import type { ClientOnboarding, ContactSubmission, Organization, Payment, Plan, Request } from "../lib/database.types";
 
 type LoadState = "loading" | "error" | "ready";
@@ -20,40 +22,28 @@ type OverviewData = {
   payments: Payment[];
 };
 
-function Tile({ label, value, to }: { label: string; value: string; to?: string }) {
-  const body = (
-    <>
-      <div className="text-3xl font-bold text-white mb-1">{value}</div>
-      <div className="text-xs uppercase tracking-widest text-on-surface-variant font-bold">{label}</div>
-    </>
-  );
-  const className = "bg-surface-container border border-white/10 rounded-2xl p-6 transition-colors";
-  return to ? (
-    <Link to={to} className={`${className} hover:border-primary/30`}>{body}</Link>
-  ) : (
-    <div className={className}>{body}</div>
-  );
-}
-
 function Panel({ title, count, children }: { title: string; count: number; children: ReactNode }) {
   return (
-    <section className="bg-surface-container border border-white/10 rounded-3xl p-6">
-      <h2 className="font-bold text-white mb-4">
-        {title} <span className="text-on-surface-variant font-medium">({count})</span>
+    <section>
+      <h2 className="flex items-center gap-2 font-bold text-white mb-2">
+        {title}
+        <span className="text-xs font-normal text-on-surface-variant">{count}</span>
       </h2>
-      {count === 0 ? <p className="text-sm text-on-surface-variant">Nothing here — all clear.</p> : children}
+      <ul className="divide-y divide-white/10 border-y border-white/10">{children}</ul>
     </section>
   );
 }
 
 function Row({ to, title, meta }: { to: string; title: string; meta: string }) {
   return (
-    <Link to={to} className="flex flex-col sm:flex-row sm:items-center justify-between gap-0.5 sm:gap-3 py-2.5 -mx-2 px-2 rounded-lg hover:bg-white/[0.03] transition-colors">
-      <span className="text-sm font-bold text-white truncate">{title}</span>
-      <span className="flex items-center gap-1 text-xs text-on-surface-variant sm:shrink-0">
-        {meta} <ArrowUpRight className="w-3.5 h-3.5" />
-      </span>
-    </Link>
+    <li>
+      <Link to={to} className="flex flex-col sm:flex-row sm:items-center justify-between gap-0.5 sm:gap-3 py-3 group">
+        <span className="text-sm font-bold text-white truncate group-hover:text-primary transition-colors">{title}</span>
+        <span className="flex items-center gap-1 text-xs text-on-surface-variant sm:shrink-0">
+          {meta} <ArrowUpRight className="w-3.5 h-3.5" />
+        </span>
+      </Link>
+    </li>
   );
 }
 
@@ -96,7 +86,7 @@ export default function OpsOverview() {
 
   if (state === "loading") {
     return (
-      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -104,7 +94,7 @@ export default function OpsOverview() {
 
   if (state === "error" || !data) {
     return (
-      <div className="p-5 md:p-10">
+      <div>
         <ErrorBanner message="Couldn't load the overview. Try refreshing." />
       </div>
     );
@@ -122,49 +112,73 @@ export default function OpsOverview() {
   const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
   const paidThisMonth = payments.filter((p) => p.created_at >= monthStart).reduce((sum, p) => sum + p.amount, 0);
 
+  const panels = [
+    {
+      title: "Overdue",
+      rows: overdue.map((r) => (
+        <Row key={r.id} to={`/ops/requests/${r.id}`} title={r.title} meta={`${orgName(r.org_id)} · was due ${formatDate(r.due_date)}`} />
+      )),
+    },
+    {
+      title: `Due in the next ${DUE_SOON_DAYS} days`,
+      rows: dueSoon.map((r) => (
+        <Row key={r.id} to={`/ops/requests/${r.id}`} title={r.title} meta={`${orgName(r.org_id)} · ${formatDate(r.due_date)}`} />
+      )),
+    },
+    {
+      title: "Plans with change requests",
+      rows: changesRequested.map((p) => (
+        <Row key={p.id} to={`/ops/admin/plans?org=${p.org_id}`} title={orgName(p.org_id)} meta={`v${p.version} · revise`} />
+      )),
+    },
+    {
+      title: "Onboarding to review",
+      rows: onboardings.map((o) => (
+        <Row key={o.id} to="/ops/onboarding" title={orgName(o.org_id)} meta={`submitted ${formatDate(o.submitted_at)}`} />
+      )),
+    },
+    {
+      title: "Unassigned work",
+      rows: unassigned.map((r) => <Row key={r.id} to={`/ops/requests/${r.id}`} title={r.title} meta={orgName(r.org_id)} />),
+    },
+    {
+      title: "Plans waiting on the client",
+      rows: awaitingClient.map((p) => (
+        <Row key={p.id} to={`/ops/clients/${p.org_id}`} title={orgName(p.org_id)} meta={`sent ${formatDate(p.sent_at)}`} />
+      )),
+    },
+  ];
+  // Only what needs attention gets a panel; the rest is one quiet line.
+  const active = panels.filter((p) => p.rows.length > 0);
+  const clear = panels.filter((p) => p.rows.length === 0).map((p) => p.title.toLowerCase());
+
   return (
-    <div className="p-5 md:p-10 max-w-6xl">
-      <h1 className="hero-display font-bold text-3xl text-white mb-8">Overview</h1>
+    <div>
+      <PageHeader title="Overview" description="Everything that needs someone on the team today." />
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Tile label="Active clients" value={String(orgs.filter((o) => o.status === "active").length)} to="/ops/clients" />
-        <Tile label="Open requests" value={String(requests.length)} to="/ops/board" />
-        <Tile label="New leads" value={String(leads.length)} to="/ops/leads" />
-        <Tile label="Paid this month" value={formatCents(paidThisMonth)} />
-      </div>
+      <StatStrip
+        stats={[
+          { label: "Active clients", value: <Link to="/ops/clients" className="hover:text-primary">{orgs.filter((o) => o.status === "active").length}</Link> },
+          { label: "Open requests", value: <Link to="/ops/board" className="hover:text-primary">{requests.length}</Link> },
+          { label: "New leads", value: <Link to="/ops/leads" className="hover:text-primary">{leads.length}</Link>, isAccent: leads.length > 0 },
+          { label: "Paid this month", value: formatCents(paidThisMonth) },
+        ]}
+      />
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        <Panel title="Overdue" count={overdue.length}>
-          {overdue.map((r) => (
-            <Row key={r.id} to={`/ops/requests/${r.id}`} title={r.title} meta={`${orgName(r.org_id)} · was due ${formatDate(r.due_date)}`} />
+      {active.length > 0 && (
+        <div className="grid lg:grid-cols-2 gap-x-12 gap-y-10 mb-10">
+          {active.map((p) => (
+            <Panel key={p.title} title={p.title} count={p.rows.length}>
+              {p.rows}
+            </Panel>
           ))}
-        </Panel>
-        <Panel title={`Due in the next ${DUE_SOON_DAYS} days`} count={dueSoon.length}>
-          {dueSoon.map((r) => (
-            <Row key={r.id} to={`/ops/requests/${r.id}`} title={r.title} meta={`${orgName(r.org_id)} · ${formatDate(r.due_date)}`} />
-          ))}
-        </Panel>
-        <Panel title="Plans with change requests" count={changesRequested.length}>
-          {changesRequested.map((p) => (
-            <Row key={p.id} to={`/ops/admin/plans?org=${p.org_id}`} title={orgName(p.org_id)} meta={`v${p.version} · revise`} />
-          ))}
-        </Panel>
-        <Panel title="Onboarding to review" count={onboardings.length}>
-          {onboardings.map((o) => (
-            <Row key={o.id} to="/ops/onboarding" title={orgName(o.org_id)} meta={`submitted ${formatDate(o.submitted_at)}`} />
-          ))}
-        </Panel>
-        <Panel title="Unassigned work" count={unassigned.length}>
-          {unassigned.map((r) => (
-            <Row key={r.id} to={`/ops/requests/${r.id}`} title={r.title} meta={orgName(r.org_id)} />
-          ))}
-        </Panel>
-        <Panel title="Plans waiting on the client" count={awaitingClient.length}>
-          {awaitingClient.map((p) => (
-            <Row key={p.id} to={`/ops/clients/${p.org_id}`} title={orgName(p.org_id)} meta={`sent ${formatDate(p.sent_at)}`} />
-          ))}
-        </Panel>
-      </div>
+        </div>
+      )}
+      {clear.length > 0 && (
+        <p className="text-sm text-on-surface-variant">
+          <span className="text-emerald-500 font-bold">All clear:</span> {clear.join(", ")}.
+        </p>
+      )}
     </div>
   );
 }

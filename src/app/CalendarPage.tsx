@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabase";
 import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
 import ContentCalendar from "../components/workspace/ContentCalendar";
+import PageHeader from "../components/workspace/PageHeader";
 import type { Request } from "../lib/database.types";
 import type { ClientOutletContext } from "./ClientLayout";
 
@@ -29,9 +30,8 @@ export default function CalendarPage() {
   }, [orgId]);
 
   return (
-    <div className="p-5 md:p-10">
-      <h1 className="hero-display font-bold text-3xl text-white mb-1">Content calendar</h1>
-      <p className="text-on-surface-variant text-sm mb-8">What&apos;s going out, where, and when. Our team sets the publishing schedule.</p>
+    <div>
+      <PageHeader title="Content calendar" description="What's going out, where, and when. Our team sets the publishing schedule." />
       {hasError ? (
         <ErrorBanner message="Couldn't load your calendar. Try refreshing." />
       ) : requests === null ? (

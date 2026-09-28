@@ -71,8 +71,8 @@ export default function UsersAdmin() {
   };
 
   return (
-    <div className="p-5 md:p-10 max-w-4xl">
-      <h1 className="hero-display font-bold text-3xl text-white mb-8">Team</h1>
+    <div className="max-w-4xl">
+      <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-8">Team</h1>
 
       <div className="bg-surface-container border border-white/10 rounded-3xl p-8 mb-10">
         <h2 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant mb-6">

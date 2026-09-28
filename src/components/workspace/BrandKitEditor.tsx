@@ -171,8 +171,9 @@ export default function BrandKitEditor({ orgId }: { orgId: string }) {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <section className="bg-surface-container border border-white/10 rounded-3xl p-6 md:p-8 grid md:grid-cols-2 gap-6">
+    <div className="flex flex-col">
+      <section className="grid md:grid-cols-2 gap-6 pb-10">
+        <h2 className="md:col-span-2 font-bold text-white -mb-2">Identity</h2>
         <div className="md:col-span-2">
           <label htmlFor="bk-tagline" className={labelClass}>Tagline</label>
           <input id="bk-tagline" value={draft.tagline} maxLength={200} onChange={(e) => update({ tagline: e.target.value })} placeholder="The line you'd put under your logo" className={fieldClass} />
@@ -187,7 +188,7 @@ export default function BrandKitEditor({ orgId }: { orgId: string }) {
         </div>
       </section>
 
-      <section className="bg-surface-container border border-white/10 rounded-3xl p-6 md:p-8">
+      <section className="py-10 border-t border-white/10">
         <h2 className="font-bold text-white mb-1">Colours</h2>
         <p className="text-sm text-on-surface-variant mb-5">Our designers use exactly these in your graphics.</p>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 mb-4">
@@ -211,12 +212,12 @@ export default function BrandKitEditor({ orgId }: { orgId: string }) {
         )}
       </section>
 
-      <section className="bg-surface-container border border-white/10 rounded-3xl p-6 md:p-8 grid md:grid-cols-2 gap-8">
+      <section className="py-10 border-t border-white/10 grid md:grid-cols-2 gap-8">
         <RuleList title="Always do" items={draft.dos} onChange={(dos) => update({ dos })} placeholder="e.g. Show the product in real hands" />
         <RuleList title="Never do" items={draft.donts} onChange={(donts) => update({ donts })} placeholder="e.g. No stock photos of handshakes" />
       </section>
 
-      <section className="bg-surface-container border border-white/10 rounded-3xl p-6 md:p-8">
+      <section className="py-10 border-t border-white/10">
         <h2 className="font-bold text-white mb-5">Social handles</h2>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {HANDLE_PLATFORMS.map((p) => (

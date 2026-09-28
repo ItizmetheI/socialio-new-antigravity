@@ -6,6 +6,7 @@ import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
 import DeliverableList from "../components/DeliverableList";
 import OnboardingAnswersView from "../components/OnboardingAnswersView";
+import StatStrip from "../components/workspace/StatStrip";
 import BrandKitEditor from "../components/workspace/BrandKitEditor";
 import ResultsEditor from "./ResultsEditor";
 import { PlanStatusBadge } from "../components/StatusBadge";
@@ -42,7 +43,7 @@ type ClientData = {
 
 function Section({ title, action, children }: { title: string; action?: ReactNode; children: ReactNode }) {
   return (
-    <section className="bg-surface-container border border-white/10 rounded-3xl p-6 md:p-8">
+    <section className="border-t border-white/10 pt-6">
       <div className="flex items-center justify-between gap-4 mb-5">
         <h2 className="font-bold text-white">{title}</h2>
         {action}
@@ -117,7 +118,7 @@ export default function ClientDetail() {
 
   if (state === "loading") {
     return (
-      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -125,7 +126,7 @@ export default function ClientDetail() {
 
   if (state === "error" || !data) {
     return (
-      <div className="p-5 md:p-10">
+      <div>
         <ErrorBanner message="Couldn't load this client. Try refreshing." />
       </div>
     );
@@ -137,14 +138,14 @@ export default function ClientDetail() {
   const openRequests = requests.filter((r) => r.stage !== "delivered").length;
 
   return (
-    <div className="p-5 md:p-10 max-w-6xl">
+    <div>
       <Link to="/ops/clients" className="inline-flex items-center gap-1.5 text-sm text-on-surface-variant hover:text-white mb-6">
         <ArrowLeft className="w-4 h-4" /> All clients
       </Link>
 
       <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
         <div>
-          <h1 className="hero-display font-bold text-3xl text-white mb-1">{org.name}</h1>
+          <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-1">{org.name}</h1>
           <p className="text-sm text-on-surface-variant">
             Joined {formatDate(org.created_at)} · {members.map((m) => m.full_name ?? "Unnamed").join(", ") || "No team members yet"}
           </p>
@@ -154,21 +155,16 @@ export default function ClientDetail() {
         </span>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        {[
-          ["Open requests", String(openRequests)],
-          ["Delivered", String(requests.length - openRequests)],
-          ["Files", String(deliverables.length)],
-          ["Paid to date", formatCents(paidTotal)],
-        ].map(([label, value]) => (
-          <div key={label} className="bg-surface-container border border-white/10 rounded-2xl p-5">
-            <div className="text-2xl font-bold text-white mb-1">{value}</div>
-            <div className="text-xs uppercase tracking-widest text-on-surface-variant font-bold">{label}</div>
-          </div>
-        ))}
-      </div>
+      <StatStrip
+        stats={[
+          { label: "Open requests", value: openRequests },
+          { label: "Delivered", value: requests.length - openRequests },
+          { label: "Files", value: deliverables.length },
+          { label: "Paid to date", value: formatCents(paidTotal) },
+        ]}
+      />
 
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div className="grid lg:grid-cols-2 gap-x-12 gap-y-12">
         <Section
           title="Plan"
           action={

@@ -77,7 +77,7 @@ export default function LeadsInbox() {
 
   if (state === "loading") {
     return (
-      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -85,7 +85,7 @@ export default function LeadsInbox() {
 
   if (state === "error") {
     return (
-      <div className="p-5 md:p-10">
+      <div>
         <ErrorBanner message="Couldn't load leads. Try refreshing." />
       </div>
     );
@@ -94,8 +94,8 @@ export default function LeadsInbox() {
   const newCount = leads.filter((l) => l.status === "new").length;
 
   return (
-    <div className="p-5 md:p-10 max-w-5xl">
-      <h1 className="hero-display font-bold text-3xl text-white mb-2">Leads</h1>
+    <div>
+      <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-2">Leads</h1>
       <p className="text-on-surface-variant mb-8">
         Everyone who used the contact form or joined the newsletter.
       </p>

@@ -1,6 +1,7 @@
 import { CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { PerformanceReport, Platform } from "../../lib/database.types";
 import { PLATFORM_COLORS, platformLabel } from "./requestMeta";
+import StatStrip from "./StatStrip";
 
 const monthLabel = (period: string) =>
   new Date(`${period}T00:00:00`).toLocaleDateString(undefined, { month: "short", year: "2-digit" });
@@ -65,24 +66,16 @@ export default function ResultsView({ reports }: { reports: PerformanceReport[] 
   ];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-2">
       <div>
-        <div className="text-xs text-on-surface-variant mb-3">
+        <div className="text-xs text-on-surface-variant mb-2">
           Latest report: <span className="text-white font-bold">{latest ? new Date(`${latest}T00:00:00`).toLocaleDateString(undefined, { month: "long", year: "numeric" }) : "—"}</span>
         </div>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-          {tiles.map((t) => (
-            <div key={t.label} className="bg-surface-container border border-white/10 rounded-2xl p-5">
-              <div className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2">{t.label}</div>
-              <div className="text-3xl font-bold text-white mb-1">{t.value}</div>
-              {t.delta}
-            </div>
-          ))}
-        </div>
+        <StatStrip stats={tiles.map((t) => ({ label: t.label, value: t.value, detail: t.delta }))} />
       </div>
 
       {months.length > 1 && (
-        <section className="bg-surface-container border border-white/10 rounded-3xl p-5 md:p-6">
+        <section className="mb-10">
           <h2 className="font-bold text-white mb-1">Followers by platform</h2>
           <p className="text-xs text-on-surface-variant mb-4">End-of-month follower count on each channel we manage.</p>
           <div className="h-72">
@@ -102,11 +95,11 @@ export default function ResultsView({ reports }: { reports: PerformanceReport[] 
         </section>
       )}
 
-      <section className="bg-surface-container border border-white/10 rounded-3xl p-5 md:p-6 overflow-x-auto">
-        <h2 className="font-bold text-white mb-4">Monthly breakdown</h2>
+      <section className="overflow-x-auto">
+        <h2 className="font-bold text-white mb-3">Monthly breakdown</h2>
         <table className="w-full text-sm min-w-[36rem]">
           <thead>
-            <tr className="text-left text-xs uppercase tracking-widest text-on-surface-variant">
+            <tr className="text-left text-xs text-on-surface-variant border-b border-white/10">
               <th className="pb-3 font-bold">Month</th>
               <th className="pb-3 font-bold">Platform</th>
               <th className="pb-3 font-bold text-right">Followers</th>

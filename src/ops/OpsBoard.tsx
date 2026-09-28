@@ -6,6 +6,7 @@ import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
 import RequestCard from "../components/workspace/RequestCard";
 import RequestFilterBar from "../components/workspace/RequestFilterBar";
+import PageHeader from "../components/workspace/PageHeader";
 import { EMPTY_FILTERS, filterRequests } from "../components/workspace/requestMeta";
 import { REQUEST_STAGES } from "../lib/database.types";
 import type { Request, RequestStage, Organization, Profile } from "../lib/database.types";
@@ -26,12 +27,12 @@ function BoardCard({ request, orgName, assigneeName }: { request: Request; orgNa
 function BoardColumn({ stage, label, children, count }: { stage: RequestStage; label: string; children: ReactNode; count: number }) {
   const { setNodeRef, isOver } = useDroppable({ id: stage });
   return (
-    <section ref={setNodeRef} className={`rounded-2xl border p-3 transition-colors ${isOver ? "bg-primary/5 border-primary/30" : "bg-white/[0.02] border-white/5"}`}>
-      <h2 className="flex items-center justify-between text-xs font-bold uppercase tracking-widest text-on-surface-variant px-1 mb-3">
+    <section ref={setNodeRef} className={`rounded-xl transition-colors ${isOver ? "bg-primary/5" : ""}`}>
+      <h2 className="flex items-center justify-between text-sm font-bold text-white pb-2 mb-3 border-b border-white/10">
         {label}
-        <span className="text-white/40">{count}</span>
+        <span className="text-xs font-normal text-on-surface-variant">{count}</span>
       </h2>
-      <div className="flex flex-col gap-3 min-h-[80px]">{children}</div>
+      <div className="flex flex-col gap-2.5 min-h-[80px]">{children}</div>
     </section>
   );
 }
@@ -100,7 +101,7 @@ export default function OpsBoard() {
 
   if (state === "loading") {
     return (
-      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -108,7 +109,7 @@ export default function OpsBoard() {
 
   if (state === "error") {
     return (
-      <div className="p-5 md:p-10">
+      <div>
         <ErrorBanner message="Couldn't load the board. Try refreshing." />
       </div>
     );
@@ -116,7 +117,7 @@ export default function OpsBoard() {
 
   if (requests.length === 0) {
     return (
-      <div className="p-5 md:p-10">
+      <div>
         <EmptyState title="No requests yet" description="Requests appear here once a client approves a proposal." />
       </div>
     );
@@ -126,9 +127,8 @@ export default function OpsBoard() {
   const staffName = (id: string | null) => (id ? staff.find((m) => m.id === id)?.full_name ?? undefined : undefined);
 
   return (
-    <div className="p-5 md:p-10">
-      <h1 className="hero-display font-bold text-3xl text-white mb-1">Board</h1>
-      <p className="text-on-surface-variant text-sm mb-8">Drag a card to move it between stages. Click it to open.</p>
+    <div>
+      <PageHeader title="Board" description="Drag a card to move it between stages. Click it to open." />
       {actionError && (
         <div className="mb-6">
           <ErrorBanner message={actionError} />
@@ -137,7 +137,7 @@ export default function OpsBoard() {
       <RequestFilterBar value={filters} onChange={setFilters} orgs={organizations} />
       <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <div
-          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5"
+          className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-x-5 gap-y-8"
           onClickCapture={(e) => {
             if (justDragged.current) {
               e.preventDefault();

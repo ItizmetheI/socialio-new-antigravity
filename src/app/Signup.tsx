@@ -47,7 +47,7 @@ export default function Signup() {
     return (
       <AuthLayout>
         <div className="bg-surface-container border border-white/10 rounded-3xl p-8 md:p-10 shadow-xl">
-          <h1 className="hero-display font-bold text-3xl tracking-tight text-white mb-3">
+          <h1 className="hero-display font-bold text-2xl md:text-3xl tracking-tight text-white mb-3">
             Check your <span className="italic text-primary">email.</span>
           </h1>
           <p className="text-on-surface-variant">
@@ -63,7 +63,7 @@ export default function Signup() {
   return (
     <AuthLayout>
         <div className="bg-surface-container border border-white/10 rounded-3xl p-8 md:p-10 shadow-xl">
-          <h1 className="hero-display font-bold text-3xl tracking-tight mb-2 text-white">
+          <h1 className="hero-display font-bold text-2xl md:text-3xl tracking-tight mb-2 text-white">
             Create your <span className="italic text-primary">account.</span>
           </h1>
           <p className="text-on-surface-variant mb-8">

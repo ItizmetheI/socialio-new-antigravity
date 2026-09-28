@@ -142,7 +142,7 @@ export default function Onboarding() {
 
   if (state === "loading") {
     return (
-      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -150,7 +150,7 @@ export default function Onboarding() {
 
   if (state === "error") {
     return (
-      <div className="p-5 md:p-10">
+      <div>
         <ErrorBanner message="Couldn't load onboarding. Try refreshing." />
       </div>
     );
@@ -159,9 +159,9 @@ export default function Onboarding() {
   const isLocked = row?.status === "reviewed";
 
   return (
-    <div className="p-5 md:p-10 max-w-2xl">
+    <div className="max-w-2xl">
       <div className="flex items-center justify-between mb-2">
-        <h1 className="hero-display font-bold text-3xl text-white">Tell us about your business</h1>
+        <h1 className="hero-display font-bold text-2xl md:text-3xl text-white">Tell us about your business</h1>
       </div>
       <p className="text-on-surface-variant mb-8">
         {isLocked

@@ -64,8 +64,8 @@ export default function Settings() {
   };
 
   return (
-    <div className="p-5 md:p-10 max-w-xl">
-      <h1 className="hero-display font-bold text-3xl text-white mb-8">Settings</h1>
+    <div className="max-w-xl">
+      <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-8">Settings</h1>
 
       <div className="bg-surface-container border border-white/10 rounded-3xl p-8">
         <div className="mb-6">

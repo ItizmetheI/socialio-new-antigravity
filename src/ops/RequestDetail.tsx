@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
-import { Upload } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
+import { ArrowLeft, Upload } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
@@ -136,7 +136,7 @@ export default function RequestDetail() {
 
   if (state === "loading") {
     return (
-      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -144,17 +144,20 @@ export default function RequestDetail() {
 
   if (state === "error" || !request) {
     return (
-      <div className="p-5 md:p-10">
+      <div>
         <ErrorBanner message="Couldn't load this request." />
       </div>
     );
   }
 
   return (
-    <div className="p-5 md:p-10 max-w-3xl">
+    <div className="max-w-3xl">
+      <Link to="/ops/board" className="inline-flex items-center gap-1.5 text-sm text-on-surface-variant hover:text-white mb-6">
+        <ArrowLeft className="w-4 h-4" /> Board
+      </Link>
       <div className="mb-8">
         <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">{org?.name ?? "—"}</div>
-        <h1 className="hero-display font-bold text-3xl text-white mb-3">{request.title}</h1>
+        <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-3">{request.title}</h1>
         {request.description && <p className="text-on-surface-variant mb-4">{request.description}</p>}
         <select
           aria-label="Stage"

@@ -3,6 +3,7 @@ import { useOutletContext } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth/AuthContext";
 import BrandKitEditor from "../components/workspace/BrandKitEditor";
+import PageHeader from "../components/workspace/PageHeader";
 import BrandAssets from "./BrandAssets";
 import type { ClientOutletContext } from "./ClientLayout";
 
@@ -27,9 +28,8 @@ export default function BrandKitPage() {
   }, [orgId]);
 
   return (
-    <div className="p-5 md:p-10 max-w-5xl">
-      <h1 className="hero-display font-bold text-3xl text-white mb-1">Brand kit</h1>
-      <p className="text-on-surface-variant text-sm mb-8">The rules our team follows for every post, reel and graphic. Keep it current and we stay on-brand.</p>
+    <div className="max-w-4xl">
+      <PageHeader title="Brand kit" description="The rules our team follows for every post, reel and graphic. Keep it current and we stay on-brand." />
       <BrandKitEditor orgId={orgId} />
       {profile && <BrandAssets orgId={orgId} onboardingId={onboardingId} profileId={profile.id} />}
     </div>

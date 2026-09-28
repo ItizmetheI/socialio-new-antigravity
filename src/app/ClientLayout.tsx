@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, Navigate, Outlet } from "react-router-dom";
-import { LayoutDashboard, ClipboardList, FileText, ScrollText, KanbanSquare, CreditCard, CalendarDays, Palette, TrendingUp } from "lucide-react";
 import DashboardShell from "../components/DashboardShell";
 import NavBar from "../components/NavBar";
 import { useAuth } from "../lib/auth/AuthContext";
@@ -15,17 +14,15 @@ export type ClientOutletContext = {
 };
 
 const LEAD_NAV_ITEMS = [
-  { to: "/app", label: "Overview", icon: LayoutDashboard, end: true },
-  { to: "/app/requests", label: "Pipeline", icon: KanbanSquare, end: false },
-  { to: "/app/calendar", label: "Calendar", icon: CalendarDays, end: false },
-  { to: "/app/brand", label: "Brand kit", icon: Palette, end: false },
-  { to: "/app/results", label: "Results", icon: TrendingUp, end: false },
+  { to: "/app", label: "Overview", end: true },
+  { to: "/app/requests", label: "Pipeline", end: false },
+  { to: "/app/calendar", label: "Calendar", end: false },
+  { to: "/app/brand", label: "Brand kit", end: false },
+  { to: "/app/results", label: "Results", end: false },
 ];
 
-const TAIL_NAV_ITEMS = [
-  { to: "/app/onboarding", label: "Onboarding", icon: ClipboardList, end: false },
-  { to: "/app/billing", label: "Billing", icon: CreditCard, end: false },
-];
+const ONBOARDING_ITEM = { to: "/app/onboarding", label: "Onboarding", end: false };
+const BILLING_ITEM = { to: "/app/billing", label: "Billing", end: false };
 
 // Signed up but hasn't bought anything yet: no org to show. Used to bounce
 // to /checkout, which with an empty cart bounced again to the home page.
@@ -60,6 +57,9 @@ function ClientLayoutInner() {
   // never both (see DashboardHome's isApproved logic) — the nav should
   // reflect that instead of always showing both links.
   const [hasPlan, setHasPlan] = useState(false);
+  // The Onboarding tab only matters until the questionnaire is sent; after
+  // that its answers stay reachable from the Brand kit page.
+  const [isOnboarded, setIsOnboarded] = useState(false);
 
   useEffect(() => {
     if (!profile?.org_id) return;
@@ -81,6 +81,15 @@ function ClientLayoutInner() {
       .then(({ data }) => {
         if (isMounted) setHasPlan(!!data);
       });
+    supabase
+      .from("client_onboarding")
+      .select("status")
+      .eq("org_id", profile.org_id)
+      .maybeSingle()
+      .then(({ data }) => {
+        const status = (data as { status: string } | null)?.status;
+        if (isMounted) setIsOnboarded(status === "submitted" || status === "reviewed");
+      });
     return () => {
       isMounted = false;
     };
@@ -89,9 +98,10 @@ function ClientLayoutInner() {
   const navItems = [
     ...LEAD_NAV_ITEMS,
     hasPlan
-      ? { to: "/app/plan", label: "Plan", icon: ScrollText, end: false }
-      : { to: "/app/proposal", label: "Proposal", icon: FileText, end: false },
-    ...TAIL_NAV_ITEMS,
+      ? { to: "/app/plan", label: "Plan", end: false }
+      : { to: "/app/proposal", label: "Proposal", end: false },
+    ...(isOnboarded ? [] : [ONBOARDING_ITEM]),
+    BILLING_ITEM,
   ];
 
   if (!profile?.org_id) {
@@ -101,7 +111,7 @@ function ClientLayoutInner() {
   }
 
   return (
-    <DashboardShell sections={[{ items: navItems }]} workspaceName={org?.name ?? ""} workspaceDetail={profile.full_name ?? undefined}>
+    <DashboardShell sections={[{ items: navItems }]}>
       <Outlet context={{ orgId: profile.org_id, orgName: org?.name ?? "" } satisfies ClientOutletContext} />
     </DashboardShell>
   );

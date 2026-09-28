@@ -42,7 +42,7 @@ export default function Login() {
   return (
     <AuthLayout>
           <div className="bg-surface-container border border-white/10 rounded-3xl p-8 md:p-10 shadow-xl">
-            <h1 className="hero-display font-bold text-3xl tracking-tight mb-2 text-white">
+            <h1 className="hero-display font-bold text-2xl md:text-3xl tracking-tight mb-2 text-white">
               Welcome <span className="italic text-primary">back.</span>
             </h1>
             <p className="text-on-surface-variant mb-8">

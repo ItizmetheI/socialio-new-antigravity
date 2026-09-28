@@ -54,7 +54,7 @@ export default function OnboardingReview() {
 
   if (state === "loading") {
     return (
-      <div className="p-5 md:p-10 flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <Spinner />
       </div>
     );
@@ -62,7 +62,7 @@ export default function OnboardingReview() {
 
   if (state === "error") {
     return (
-      <div className="p-5 md:p-10">
+      <div>
         <ErrorBanner message="Couldn't load onboarding submissions. Try refreshing." />
       </div>
     );
@@ -70,7 +70,7 @@ export default function OnboardingReview() {
 
   if (rows.length === 0) {
     return (
-      <div className="p-5 md:p-10">
+      <div>
         <EmptyState
           title="No submissions yet"
           description="Onboarding responses show up here once a client saves or submits theirs."
@@ -80,8 +80,8 @@ export default function OnboardingReview() {
   }
 
   return (
-    <div className="p-5 md:p-10">
-      <h1 className="hero-display font-bold text-3xl text-white mb-8">Onboarding</h1>
+    <div>
+      <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-8">Onboarding</h1>
       {actionError && (
         <div className="mb-6">
           <ErrorBanner message={actionError} />

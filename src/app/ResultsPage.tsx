@@ -5,6 +5,7 @@ import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultsView from "../components/workspace/ResultsView";
+import PageHeader from "../components/workspace/PageHeader";
 import type { PerformanceReport } from "../lib/database.types";
 import type { ClientOutletContext } from "./ClientLayout";
 
@@ -31,9 +32,8 @@ export default function ResultsPage() {
   }, [orgId]);
 
   return (
-    <div className="p-5 md:p-10">
-      <h1 className="hero-display font-bold text-3xl text-white mb-1">Results</h1>
-      <p className="text-on-surface-variant text-sm mb-8">Real numbers from your accounts, reported by our team each month.</p>
+    <div>
+      <PageHeader title="Results" description="Real numbers from your accounts, reported by our team each month." />
       {hasError ? (
         <ErrorBanner message="Couldn't load your results. Try refreshing." />
       ) : reports === null ? (

@@ -25,14 +25,14 @@ export default function ForgotPassword() {
         <div className="bg-surface-container border border-white/10 rounded-3xl p-8 md:p-10 shadow-xl">
           {submitted ? (
             <>
-              <h1 className="hero-display font-bold text-3xl tracking-tight mb-2 text-white">Check your email.</h1>
+              <h1 className="hero-display font-bold text-2xl md:text-3xl tracking-tight mb-2 text-white">Check your email.</h1>
               <p className="text-on-surface-variant">
                 If an account exists for {email}, we sent a link to reset the password.
               </p>
             </>
           ) : (
             <>
-              <h1 className="hero-display font-bold text-3xl tracking-tight mb-2 text-white">
+              <h1 className="hero-display font-bold text-2xl md:text-3xl tracking-tight mb-2 text-white">
                 Reset your <span className="italic text-primary">password.</span>
               </h1>
               <p className="text-on-surface-variant mb-8">

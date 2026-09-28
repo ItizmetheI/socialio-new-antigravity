@@ -96,44 +96,42 @@ export default function ContentCalendar({ requests, linkFor, orgNameById }: Prop
     });
 
   return (
-    <div className="grid xl:grid-cols-[minmax(0,1fr)_18rem] gap-6">
-      <section className="bg-surface-container border border-white/10 rounded-3xl p-4 md:p-6 min-w-0">
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-5">
-          <div className="flex items-center gap-2">
-            <button onClick={() => shift(-1)} aria-label="Previous month" className="p-2 rounded-lg border border-white/10 hover:bg-white/5 text-white">
+    <div className="grid xl:grid-cols-[minmax(0,1fr)_16rem] gap-10">
+      <section className="min-w-0">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div className="flex items-center gap-1">
+            <button onClick={() => shift(-1)} aria-label="Previous month" className="p-1.5 rounded-lg hover:bg-white/5 text-white">
               <ChevronLeft className="w-4 h-4" />
             </button>
-            <h2 className="font-bold text-white text-lg min-w-[10rem] text-center">{monthName}</h2>
-            <button onClick={() => shift(1)} aria-label="Next month" className="p-2 rounded-lg border border-white/10 hover:bg-white/5 text-white">
+            <h2 className="font-bold text-white min-w-[9.5rem] text-center">{monthName}</h2>
+            <button onClick={() => shift(1)} aria-label="Next month" className="p-1.5 rounded-lg hover:bg-white/5 text-white">
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
-          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter by platform">
-            {[{ value: "" as const, label: "All" }, ...PLATFORMS].map((p) => (
-              <button
-                key={p.value || "all"}
-                onClick={() => setPlatform(p.value)}
-                aria-pressed={platform === p.value}
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-colors ${
-                  platform === p.value ? "bg-white text-background border-white" : "border-white/10 text-on-surface-variant hover:text-white"
-                }`}
-              >
-                {p.value && <span className="w-1.5 h-1.5 rounded-full" style={{ background: PLATFORM_COLORS[p.value] }} />}
+          <select
+            aria-label="Platform"
+            value={platform}
+            onChange={(e) => setPlatform(e.target.value as Platform | "")}
+            className="bg-background border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-primary"
+          >
+            <option value="">All platforms</option>
+            {PLATFORMS.map((p) => (
+              <option key={p.value} value={p.value}>
                 {p.label}
-              </button>
+              </option>
             ))}
-          </div>
+          </select>
         </div>
 
         {/* Month grid from md up */}
-        <div className="hidden md:grid grid-cols-7 border-t border-l border-white/10 rounded-xl overflow-hidden">
+        <div className="hidden md:grid grid-cols-7 border-t border-l border-white/10">
           {WEEKDAYS.map((d) => (
-            <div key={d} className="border-r border-b border-white/10 px-2 py-2 text-[10px] font-bold uppercase tracking-widest text-on-surface-variant">
+            <div key={d} className="border-r border-b border-white/10 px-2 py-2 text-xs text-on-surface-variant">
               {d}
             </div>
           ))}
           {cells.map((day, i) => (
-            <div key={day ?? `pad-${i}`} className={`border-r border-b border-white/10 min-h-[7rem] p-1.5 ${day ? "" : "bg-white/[0.015]"}`}>
+            <div key={day ?? `pad-${i}`} className={`border-r border-b border-white/10 min-h-[6.5rem] p-1.5 ${day ? "" : "bg-white/[0.02]"}`}>
               {day && (
                 <>
                   <div
@@ -172,20 +170,20 @@ export default function ContentCalendar({ requests, linkFor, orgNameById }: Prop
           ))}
         </div>
 
-        <p className="text-xs text-on-surface-variant mt-4">
+        <p className="text-xs text-on-surface-variant mt-3">
           Solid = scheduled to publish. Dashed = due date, not scheduled yet.
         </p>
       </section>
 
-      <aside className="bg-surface-container border border-white/10 rounded-3xl p-5 h-fit">
-        <h2 className="font-bold text-white mb-4">Up next</h2>
+      <aside>
+        <h2 className="font-bold text-white pb-2 mb-1 border-b border-white/10">Up next</h2>
         {upcoming.length === 0 ? (
-          <p className="text-sm text-on-surface-variant">Nothing coming up.</p>
+          <p className="text-sm text-on-surface-variant py-3">Nothing coming up.</p>
         ) : (
-          <ol className="flex flex-col gap-4">
+          <ol className="divide-y divide-white/10">
             {upcoming.map((entry) => (
               <li key={entry.request.id}>
-                <Link to={linkFor(entry.request.id)} className="block group">
+                <Link to={linkFor(entry.request.id)} className="block group py-3">
                   <div className="text-xs text-on-surface-variant mb-0.5">
                     {new Date(`${entry.day}T00:00:00`).toLocaleDateString(undefined, { month: "short", day: "numeric" })} · {timeOf(entry)}
                   </div>

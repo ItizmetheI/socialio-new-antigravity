@@ -67,7 +67,7 @@ export default function BrandAssets({ orgId, onboardingId, profileId }: Props) {
   };
 
   return (
-    <section className="bg-surface-container border border-white/10 rounded-3xl p-8 mt-6">
+    <section className="py-10 border-t border-white/10">
       <h2 className="font-bold text-white mb-1">Brand files</h2>
       <p className="text-sm text-on-surface-variant mb-5">Logos, fonts, product photos, brand guidelines — anything we should work from.</p>
       {onboardingId ? (
