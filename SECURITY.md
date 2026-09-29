@@ -114,6 +114,11 @@ grepped for the literal secret strings.
   (`supabase/functions/_shared/cors.ts`); Stripe returns customers to the
   origin they paid from.
 - **Checkout**: max 20 cart items, prices always resolved server-side.
+- **Admin account directory**: emails and sign-in times live in
+  `auth.users`, which the browser can't read. `admin_user_directory()`
+  (`schema_admin_directory.sql`) returns them only to an active admin — it
+  checks `is_admin()` itself and raises 42501 for staff, clients,
+  deactivated admins and anon (who has no EXECUTE grant at all).
 
 ## Regression suites (run against the live project)
 
@@ -131,6 +136,7 @@ node scripts/verify_function_lockdown.mjs
 node scripts/verify_security_audit.mjs
 node scripts/verify_activity_rls.mjs
 node --experimental-strip-types scripts/verify_upload_names.mjs
+node scripts/verify_admin_directory.mjs
 # + STRIPE_SECRET_KEY (sk_test_ only): full test-mode purchase
 node scripts/e2e_checkout.mjs start|verify|cleanup
 ```

@@ -260,6 +260,26 @@ export const mockSupabaseClient = {
   from(table: string) {
     return new MockQueryBuilder(table);
   },
+  // Only admin_user_directory() is called; like the real function it refuses
+  // anyone who isn't an admin.
+  rpc: async (name: string): Promise<MockResult> => {
+    if (name !== "admin_user_directory") return { data: null, error: { message: `Unmocked rpc "${name}"` } };
+    const key = getStoredTestIdentityKey();
+    if (!key || TEST_IDENTITIES[key].role !== "admin") return { data: null, error: { message: "admin only" } };
+    const data = Object.values(TEST_IDENTITIES).map((who, i) => ({
+      id: who.id,
+      email: who.email,
+      full_name: who.fullName,
+      role: who.role,
+      org_id: who.orgId,
+      is_active: true,
+      created_at: new Date(Date.UTC(2026, 6, 1 + i * 9)).toISOString(),
+      email_confirmed_at: new Date(Date.UTC(2026, 6, 1 + i * 9)).toISOString(),
+      last_sign_in_at: new Date(Date.now() - (i + 1) * 5400000).toISOString(),
+      providers: i === 1 ? ["email", "google"] : ["email"],
+    }));
+    return { data, error: null };
+  },
   storage: {
     from(_bucket: string) {
       return {

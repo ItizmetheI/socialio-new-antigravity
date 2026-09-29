@@ -9,6 +9,7 @@ import ActivityFeed from "../components/workspace/ActivityFeed";
 import { useLiveRefresh } from "../lib/useLiveRefresh";
 import PageHeader from "../components/workspace/PageHeader";
 import StatStrip from "../components/workspace/StatStrip";
+import { mrrCents } from "./admin/everything/loadEverything";
 import type { ClientOnboarding, Comment, ContactSubmission, Order, OrderItem, Organization, Payment, Plan, Profile, Request, Subscription } from "../lib/database.types";
 
 type LoadState = "loading" | "error" | "ready";
@@ -30,7 +31,6 @@ type OverviewData = {
 };
 
 const REPLY_WINDOW_DAYS = 30;
-const LIVE_SUBSCRIPTION = ["active", "trialing", "past_due"];
 
 function Panel({ title, count, children }: { title: string; count: number; children: ReactNode }) {
   return (
@@ -134,11 +134,7 @@ export default function OpsOverview() {
   const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
   const paidThisMonth = payments.filter((p) => p.created_at >= monthStart).reduce((sum, p) => sum + p.amount, 0);
 
-  // Monthly recurring revenue: the monthly lines of every order whose
-  // subscription is still live.
-  const liveSubs = new Set(subscriptions.filter((sub) => LIVE_SUBSCRIPTION.includes(sub.status)).map((sub) => sub.stripe_subscription_id));
-  const liveOrderIds = new Set(orders.filter((o) => o.stripe_subscription_id && liveSubs.has(o.stripe_subscription_id)).map((o) => o.id));
-  const mrr = orderItems.filter((i) => liveOrderIds.has(i.order_id)).reduce((sum, i) => sum + i.unit_amount * i.quantity, 0);
+  const mrr = mrrCents(orders, orderItems, subscriptions);
 
   // A request needs a reply when its latest comment came from the client.
   const roleById = new Map(profiles.map((p) => [p.id, p.role]));

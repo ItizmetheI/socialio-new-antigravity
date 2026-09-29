@@ -52,6 +52,7 @@ const OrgsAdmin = lazy(() => import('./ops/admin/OrgsAdmin'));
 const ProposalBuilder = lazy(() => import('./ops/admin/ProposalBuilder'));
 const PlanBuilder = lazy(() => import('./ops/admin/PlanBuilder'));
 const UsersAdmin = lazy(() => import('./ops/admin/UsersAdmin'));
+const EverythingPage = lazy(() => import('./ops/admin/everything/EverythingPage'));
 const RoleSwitcher = lazy(() => import('./lib/testMode/RoleSwitcher'));
 
 // Home is the landing page and stays in the main bundle; every other
@@ -183,6 +184,14 @@ function DashboardRoutes() {
             element={
               <RequireRole roles={['admin']}>
                 <ProposalBuilder />
+              </RequireRole>
+            }
+          />
+          <Route
+            path="admin/everything"
+            element={
+              <RequireRole roles={['admin']}>
+                <EverythingPage />
               </RequireRole>
             }
           />

@@ -15,6 +15,7 @@ const STAFF_NAV_ITEMS = [
 ];
 
 const ADMIN_NAV_ITEMS = [
+  { to: "/ops/admin/everything", label: "Everything", end: false },
   { to: "/ops/admin/orgs", label: "Organizations", end: false },
   { to: "/ops/admin/proposals", label: "Proposals", end: false },
   { to: "/ops/admin/users", label: "Users", end: false },
