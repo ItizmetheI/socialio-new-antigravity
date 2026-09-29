@@ -120,7 +120,6 @@ export default function Home() {
           
           {/* Left Navigation */}
           <div>
-            <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-6 block">[ Capabilities ]</span>
             <div className="flex flex-col gap-2">
               {servicesData.map((service, idx) => (
                 <button 
@@ -210,21 +209,18 @@ export default function Home() {
             {/* Quick Stats Stack */}
             <div className="flex flex-col gap-12 lg:col-span-1 justify-center">
               <div className="flex flex-col justify-center">
-                 <div className="font-mono text-[10px] uppercase tracking-widest text-primary mb-2 font-bold">[ Evidence 01 ]</div>
                  <div className="text-on-surface-variant text-sm mb-1">Pieces of Content Delivered</div>
                  <div className="text-white hero-display text-5xl md:text-6xl font-bold tracking-tighter">
                    <Counter start={0} end={8415} duration={1500} suffix="+" inView={isInView} />
                  </div>
               </div>
               <div className="flex flex-col justify-center">
-                 <div className="font-mono text-[10px] uppercase tracking-widest text-primary mb-2 font-bold">[ Evidence 02 ]</div>
                  <div className="text-on-surface-variant text-sm mb-1">Active Campaigns</div>
                  <div className="text-white hero-display text-5xl md:text-6xl font-bold tracking-tighter">
                    <Counter start={0} end={86} duration={2000} inView={isInView} />
                  </div>
               </div>
               <div className="flex flex-col justify-center">
-                 <div className="font-mono text-[10px] uppercase tracking-widest text-primary mb-2 font-bold">[ Evidence 03 ]</div>
                  <div className="text-on-surface-variant text-sm mb-1">Client Retention Rate</div>
                  <div className="text-white hero-display text-5xl md:text-6xl font-bold tracking-tighter">
                    <Counter start={0} end={94} duration={2000} suffix="%" inView={isInView} />
@@ -347,9 +343,8 @@ export default function Home() {
           {/* Services & Pricing Block */}
           <div className="py-24 md:py-32 border-t border-white/5 grid-12 w-full items-end mb-16">
             <div className="col-span-12 md:col-span-6 lg:col-span-7 pr-8">
-              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-6 block">Socialio Pricing Structure</span>
               <h2 className="type-level-1 text-white text-balance">
-                Flat-rate services.<br/>No surprises.
+                Unbelievable<br/>pricing plans.
               </h2>
             </div>
             <div className="col-span-12 md:col-span-6 lg:col-span-5 pb-4 mt-8 md:mt-0">
@@ -393,12 +388,9 @@ export default function Home() {
           {/* Minimal Guarantee Block */}
           <div ref={guaranteeRef} className="py-24 md:py-32 border-t border-white/5 grid-12 w-full items-start">
              <div className="col-span-12 md:col-span-6 lg:col-span-5 pr-8">
-               <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-6 block">
-                 Ironclad Guarantee
-               </span>
                <h3 className="type-level-2 text-white mb-6 text-balance">
-                 Love your first batch.<br />
-                 <span className="text-white/50">Or it's free.</span>
+                 Money back<br />
+                 <span className="text-white/50">guaranteed.</span>
                </h3>
                <p className="type-level-3 mb-8 max-w-prose">
                  We are so confident in our creative output that every new engagement comes with a 14-day absolute satisfaction guarantee. No friction, no endless email chains.
@@ -422,7 +414,6 @@ export default function Home() {
                   <div className="absolute bottom-8 left-8 w-8 h-8 border-b-2 border-l-2 border-white/10 rounded-bl-lg"></div>
                   <div className="absolute bottom-8 right-8 w-8 h-8 border-b-2 border-r-2 border-white/10 rounded-br-lg"></div>
                   
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-4 block">[ Contract ]</span>
                   <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/50 mb-2">Sprint Day</span>
                   <span className="text-9xl hero-display font-bold text-white tracking-tighter drop-shadow-2xl">
                     <Counter start={0} end={14} duration={1200} inView={isGuaranteeInView} />
@@ -447,7 +438,6 @@ export default function Home() {
       <section className="section-quiet bg-background border-t border-white/5">
         <div className="grid-12 w-full">
           <div className="col-span-12 lg:col-span-5 mb-16 lg:mb-0 pr-8">
-             <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-primary mb-6 block">[ Information ]</span>
             <h2 className="type-level-2 text-white leading-tight text-balance">Questions<br/>we get a lot.</h2>
           </div>
           <div className="col-span-12 lg:col-span-7 flex flex-col">
@@ -481,7 +471,7 @@ export default function Home() {
           <div>
             <h2 className="hero-display font-bold text-white text-4xl md:text-6xl leading-[1.05] tracking-tight text-balance max-w-xl">
               Your competitors are still posting.<br />
-              <span className="italic text-primary">You could be scrolling them.</span>
+              <span className="italic text-primary">Are you ready to dominate?</span>
             </h2>
             <p className="text-on-surface-variant text-sm font-bold mt-5">Now booking for next month.</p>
           </div>
