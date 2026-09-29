@@ -280,7 +280,6 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6">
           {/* Section Header - Left Aligned */}
           <div className="mb-16 flex flex-col items-start text-left border-b border-white/10 pb-16">
-            <span className="hero-display italic text-primary text-base block mb-4">Evidence Collection</span>
             <h2 className="text-5xl md:text-6xl font-bold text-white mb-8 tracking-tight text-balance">
               High-converting creatives.
             </h2>
