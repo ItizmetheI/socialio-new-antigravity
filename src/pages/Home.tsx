@@ -243,7 +243,6 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-6 w-full relative z-10">
 
           <div className="max-w-xl mb-20 md:mb-28">
-            <span className="hero-display italic text-primary text-base block mb-4">The Process</span>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6 tracking-tight text-balance leading-[1.05]">
               Premium social media management without the agency overhead.
             </h2>
