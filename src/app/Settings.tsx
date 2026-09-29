@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PasswordInput from "../components/PasswordInput";
 import { passwordProblem } from "../lib/auth/password";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "../lib/supabase";
@@ -107,26 +108,22 @@ export default function Settings() {
         <form onSubmit={handlePasswordSave} className="flex flex-col gap-4">
           <div>
             <label htmlFor="settings-new-password" className="field-label">New password</label>
-            <input
+            <PasswordInput
               id="settings-new-password"
-              type="password"
               autoComplete="new-password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               placeholder="••••••••"
-              className="field"
             />
           </div>
           <div>
             <label htmlFor="settings-confirm-password" className="field-label">Confirm password</label>
-            <input
+            <PasswordInput
               id="settings-confirm-password"
-              type="password"
               autoComplete="new-password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="••••••••"
-              className="field"
             />
           </div>
           {passwordError && <ErrorBanner message={passwordError} />}

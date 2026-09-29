@@ -55,14 +55,30 @@ describe("AuthContext", () => {
     expect(outcome?.error).toMatch(/^Couldn't reach the sign-in server/);
   });
 
-  it("passes other auth errors through unchanged", async () => {
-    auth.signInWithPassword.mockResolvedValue({ error: { message: "Invalid login credentials" } });
+  it("explains wrong credentials and unconfirmed emails, and returns the code", async () => {
     const result = await renderAuth();
-    let outcome: { error: string | null } | undefined;
+    let outcome: { error: string | null; code?: string } | undefined;
+    auth.signInWithPassword.mockResolvedValue({ error: { message: "Invalid login credentials", code: "invalid_credentials" } });
     await act(async () => {
       outcome = await result.current.signIn("me@example.com", "wrong");
     });
-    expect(outcome).toEqual({ error: "Invalid login credentials" });
+    expect(outcome).toEqual({ error: "That email and password don't match. Check both, or reset your password.", code: "invalid_credentials" });
+    auth.signInWithPassword.mockResolvedValue({ error: { message: "Email not confirmed", code: "email_not_confirmed" } });
+    await act(async () => {
+      outcome = await result.current.signIn("me@example.com", "pw");
+    });
+    expect(outcome?.code).toBe("email_not_confirmed");
+    expect(outcome?.error).toMatch(/confirm your email/i);
+  });
+
+  it("passes other auth errors through unchanged", async () => {
+    auth.signInWithPassword.mockResolvedValue({ error: { message: "User is banned" } });
+    const result = await renderAuth();
+    let outcome: { error: string | null } | undefined;
+    await act(async () => {
+      outcome = await result.current.signIn("me@example.com", "pw");
+    });
+    expect(outcome?.error).toBe("User is banned");
   });
 
   it("trims the email and full name on sign-up", async () => {

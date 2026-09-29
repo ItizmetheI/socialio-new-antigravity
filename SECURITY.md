@@ -119,6 +119,17 @@ grepped for the literal secret strings.
   (`schema_admin_directory.sql`) returns them only to an active admin — it
   checks `is_admin()` itself and raises 42501 for staff, clients,
   deactivated admins and anon (who has no EXECUTE grant at all).
+- **Content-Security-Policy** (`public/_headers`): scripts only from the
+  site itself (no inline scripts; the theme bootstrap is
+  `public/theme-init.js`), network calls only to our Supabase project, media
+  only from the Streamable CDN and Supabase Storage, images from Unsplash,
+  no framing, no plugins. An injected `<script>` or a script loaded from
+  another domain won't run. Checked against the production build on every
+  page type with zero violations. A new third party must be added there.
+- **Sign-in**: plain-English errors that don't reveal whether an email is
+  registered; a browser-side lockout after every 5th wrong password (30s,
+  doubling, max 5 min). The real brute-force limit is Supabase Auth's
+  per-IP rate limit; the browser lockout is a courtesy brake.
 
 ## Regression suites (run against the live project)
 
@@ -145,9 +156,9 @@ Every suite creates throwaway users/orgs and deletes them, pass or fail.
 
 ## Known gaps — not silently omitted, just not built yet
 
-- **Auth password policy**: DONE 2026-09-29 — server requires 8+ chars with a letter and a digit;
-  forms require 8. Raise `password_min_length` to 8 and require letters +
-  digits in Supabase → Authentication → Policies (owner action).
+- **CAPTCHA on sign-up / sign-in / reset**: not yet — needs a Cloudflare
+  Turnstile site key + secret (add `challenges.cloudflare.com` to the CSP's
+  `script-src` and `frame-src` when it lands).
 - **Rate limiting at the edge**: Supabase Auth has built-in limits;
   Cloudflare rules for `/checkout`, `/app/signup`, `/app/forgot-password`
   aren't configured yet (Cloudflare dashboard).

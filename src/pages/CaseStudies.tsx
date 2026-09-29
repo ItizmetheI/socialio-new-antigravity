@@ -13,7 +13,7 @@ const caseStudies = [
       tag: "Short-Form Video & Meta",
       industry: "E-Commerce Apparel",
       logo: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=100&h=100&fit=crop",
-      image: "https://images.unsplash.com/photo-1558769132-cb1fac0840c2?w=800&h=500&fit=crop",
+      image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=500&fit=crop",
       headline: "Scaling past 3.2x ROAS in 60 days",
       metrics: [
         { label: "CPA Reduction", value: "69%", detail: "From $42 to $13" },

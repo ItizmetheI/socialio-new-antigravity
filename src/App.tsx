@@ -20,6 +20,7 @@ import { TEST_MODE } from './lib/testMode/flag';
 // Dashboard, ops, auth, and checkout screens are only reached by signed-in
 // clients/staff — split them out so marketing visitors don't download the
 // whole client portal and ops tooling (dnd-kit, builders, etc.) up front.
+const AuthShell = lazy(() => import('./components/AuthLayout').then((m) => ({ default: m.AuthShell })));
 const Login = lazy(() => import('./app/Login'));
 const Signup = lazy(() => import('./app/Signup'));
 const ForgotPassword = lazy(() => import('./app/ForgotPassword'));
@@ -140,9 +141,11 @@ function DashboardRoutes() {
       <ScrollToTop />
       {TEST_MODE && <RoleSwitcher />}
       <Routes>
-        <Route path="/app/login" element={<Login />} />
-        <Route path="/app/signup" element={<Signup />} />
-        <Route path="/app/forgot-password" element={<ForgotPassword />} />
+        <Route element={<AuthShell />}>
+          <Route path="/app/login" element={<Login />} />
+          <Route path="/app/signup" element={<Signup />} />
+          <Route path="/app/forgot-password" element={<ForgotPassword />} />
+        </Route>
         <Route path="/app/reset-password" element={<SetPassword />} />
         <Route path="/set-password" element={<SetPassword />} />
         <Route path="/checkout" element={<Checkout />} />

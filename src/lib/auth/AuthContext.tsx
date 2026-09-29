@@ -27,7 +27,7 @@ interface AuthContextType {
   session: Session | null;
   profile: Profile | null;
   isLoading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signIn: (email: string, password: string) => Promise<{ error: string | null; code?: string }>;
   signUp: (email: string, password: string, fullName: string) => Promise<{ error: string | null; alreadyRegistered?: boolean }>;
   resendConfirmation: (email: string) => Promise<{ error: string | null }>;
   resetPasswordForEmail: (email: string) => Promise<{ error: string | null }>;
@@ -45,6 +45,16 @@ function authErrorMessage(error: { message: string; code?: string } | null): str
   }
   if (/weak_password|password should/i.test(`${(error as { code?: string }).code ?? ""} ${error.message}`)) {
     return "Use at least 8 characters, with at least one letter and one number.";
+  }
+  const code = (error as { code?: string }).code;
+  if (code === "invalid_credentials" || /invalid login credentials/i.test(error.message)) {
+    return "That email and password don't match. Check both, or reset your password.";
+  }
+  if (code === "email_not_confirmed" || /email not confirmed/i.test(error.message)) {
+    return "Confirm your email first: open the link we sent when you signed up.";
+  }
+  if (code === "over_request_rate_limit" || code === "over_email_send_rate_limit" || /rate limit|too many requests/i.test(error.message)) {
+    return "Too many attempts from this network. Wait a few minutes and try again.";
   }
   if (/failed to fetch|networkerror|load failed|network request failed/i.test(error.message)) {
     return "Couldn't reach the sign-in server. Check your connection, turn off any ad or tracker blocker for this site, and try again.";
@@ -67,12 +77,20 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
 
     let isMounted = true;
+    // Whose profile is loaded (or loading). A token refresh for the same user
+    // doesn't refetch; a new user holds isLoading until their profile lands,
+    // so pages never see "signed in but no profile yet" and flash the form.
+    let profileUserId: string | null = null;
 
     const loadProfile = async (userId: string) => {
+      if (userId === profileUserId) return;
+      profileUserId = userId;
+      setIsLoading(true);
       const { data, error } = await supabase.from("profiles").select("*").eq("id", userId).single();
-      if (!isMounted) return;
+      if (!isMounted || profileUserId !== userId) return;
       if (error) {
         console.warn("Failed to load profile:", error.message);
+        profileUserId = null; // let the next auth event retry
         setProfile(null);
       } else {
         setProfile(data as Profile);
@@ -99,6 +117,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (newSession) {
         loadProfile(newSession.user.id);
       } else {
+        profileUserId = null;
         setProfile(null);
         setIsLoading(false);
       }
@@ -121,7 +140,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       return { error: null };
     }
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-    return { error: authErrorMessage(error) };
+    return { error: authErrorMessage(error), code: error?.code };
   };
 
   const signUp = async (email: string, password: string, fullName: string) => {

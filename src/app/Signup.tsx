@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
+import PasswordInput from "../components/PasswordInput";
 import { Link, useNavigate } from "react-router-dom";
 import AuthLayout from "../components/AuthLayout";
 import GoogleButton from "../components/GoogleButton";
+import Spinner from "../components/Spinner";
 import { useAuth } from "../lib/auth/AuthContext";
 import { useCart } from "../context/CartContext";
 import { PASSWORD_RULE, passwordProblem } from "../lib/auth/password";
@@ -65,6 +67,18 @@ export default function Signup() {
       message: resendError ? resendError : "Sent again. It can take a minute to arrive.",
     });
   };
+
+  // Already signed in — the redirect effect is about to fire.
+  if (isLoading || (session && profile)) {
+    return (
+      <AuthLayout>
+        <div className="flex flex-col items-center gap-4 py-16 text-on-surface-variant" role="status">
+          <Spinner />
+          <p className="text-sm">{session ? "Signing you in…" : "Loading…"}</p>
+        </div>
+      </AuthLayout>
+    );
+  }
 
   if (alreadyRegistered) {
     return (
@@ -142,6 +156,9 @@ export default function Signup() {
               <input id="signup-email"
                 type="email"
                 autoComplete="email"
+                inputMode="email"
+                autoCapitalize="none"
+                spellCheck={false}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@company.com"
@@ -150,14 +167,12 @@ export default function Signup() {
             </div>
             <div>
               <label htmlFor="signup-password" className="field-label">Password</label>
-              <input id="signup-password"
-                type="password"
+              <PasswordInput id="signup-password"
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 aria-describedby="signup-password-hint"
-                className="field"
               />
               <p id="signup-password-hint" className="text-xs text-on-surface-variant mt-1.5">{PASSWORD_RULE}</p>
             </div>
@@ -169,7 +184,7 @@ export default function Signup() {
               disabled={isSubmitting}
               className="btn-primary w-full py-3.5 mt-1"
             >
-              {isSubmitting ? "Creating account..." : "Create account"}
+              {isSubmitting ? "Creating account…" : "Create account"}
             </button>
           </form>
         </div>

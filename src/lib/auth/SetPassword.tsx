@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PasswordInput from "../../components/PasswordInput";
 import { passwordProblem } from "./password";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
@@ -79,26 +80,22 @@ export default function SetPassword() {
               <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
                 New password
               </label>
-              <input
-                type="password"
+              <PasswordInput
                 autoComplete="new-password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
               />
             </div>
             <div>
               <label className="block font-mono text-[10px] uppercase tracking-widest text-on-surface-variant mb-2 font-bold">
                 Confirm password
               </label>
-              <input
-                type="password"
+              <PasswordInput
                 autoComplete="new-password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"
-                className="bg-background border border-white/10 rounded-xl px-4 py-3 text-white w-full focus:outline-none focus:border-primary transition-colors"
               />
             </div>
 
