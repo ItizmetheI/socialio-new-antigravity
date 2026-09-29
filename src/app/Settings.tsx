@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { passwordProblem } from "../lib/auth/password";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth/AuthContext";
@@ -6,7 +7,6 @@ import ErrorBanner from "../components/ErrorBanner";
 import PageHeader from "../components/workspace/PageHeader";
 import type { ClientOutletContext } from "./ClientLayout";
 
-const MIN_PASSWORD_LENGTH = 8;
 
 export default function Settings() {
   const { profile, session } = useAuth();
@@ -43,8 +43,9 @@ export default function Settings() {
   const handlePasswordSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setPasswordSaved(false);
-    if (newPassword.length < MIN_PASSWORD_LENGTH) {
-      setPasswordError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters.`);
+    const problem = passwordProblem(newPassword);
+    if (problem) {
+      setPasswordError(problem);
       return;
     }
     if (newPassword !== confirmPassword) {

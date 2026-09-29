@@ -139,7 +139,7 @@ Every suite creates throwaway users/orgs and deletes them, pass or fail.
 
 ## Known gaps — not silently omitted, just not built yet
 
-- **Auth password policy**: server minimum is 6 characters; the site's
+- **Auth password policy**: DONE 2026-09-29 — server requires 8+ chars with a letter and a digit;
   forms require 8. Raise `password_min_length` to 8 and require letters +
   digits in Supabase → Authentication → Policies (owner action).
 - **Rate limiting at the edge**: Supabase Auth has built-in limits;

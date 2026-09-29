@@ -8,6 +8,7 @@ const { auth } = vi.hoisted(() => ({
     onAuthStateChange: vi.fn(),
     signInWithPassword: vi.fn(),
     signUp: vi.fn(),
+    resend: vi.fn(),
     resetPasswordForEmail: vi.fn(),
     signOut: vi.fn(),
   },
@@ -65,7 +66,7 @@ describe("AuthContext", () => {
   });
 
   it("trims the email and full name on sign-up", async () => {
-    auth.signUp.mockResolvedValue({ error: null });
+    auth.signUp.mockResolvedValue({ data: { user: { identities: [{ id: "i1" }] } }, error: null });
     const result = await renderAuth();
     await act(async () => {
       await result.current.signUp(" new@example.com ", "pw", "  Ada Lovelace ");
@@ -73,6 +74,39 @@ describe("AuthContext", () => {
     expect(auth.signUp).toHaveBeenCalledWith(
       expect.objectContaining({ email: "new@example.com", options: expect.objectContaining({ data: { full_name: "Ada Lovelace" } }) }),
     );
+  });
+
+  it("flags an email that already has an account (no identities, no email sent)", async () => {
+    auth.signUp.mockResolvedValue({ data: { user: { id: "u1", identities: [] } }, error: null });
+    const result = await renderAuth();
+    let outcome: { error: string | null; alreadyRegistered?: boolean } | undefined;
+    await act(async () => {
+      outcome = await result.current.signUp("taken@example.com", "abcd1234", "Ada");
+    });
+    expect(outcome).toEqual({ error: null, alreadyRegistered: true });
+  });
+
+  it("treats a genuinely new sign-up as not already registered", async () => {
+    auth.signUp.mockResolvedValue({ data: { user: { id: "u2", identities: [{ id: "i2" }] } }, error: null });
+    const result = await renderAuth();
+    let outcome: { error: string | null; alreadyRegistered?: boolean } | undefined;
+    await act(async () => {
+      outcome = await result.current.signUp("fresh@example.com", "abcd1234", "Ada");
+    });
+    expect(outcome).toEqual({ error: null, alreadyRegistered: false });
+  });
+
+  it("turns the server's weak-password message into a readable one", async () => {
+    auth.signUp.mockResolvedValue({
+      data: { user: null },
+      error: { code: "weak_password", message: "Password should contain at least one character of each: abcdefghijklmnopqrstuvwxyz..." },
+    });
+    const result = await renderAuth();
+    let outcome: { error: string | null } | undefined;
+    await act(async () => {
+      outcome = await result.current.signUp("a@example.com", "abcdefghij", "Ada");
+    });
+    expect(outcome?.error).toBe("Use at least 8 characters, with at least one letter and one number.");
   });
 
   it("throws when used outside the provider", () => {

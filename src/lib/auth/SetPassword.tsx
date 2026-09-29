@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { passwordProblem } from "./password";
 import { useNavigate } from "react-router-dom";
 import { motion } from "motion/react";
 import Logo from "../../components/Logo";
@@ -6,7 +7,6 @@ import { supabase } from "../supabase";
 import { useAuth } from "./AuthContext";
 import { FullScreenSpinner } from "../../components/Spinner";
 
-const MIN_PASSWORD_LENGTH = 8;
 
 export default function SetPassword() {
   const { session, profile, isLoading } = useAuth();
@@ -18,8 +18,9 @@ export default function SetPassword() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password.length < MIN_PASSWORD_LENGTH) {
-      setError(`Password must be at least ${MIN_PASSWORD_LENGTH} characters.`);
+    const problem = passwordProblem(password);
+    if (problem) {
+      setError(problem);
       return;
     }
     if (password !== confirmPassword) {

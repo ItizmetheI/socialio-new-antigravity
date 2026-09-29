@@ -28,7 +28,8 @@ interface AuthContextType {
   profile: Profile | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
-  signUp: (email: string, password: string, fullName: string) => Promise<{ error: string | null }>;
+  signUp: (email: string, password: string, fullName: string) => Promise<{ error: string | null; alreadyRegistered?: boolean }>;
+  resendConfirmation: (email: string) => Promise<{ error: string | null }>;
   resetPasswordForEmail: (email: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
 }
@@ -37,10 +38,13 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // supabase-js reports an unreachable server as a bare "Failed to fetch",
 // which tells a person nothing. Say what's actually wrong.
-function authErrorMessage(error: { message: string } | null): string | null {
+function authErrorMessage(error: { message: string; code?: string } | null): string | null {
   if (!error) return null;
   if (!isSupabaseConfigured) {
     return "Sign-in isn't set up on this copy of the site yet (its Supabase settings are missing).";
+  }
+  if (/weak_password|password should/i.test(`${(error as { code?: string }).code ?? ""} ${error.message}`)) {
+    return "Use at least 8 characters, with at least one letter and one number.";
   }
   if (/failed to fetch|networkerror|load failed|network request failed/i.test(error.message)) {
     return "Couldn't reach the sign-in server. Check your connection, turn off any ad or tracker blocker for this site, and try again.";
@@ -128,12 +132,29 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     // handle_new_user() (schema.sql) defaults role to 'client' and org_id to
     // null when app_metadata has neither, which is exactly the state a
     // self-serve signup should land in until checkout links them to an org.
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: email.trim(),
       password,
       // Confirmation link returns to the site they signed up on (must be in
       // Supabase Auth's redirect allow-list, else it falls back to Site URL).
       options: { data: { full_name: fullName.trim() }, emailRedirectTo: `${window.location.origin}/app` },
+    });
+    if (error) return { error: authErrorMessage(error), alreadyRegistered: false };
+    // With email confirmation on, Supabase answers a sign-up for an email
+    // that already has a confirmed account with a "success" that has no
+    // identities and sends no email (so it can't be used to probe who's
+    // registered). Tell the person, instead of leaving them waiting.
+    const alreadyRegistered = !!data.user && (data.user.identities?.length ?? 0) === 0;
+    return { error: null, alreadyRegistered };
+  };
+
+  // Sends the sign-up confirmation email again (Supabase rate-limits this).
+  const resendConfirmation = async (email: string) => {
+    if (TEST_MODE) return { error: null };
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email: email.trim(),
+      options: { emailRedirectTo: `${window.location.origin}/app` },
     });
     return { error: authErrorMessage(error) };
   };
@@ -159,7 +180,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   return (
-    <AuthContext.Provider value={{ session, profile, isLoading, signIn, signUp, resetPasswordForEmail, signOut }}>
+    <AuthContext.Provider value={{ session, profile, isLoading, signIn, signUp, resendConfirmation, resetPasswordForEmail, signOut }}>
       {children}
     </AuthContext.Provider>
   );
