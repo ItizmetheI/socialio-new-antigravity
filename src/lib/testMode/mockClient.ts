@@ -67,7 +67,7 @@ function nextId(prefix: string): string {
   return `${prefix}-${idCounter}`;
 }
 
-type Filter = { col: string; op: "eq" | "neq" | "in"; val: unknown };
+type Filter = { col: string; op: "eq" | "neq" | "in" | "gte" | "lte"; val: unknown };
 
 class MockQueryBuilder implements PromiseLike<MockResult> {
   private readonly table: string;
@@ -101,6 +101,16 @@ class MockQueryBuilder implements PromiseLike<MockResult> {
 
   in(col: string, vals: unknown[]) {
     this.filters.push({ col, op: "in", val: vals });
+    return this;
+  }
+
+  gte(col: string, val: unknown) {
+    this.filters.push({ col, op: "gte", val });
+    return this;
+  }
+
+  lte(col: string, val: unknown) {
+    this.filters.push({ col, op: "lte", val });
     return this;
   }
 
@@ -154,6 +164,8 @@ class MockQueryBuilder implements PromiseLike<MockResult> {
       if (op === "eq") return row[col] === val;
       if (op === "neq") return row[col] !== val;
       if (op === "in") return (val as unknown[]).includes(row[col]);
+      if (op === "gte") return (row[col] as string | number) >= (val as string | number);
+      if (op === "lte") return (row[col] as string | number) <= (val as string | number);
       return true;
     });
   }

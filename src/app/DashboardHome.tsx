@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useOutletContext } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { formatDate, localDateString } from "../lib/format";
@@ -7,6 +7,8 @@ import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import PageHeader from "../components/workspace/PageHeader";
 import StatStrip from "../components/workspace/StatStrip";
+import ActivityFeed from "../components/workspace/ActivityFeed";
+import { useLiveRefresh } from "../lib/useLiveRefresh";
 import ErrorBanner from "../components/ErrorBanner";
 import ProposalStatusBadge, { PlanStatusBadge } from "../components/StatusBadge";
 import { REQUEST_STAGES } from "../lib/database.types";
@@ -84,31 +86,18 @@ export default function DashboardHome() {
   const [proposal, setProposal] = useState<Proposal | null>(null);
   const [requests, setRequests] = useState<Request[]>([]);
 
-  useEffect(() => {
-    let isMounted = true;
-    setState("loading");
-    Promise.all([
-      supabase.from("client_onboarding").select("*").eq("org_id", orgId).maybeSingle(),
-      supabase
-        .from("plans")
-        .select("*")
-        .eq("org_id", orgId)
-        .neq("status", "superseded")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle(),
-      supabase
-        .from("proposals")
-        .select("*")
-        .eq("org_id", orgId)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle(),
-      supabase.from("requests").select("*").eq("org_id", orgId),
-    ]).then(([onboardingRes, planRes, proposalRes, requestsRes]) => {
-      if (!isMounted) return;
+  // isRefresh: a live update reloads quietly instead of flashing a spinner.
+  const load = useCallback(
+    async (isRefresh = false) => {
+      if (!isRefresh) setState("loading");
+      const [onboardingRes, planRes, proposalRes, requestsRes] = await Promise.all([
+        supabase.from("client_onboarding").select("*").eq("org_id", orgId).maybeSingle(),
+        supabase.from("plans").select("*").eq("org_id", orgId).neq("status", "superseded").order("created_at", { ascending: false }).limit(1).maybeSingle(),
+        supabase.from("proposals").select("*").eq("org_id", orgId).order("created_at", { ascending: false }).limit(1).maybeSingle(),
+        supabase.from("requests").select("*").eq("org_id", orgId),
+      ]);
       if (onboardingRes.error || planRes.error || proposalRes.error || requestsRes.error) {
-        setState("error");
+        if (!isRefresh) setState("error");
         return;
       }
       setOnboarding(onboardingRes.data as ClientOnboarding | null);
@@ -116,11 +105,15 @@ export default function DashboardHome() {
       setProposal(proposalRes.data as Proposal | null);
       setRequests((requestsRes.data ?? []) as Request[]);
       setState("ready");
-    });
-    return () => {
-      isMounted = false;
-    };
-  }, [orgId]);
+    },
+    [orgId],
+  );
+
+  useEffect(() => {
+    load();
+  }, [load]);
+  // Staff move work or deliver a file → this page updates on its own.
+  useLiveRefresh(["requests", "activity_events"], () => load(true), `org_id=eq.${orgId}`);
 
   if (state === "loading") {
     return (
@@ -237,43 +230,15 @@ export default function DashboardHome() {
 
           <OverviewPanels requests={requests} />
 
-          {requests.length === 0 ? (
-            <EmptyState
-              title="No requests yet"
-              description="Once work kicks off, requests will show up here."
-            />
-          ) : (
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-bold text-white">Recent activity</h2>
-                <Link to="/app/requests" className="text-xs text-primary hover:underline">
-                  View all &rarr;
-                </Link>
-              </div>
-              <ul className="divide-y divide-white/10 border-y border-white/10">
-                {[...requests]
-                  .sort((a, b) => b.updated_at.localeCompare(a.updated_at))
-                  .slice(0, 5)
-                  .map((request) => {
-                    const stageLabel = REQUEST_STAGES.find((s) => s.value === request.stage)?.label ?? request.stage;
-                    return (
-                      <li key={request.id}>
-                        <Link
-                          to={`/app/requests/${request.id}`}
-                          className="flex flex-col sm:flex-row sm:items-center justify-between gap-x-4 gap-y-1 py-4 group"
-                        >
-                          <span className="font-bold text-white text-sm group-hover:text-primary transition-colors truncate min-w-0">{request.title}</span>
-                          <span className="text-xs text-on-surface-variant shrink-0">
-                            {stageLabel}
-                            {request.due_date && ` · Due ${formatDate(request.due_date)}`}
-                          </span>
-                        </Link>
-                      </li>
-                    );
-                  })}
-              </ul>
+          <section>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-bold text-white">Recent activity</h2>
+              <Link to="/app/requests" className="text-xs text-primary hover:underline">
+                Pipeline &rarr;
+              </Link>
             </div>
-          )}
+            <ActivityFeed orgId={orgId} linkFor={(id) => `/app/requests/${id}`} emptyText="Updates on your work will show up here." />
+          </section>
         </>
       )}
     </div>

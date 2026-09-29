@@ -78,7 +78,7 @@ export default function NotificationBell({ userId, linkFor, overviewPath }: Prop
         )}
       </button>
       {isOpen && (
-        <div className="absolute right-0 mt-3 w-[min(22rem,calc(100vw-2rem))] bg-surface-container border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50">
+        <div className="fixed left-4 right-4 top-20 sm:absolute sm:left-auto sm:right-0 sm:top-auto sm:mt-3 sm:w-[22rem] bg-surface-container border border-white/10 rounded-2xl shadow-2xl overflow-hidden z-50">
           <div className="px-4 py-3 border-b border-white/10 text-sm font-bold text-white">Updates</div>
           {events.length === 0 ? (
             <p className="px-4 py-6 text-sm text-on-surface-variant">Nothing yet. Updates on your work show up here.</p>

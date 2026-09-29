@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { servicesData } from "../data/services";
 import Logo from "./Logo";
 import ThemeToggle from "./ThemeToggle";
+import NotificationBell from "./NotificationBell";
 import { useAuth } from "../lib/auth/AuthContext";
 
 // Signed-in account button: who you're signed in as, settings, sign out.
@@ -156,8 +157,15 @@ export default function NavBar() {
                 </span>
               )}
             </button>
-            {isSignedIn ? (
-              <AccountMenu name={profile?.full_name ?? ""} role={profile?.role ?? ""} onSignOut={handleSignOut} />
+            {isSignedIn && profile ? (
+              <>
+                <NotificationBell
+                  userId={profile.id}
+                  linkFor={(id) => `${dashboardHome}/requests/${id}`}
+                  overviewPath={dashboardHome}
+                />
+                <AccountMenu name={profile.full_name ?? ""} role={profile.role ?? ""} onSignOut={handleSignOut} />
+              </>
             ) : (
               <>
                 <Link to="/app/login" className="hidden lg:inline-block whitespace-nowrap border border-white/10 bg-transparent text-white px-5 py-2 font-bold text-sm transition-colors duration-300 hover:bg-white/5 rounded-full">

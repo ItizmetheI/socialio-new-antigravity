@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { DndContext, PointerSensor, useDroppable, useDraggable, useSensor, useSensors, type DragEndEvent } from "@dnd-kit/core";
 import { supabase } from "../lib/supabase";
+import { useLiveRefresh } from "../lib/useLiveRefresh";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
@@ -49,9 +50,11 @@ export default function OpsBoard() {
   const justDragged = useRef(false);
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
+  const [liveTick, setLiveTick] = useState(0);
+  useLiveRefresh(["requests"], () => setLiveTick((t) => t + 1));
   useEffect(() => {
     let isMounted = true;
-    setState("loading");
+    if (liveTick === 0) setState("loading");
     Promise.all([
       supabase.from("requests").select("*").order("created_at", { ascending: false }),
       supabase.from("organizations").select("*").order("name"),
@@ -70,7 +73,7 @@ export default function OpsBoard() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [liveTick]);
 
   const orgNameById = useMemo(() => {
     const map = new Map<string, string>();

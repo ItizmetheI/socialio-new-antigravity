@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "../lib/supabase";
+import { useLiveRefresh } from "../lib/useLiveRefresh";
 import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
 import ContentCalendar from "../components/workspace/ContentCalendar";
@@ -14,6 +15,8 @@ export default function OpsCalendar() {
   const [orgId, setOrgId] = useState("");
   const [hasError, setHasError] = useState(false);
 
+  const [liveTick, setLiveTick] = useState(0);
+  useLiveRefresh(["requests"], () => setLiveTick((t) => t + 1));
   useEffect(() => {
     let isMounted = true;
     Promise.all([supabase.from("requests").select("*"), supabase.from("organizations").select("*").order("name")]).then(
@@ -30,7 +33,7 @@ export default function OpsCalendar() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [liveTick]);
 
   const orgNameById = useMemo(() => new Map(orgs.map((o) => [o.id, o.name])), [orgs]);
 

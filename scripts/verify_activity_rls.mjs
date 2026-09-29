@@ -55,6 +55,14 @@ try {
       .subscribe();
     channels.push([who.client, ch]);
   }
+  // Same subscription the pipeline/overview pages use (useLiveRefresh):
+  // requests filtered to the client's org.
+  const pageHeard = [];
+  const pageChannel = clientA.client
+    .channel(`verify-${stamp}-page`)
+    .on("postgres_changes", { event: "*", schema: "public", table: "requests", filter: `org_id=eq.${orgA.id}` }, (p) => pageHeard.push(p.eventType))
+    .subscribe();
+  channels.push([clientA.client, pageChannel]);
   await wait(4000);
 
   const { data: req } = await clientA.client
@@ -87,6 +95,7 @@ try {
   check("client A got live updates for their own work", heardByA.length >= 3, `${heardByA.length} live events`);
   check("live updates never include internal notes", !heardByA.some((e) => e.is_internal));
   check("client B received nothing about client A", heardByB.length === 0, `${heardByB.length} live events`);
+  check("pipeline page hears the new request and the stage change live", pageHeard.includes("INSERT") && pageHeard.includes("UPDATE"), pageHeard.join(","));
 
   const { error: markErr } = await clientA.client.from("activity_reads").upsert({ user_id: clientA.id, seen_at: new Date().toISOString() });
   check("users can mark their own feed as read", !markErr, markErr?.message);

@@ -129,6 +129,7 @@ node scripts/verify_ledger_rls.mjs
 node scripts/verify_webhook_idempotency.mjs
 node scripts/verify_function_lockdown.mjs
 node scripts/verify_security_audit.mjs
+node scripts/verify_activity_rls.mjs
 node --experimental-strip-types scripts/verify_upload_names.mjs
 # + STRIPE_SECRET_KEY (sk_test_ only): full test-mode purchase
 node scripts/e2e_checkout.mjs start|verify|cleanup

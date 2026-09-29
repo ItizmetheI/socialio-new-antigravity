@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { supabase } from "../lib/supabase";
+import { useLiveRefresh } from "../lib/useLiveRefresh";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
@@ -26,9 +27,11 @@ export default function RequestBoard() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [filters, setFilters] = useState(EMPTY_FILTERS);
 
+  const [liveTick, setLiveTick] = useState(0);
+  useLiveRefresh(["requests"], () => setLiveTick((t) => t + 1), `org_id=eq.${orgId}`);
   useEffect(() => {
     let isMounted = true;
-    setState("loading");
+    if (liveTick === 0) setState("loading");
     supabase
       .from("requests")
       .select("*")
@@ -46,7 +49,7 @@ export default function RequestBoard() {
     return () => {
       isMounted = false;
     };
-  }, [orgId]);
+  }, [orgId, liveTick]);
 
   if (state === "loading") {
     return (

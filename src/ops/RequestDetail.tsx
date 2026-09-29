@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Upload } from "lucide-react";
 import { supabase } from "../lib/supabase";
+import { useLiveRefresh } from "../lib/useLiveRefresh";
 import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
 import DeliverableList, { DELIVERABLES_BUCKET, storagePathFor } from "../components/DeliverableList";
@@ -62,6 +63,9 @@ export default function RequestDetail() {
   useEffect(() => {
     load();
   }, [load]);
+  // Stage changes, comments and files from the other side appear live.
+  useLiveRefresh(["requests"], () => load(true), id ? `id=eq.${id}` : undefined);
+  useLiveRefresh(["comments", "deliverables"], () => load(true), id ? `request_id=eq.${id}` : undefined);
 
   const postComment = async (e: React.FormEvent) => {
     e.preventDefault();

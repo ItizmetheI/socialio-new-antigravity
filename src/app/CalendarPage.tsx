@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { useLiveRefresh } from "../lib/useLiveRefresh";
 import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
 import ContentCalendar from "../components/workspace/ContentCalendar";
@@ -13,6 +14,8 @@ export default function CalendarPage() {
   const [requests, setRequests] = useState<Request[] | null>(null);
   const [hasError, setHasError] = useState(false);
 
+  const [liveTick, setLiveTick] = useState(0);
+  useLiveRefresh(["requests"], () => setLiveTick((t) => t + 1), `org_id=eq.${orgId}`);
   useEffect(() => {
     let isMounted = true;
     supabase
@@ -27,7 +30,7 @@ export default function CalendarPage() {
     return () => {
       isMounted = false;
     };
-  }, [orgId]);
+  }, [orgId, liveTick]);
 
   return (
     <div>
