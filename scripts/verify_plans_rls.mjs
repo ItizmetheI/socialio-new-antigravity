@@ -115,8 +115,8 @@ async function main() {
 
   // cleanup
   await admin.from("plans").delete().in("org_id", [orgA.id, orgB.id]);
-  for (const uid of created.userIds) await admin.auth.admin.deleteUser(uid);
   await admin.from("organizations").delete().in("id", created.orgIds);
+  await deleteTestUsers(created.userIds);
 
   if (failed.length > 0) {
     console.log("FAILED:", failed.map((f) => f.name).join("; "));
@@ -124,12 +124,22 @@ async function main() {
   }
 }
 
+// Test users can only be deleted once the data they created is gone (orgs
+// first, which cascades their requests/plans). A user that still won't
+// delete is reported, never silently left behind as a live account.
+async function deleteTestUsers(ids) {
+  for (const uid of ids) {
+    const { error } = await admin.auth.admin.deleteUser(uid);
+    if (error) console.error(`WARNING: couldn't delete test user ${uid}: ${error.message}`);
+  }
+}
+
 main().catch(async (err) => {
   console.error("Script error:", err);
   try {
     await admin.from("plans").delete().in("org_id", created.orgIds);
-    for (const uid of created.userIds) await admin.auth.admin.deleteUser(uid);
     await admin.from("organizations").delete().in("id", created.orgIds);
+    await deleteTestUsers(created.userIds);
   } catch {}
   process.exit(1);
 });
