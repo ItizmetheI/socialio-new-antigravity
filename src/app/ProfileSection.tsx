@@ -1,17 +1,14 @@
 import React, { useState } from "react";
 import PasswordInput from "../components/PasswordInput";
 import { passwordProblem } from "../lib/auth/password";
-import { useOutletContext } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth/AuthContext";
 import ErrorBanner from "../components/ErrorBanner";
-import PageHeader from "../components/workspace/PageHeader";
-import type { ClientOutletContext } from "./ClientLayout";
 
 
-export default function Settings() {
+// Account page section: name, email and password.
+export default function ProfileSection({ orgName }: { orgName: string }) {
   const { profile, session } = useAuth();
-  const { orgName } = useOutletContext<ClientOutletContext>();
   const [fullName, setFullName] = useState(profile?.full_name ?? "");
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
@@ -67,10 +64,8 @@ export default function Settings() {
   };
 
   return (
-    <div className="max-w-xl">
-      <PageHeader title="Settings" description="Your account details and password." />
-
-      <div className="bg-surface-container border border-white/10 rounded-3xl p-6 md:p-8">
+    <div className="grid lg:grid-cols-2 gap-6 items-start">
+      <div className="bg-surface-container border border-white/10 rounded-2xl p-5 md:p-6">
         <div className="mb-6">
           <div className="field-label mb-1">Organization</div>
           <div className="text-white font-bold">{orgName || "—"}</div>
@@ -103,8 +98,8 @@ export default function Settings() {
         </form>
       </div>
 
-      <div className="bg-surface-container border border-white/10 rounded-3xl p-6 md:p-8 mt-6">
-        <h2 className="font-bold text-white mb-6">Change password</h2>
+      <div className="bg-surface-container border border-white/10 rounded-2xl p-5 md:p-6">
+        <h3 className="font-bold text-white mb-6">Change password</h3>
         <form onSubmit={handlePasswordSave} className="flex flex-col gap-4">
           <div>
             <label htmlFor="settings-new-password" className="field-label">New password</label>

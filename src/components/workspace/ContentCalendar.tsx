@@ -4,7 +4,8 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PLATFORMS } from "../../lib/database.types";
 import type { Platform, Request } from "../../lib/database.types";
 import { localDateString } from "../../lib/format";
-import { PLATFORM_COLORS, calendarDay, platformLabel } from "./requestMeta";
+import { calendarDay, platformLabel } from "./requestMeta";
+import { STAGE_STYLE } from "./stageStyle";
 
 type Props = {
   requests: Request[];
@@ -45,14 +46,12 @@ function EntryChip({ entry, to, orgName }: { entry: Entry; to: string; orgName?:
     <Link
       to={to}
       title={request.title}
-      className={`block rounded-lg px-2 py-1.5 text-[11px] leading-tight transition-colors hover:bg-white/10 ${
-        entry.kind === "publish" ? "bg-white/5" : "border border-dashed border-white/15"
+      className={`block rounded-lg px-2 py-1.5 text-[11px] leading-tight transition-colors hover:bg-white/10 ${STAGE_STYLE[request.stage].tint} ${
+        entry.kind === "publish" ? "" : "border border-dashed border-white/15"
       }`}
     >
       <span className="flex items-center gap-1 mb-0.5">
-        {request.platforms.map((p) => (
-          <span key={p} className="w-1.5 h-1.5 rounded-full" style={{ background: PLATFORM_COLORS[p] }} />
-        ))}
+        <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${STAGE_STYLE[request.stage].dot}`} />
         <span className="text-on-surface-variant">{timeOf(entry)}</span>
       </span>
       <span className="block text-white font-bold truncate">{request.title}</span>

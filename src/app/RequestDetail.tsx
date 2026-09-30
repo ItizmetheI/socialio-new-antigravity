@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, CheckCircle2, RotateCcw } from "lucide-react";
+import { CheckCircle2, RotateCcw } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useLiveRefresh } from "../lib/useLiveRefresh";
 import Spinner from "../components/Spinner";
@@ -9,7 +8,7 @@ import DeliverableList from "../components/DeliverableList";
 import { formatLabel, platformLabel } from "../components/workspace/requestMeta";
 import { formatDate } from "../lib/format";
 import { useAuth } from "../lib/auth/AuthContext";
-import { REQUEST_STAGES } from "../lib/database.types";
+import { STAGE_STYLE } from "../components/workspace/stageStyle";
 import type { Request, Comment, Deliverable, RequestStage } from "../lib/database.types";
 
 type LoadState = "loading" | "error" | "ready";
@@ -35,8 +34,8 @@ function ReviewPanel({ onDecide }: { onDecide: (stage: RequestStage, note: strin
   };
 
   return (
-    <div className="mb-10 rounded-3xl border border-primary/30 bg-primary/5 p-5 md:p-6">
-      <h2 className="font-bold text-white mb-1">Ready for your review</h2>
+    <div className="mb-8 rounded-2xl border border-amber-400/40 bg-amber-400/10 p-5">
+      <h3 className="font-bold text-white mb-1">Ready for your review</h3>
       <p className="text-sm text-on-surface-variant mb-5">Look through the files below, then approve or ask for changes.</p>
       {mode === "changes" && (
         <textarea
@@ -75,8 +74,10 @@ function ReviewPanel({ onDecide }: { onDecide: (stage: RequestStage, note: strin
   );
 }
 
-export default function RequestDetail() {
-  const { id } = useParams<{ id: string }>();
+// One piece of work: brief, files, review decision and comments. Rendered
+// inside the client home's side panel (RequestDrawer). `onChanged` lets the
+// page behind refresh its lanes after an approve / request-changes.
+export default function RequestDetail({ id, onChanged }: { id: string; onChanged?: () => void }) {
   const { profile } = useAuth();
   const [state, setState] = useState<LoadState>("loading");
   const [request, setRequest] = useState<Request | null>(null);
@@ -143,12 +144,13 @@ export default function RequestDetail() {
     const { error } = await supabase.from("requests").update({ stage }).eq("id", id);
     if (error) return "Couldn't update this request. Try again.";
     await load(true);
+    onChanged?.();
     return null;
   };
 
   if (state === "loading") {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center py-20">
         <Spinner />
       </div>
     );
@@ -162,16 +164,15 @@ export default function RequestDetail() {
     );
   }
 
-  const stageLabel = REQUEST_STAGES.find((s) => s.value === request.stage)?.label ?? request.stage;
+  const stage = STAGE_STYLE[request.stage];
 
   return (
-    <div className="max-w-3xl">
-      <Link to="/app/requests" className="inline-flex items-center gap-1.5 text-sm text-on-surface-variant hover:text-white mb-6">
-        <ArrowLeft className="w-4 h-4" /> Pipeline
-      </Link>
+    <div>
       <div className="mb-8">
-        <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">{stageLabel}</div>
-        <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-3 break-words">{request.title}</h1>
+        <span className={`inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full ${stage.tint} ${stage.text} mb-3`}>
+          <span className={`w-1.5 h-1.5 rounded-full ${stage.dot}`} /> {stage.clientLabel}
+        </span>
+        <h2 className="hero-display font-bold text-2xl text-white mb-3 break-words">{request.title}</h2>
         {request.description && <p className="text-on-surface-variant mb-4 break-words whitespace-pre-line">{request.description}</p>}
         <dl className="flex flex-wrap gap-x-8 gap-y-2 text-sm">
           {request.format && (
@@ -207,13 +208,13 @@ export default function RequestDetail() {
 
       {deliverables.length > 0 && (
         <div className="mb-10">
-          <h2 className="font-bold text-white mb-4">Deliverables</h2>
+          <h3 className="font-bold text-white mb-4">Files</h3>
           <DeliverableList deliverables={deliverables} />
         </div>
       )}
 
       <div>
-        <h2 className="font-bold text-white mb-4">Comments</h2>
+        <h3 className="font-bold text-white mb-4">Comments</h3>
         <div className="flex flex-col gap-4 mb-6">
           {comments.length === 0 && <p className="text-on-surface-variant text-sm">No comments yet.</p>}
           {comments.map((comment) => (

@@ -13,17 +13,13 @@ export type ClientOutletContext = {
   orgName: string;
 };
 
-const LEAD_NAV_ITEMS = [
-  { to: "/app", label: "Overview", end: true },
+// Clients get two pages: Home (all their work, plan and results) and Account
+// (billing, brand kit, login). Onboarding and plan approval are reached from
+// the home page's "next step" banner while they're pending.
+const NAV_ITEMS = [
+  { to: "/app", label: "Home", end: true },
   { to: "/app/account", label: "Account", end: false },
-  { to: "/app/requests", label: "Pipeline", end: false },
-  { to: "/app/calendar", label: "Calendar", end: false },
-  { to: "/app/brand", label: "Brand kit", end: false },
-  { to: "/app/results", label: "Results", end: false },
 ];
-
-const ONBOARDING_ITEM = { to: "/app/onboarding", label: "Onboarding", end: false };
-const BILLING_ITEM = { to: "/app/billing", label: "Billing", end: false };
 
 // Signed up but hasn't bought anything yet: no org to show. Used to bounce
 // to /checkout, which with an empty cart bounced again to the home page.
@@ -38,7 +34,7 @@ function NoWorkspaceYet() {
           Your account is <span className="italic text-primary">ready.</span>
         </h1>
         <p className="text-on-surface-variant mb-8">
-          Pick the services you want and check out. Your dashboard (pipeline, calendar, brand kit and results) opens as soon as your order goes through.
+          Pick the services you want and check out. Your dashboard opens as soon as your order goes through.
         </p>
         <Link
           to="/pricing"
@@ -54,13 +50,6 @@ function NoWorkspaceYet() {
 function ClientLayoutInner() {
   const { profile } = useAuth();
   const [org, setOrg] = useState<Organization | null>(null);
-  // An org is either on the new plans system or the legacy proposals one,
-  // never both (see DashboardHome's isApproved logic) — the nav should
-  // reflect that instead of always showing both links.
-  const [hasPlan, setHasPlan] = useState(false);
-  // The Onboarding tab only matters until the questionnaire is sent; after
-  // that its answers stay reachable from the Brand kit page.
-  const [isOnboarded, setIsOnboarded] = useState(false);
 
   useEffect(() => {
     if (!profile?.org_id) return;
@@ -73,37 +62,11 @@ function ClientLayoutInner() {
       .then(({ data }) => {
         if (isMounted) setOrg(data as Organization | null);
       });
-    supabase
-      .from("plans")
-      .select("id")
-      .eq("org_id", profile.org_id)
-      .limit(1)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (isMounted) setHasPlan(!!data);
-      });
-    supabase
-      .from("client_onboarding")
-      .select("status")
-      .eq("org_id", profile.org_id)
-      .maybeSingle()
-      .then(({ data }) => {
-        const status = (data as { status: string } | null)?.status;
-        if (isMounted) setIsOnboarded(status === "submitted" || status === "reviewed");
-      });
     return () => {
       isMounted = false;
     };
   }, [profile?.org_id]);
 
-  const navItems = [
-    ...LEAD_NAV_ITEMS,
-    hasPlan
-      ? { to: "/app/plan", label: "Plan", end: false }
-      : { to: "/app/proposal", label: "Proposal", end: false },
-    ...(isOnboarded ? [] : [ONBOARDING_ITEM]),
-    BILLING_ITEM,
-  ];
 
   if (!profile?.org_id) {
     // org_id is only ever set by an admin invite or by create-checkout-session,
@@ -112,7 +75,7 @@ function ClientLayoutInner() {
   }
 
   return (
-    <DashboardShell sections={[{ items: navItems }]}>
+    <DashboardShell sections={[{ items: NAV_ITEMS }]}>
       <Outlet context={{ orgId: profile.org_id, orgName: org?.name ?? "" } satisfies ClientOutletContext} />
     </DashboardShell>
   );

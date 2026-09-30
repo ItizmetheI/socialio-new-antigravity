@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useParams, Navigate } from 'react-router-dom';
 import React, { useEffect, lazy, Suspense } from 'react';
 import { motion } from 'motion/react';
 import { ReactLenis, useLenis } from 'lenis/react';
@@ -26,9 +26,6 @@ const Signup = lazy(() => import('./app/Signup'));
 const ForgotPassword = lazy(() => import('./app/ForgotPassword'));
 const SetPassword = lazy(() => import('./lib/auth/SetPassword'));
 const Checkout = lazy(() => import('./checkout/Checkout'));
-const CalendarPage = lazy(() => import('./app/CalendarPage'));
-const BrandKitPage = lazy(() => import('./app/BrandKitPage'));
-const ResultsPage = lazy(() => import('./app/ResultsPage'));
 const OpsCalendar = lazy(() => import('./ops/OpsCalendar'));
 const CheckoutSuccess = lazy(() => import('./checkout/CheckoutSuccess'));
 const ClientLayout = lazy(() => import('./app/ClientLayout'));
@@ -36,10 +33,6 @@ const DashboardHome = lazy(() => import('./app/DashboardHome'));
 const Onboarding = lazy(() => import('./app/Onboarding'));
 const PlanView = lazy(() => import('./app/PlanView'));
 const ProposalView = lazy(() => import('./app/ProposalView'));
-const RequestBoard = lazy(() => import('./app/RequestBoard'));
-const RequestDetail = lazy(() => import('./app/RequestDetail'));
-const Settings = lazy(() => import('./app/Settings'));
-const Billing = lazy(() => import('./app/Billing'));
 const AccountPage = lazy(() => import('./app/AccountPage'));
 const OpsLayout = lazy(() => import('./ops/OpsLayout'));
 const OpsBoard = lazy(() => import('./ops/OpsBoard'));
@@ -121,6 +114,13 @@ function AnimatedRoutes() {
   );
 }
 
+// /app/requests/:id (notification links, old bookmarks) → the piece opened in
+// the home page's side panel.
+function OpenRequestOnHome() {
+  const { id } = useParams();
+  return <Navigate to={`/app?item=${id}`} replace />;
+}
+
 const DASHBOARD_PATH_PREFIXES = ['/app', '/ops', '/set-password', '/checkout'];
 
 function isDashboardPath(pathname: string): boolean {
@@ -155,14 +155,16 @@ function DashboardRoutes() {
           <Route path="onboarding" element={<Onboarding />} />
           <Route path="plan" element={<PlanView />} />
           <Route path="proposal" element={<ProposalView />} />
-          <Route path="requests" element={<RequestBoard />} />
-          <Route path="requests/:id" element={<RequestDetail />} />
           <Route path="account" element={<AccountPage />} />
-          <Route path="billing" element={<Billing />} />
-          <Route path="calendar" element={<CalendarPage />} />
-          <Route path="brand" element={<BrandKitPage />} />
-          <Route path="results" element={<ResultsPage />} />
-          <Route path="settings" element={<Settings />} />
+          {/* The client dashboard is two pages now (Home + Account); older
+              links and bookmarks land on the part that replaced them. */}
+          <Route path="requests" element={<Navigate to="/app" replace />} />
+          <Route path="requests/:id" element={<OpenRequestOnHome />} />
+          <Route path="calendar" element={<Navigate to="/app?view=calendar" replace />} />
+          <Route path="results" element={<Navigate to="/app#results" replace />} />
+          <Route path="billing" element={<Navigate to="/app/account#billing" replace />} />
+          <Route path="brand" element={<Navigate to="/app/account#brand" replace />} />
+          <Route path="settings" element={<Navigate to="/app/account#profile" replace />} />
         </Route>
         <Route path="/ops" element={<OpsLayout />}>
           <Route index element={<OpsOverview />} />

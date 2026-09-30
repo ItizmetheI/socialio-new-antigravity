@@ -1,5 +1,6 @@
 import { formatCents, formatDate } from "../../lib/format";
 import type { LedgerLine } from "./LedgerData";
+import { STAGE_STYLE } from "./stageStyle";
 
 const pct = (part: number, whole: number) => `${Math.min(100, (part / whole) * 100)}%`;
 
@@ -28,15 +29,16 @@ export default function LedgerLines({ lines }: { lines: LedgerLine[] }) {
             </div>
 
             <div className="flex h-1.5 rounded-full bg-white/10 overflow-hidden mb-2.5" aria-hidden="true">
-              <div className="bg-primary" style={{ width: pct(line.delivered, line.units) }} />
-              <div className="bg-primary/45" style={{ width: pct(line.inProgress, line.units) }} />
-              <div className="bg-white/30" style={{ width: pct(line.requested, line.units) }} />
+              <div className={STAGE_STYLE.delivered.bar} style={{ width: pct(line.delivered, line.units) }} />
+              <div className={STAGE_STYLE.in_progress.bar} style={{ width: pct(line.inProgress, line.units) }} />
+              <div className={STAGE_STYLE.requested.bar} style={{ width: pct(line.requested, line.units) }} />
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-xs text-on-surface-variant">
               <span>
                 {isMonthly ? "This period: " : ""}
-                <span className="text-white font-bold">{line.delivered}</span> delivered · {line.inProgress} in progress · {line.requested} queued
+                <span className={`font-bold ${STAGE_STYLE.delivered.text}`}>{line.delivered} delivered</span> ·{" "}
+                <span className={STAGE_STYLE.in_progress.text}>{line.inProgress} in progress</span> · {line.requested} queued
               </span>
               <span className={line.over ? "text-primary font-bold" : ""}>
                 {line.over ? `${line.over} over` : `${line.remaining} of ${line.units} left`}

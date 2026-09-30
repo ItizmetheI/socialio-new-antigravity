@@ -10,6 +10,7 @@ import RequestFilterBar from "../components/workspace/RequestFilterBar";
 import PageHeader from "../components/workspace/PageHeader";
 import { EMPTY_FILTERS, filterRequests } from "../components/workspace/requestMeta";
 import { REQUEST_STAGES } from "../lib/database.types";
+import { STAGE_STYLE } from "../components/workspace/stageStyle";
 import type { Request, RequestStage, Organization, Profile } from "../lib/database.types";
 
 type LoadState = "loading" | "error" | "ready";
@@ -29,9 +30,10 @@ function BoardColumn({ stage, label, children, count }: { stage: RequestStage; l
   const { setNodeRef, isOver } = useDroppable({ id: stage });
   return (
     <section ref={setNodeRef} className={`rounded-xl transition-colors ${isOver ? "bg-primary/5" : ""}`}>
-      <h2 className="flex items-center justify-between text-sm font-bold text-white pb-2 mb-3 border-b border-white/10">
+      <h2 className={`flex items-center gap-2 text-sm font-bold pb-2.5 mb-3 border-b-2 ${STAGE_STYLE[stage].text} ${STAGE_STYLE[stage].underline}`}>
+        <span className={`w-2 h-2 rounded-full ${STAGE_STYLE[stage].dot}`} />
         {label}
-        <span className="text-xs font-normal text-on-surface-variant">{count}</span>
+        <span className={`ml-auto text-xs px-2 py-0.5 rounded-full ${STAGE_STYLE[stage].tint}`}>{count}</span>
       </h2>
       <div className="flex flex-col gap-2.5 min-h-[80px]">{children}</div>
     </section>

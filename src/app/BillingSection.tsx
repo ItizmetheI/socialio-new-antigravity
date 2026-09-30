@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, useOutletContext } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { servicesData, addOnsData } from "../data/services";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
-import PageHeader from "../components/workspace/PageHeader";
 import { formatCents, formatDate } from "../lib/format";
 import type { Order, OrderItem, Payment, Subscription } from "../lib/database.types";
-import type { ClientOutletContext } from "./ClientLayout";
 
 type LoadState = "loading" | "error" | "ready";
 
@@ -25,8 +23,8 @@ const ORDER_STATUS_STYLES: Record<Order["status"], string> = {
   canceled: "text-on-surface-variant bg-white/5 border-white/10",
 };
 
-export default function Billing() {
-  const { orgId } = useOutletContext<ClientOutletContext>();
+// Account page section: subscription, every order, every payment.
+export default function BillingSection({ orgId }: { orgId: string }) {
   const [state, setState] = useState<LoadState>("loading");
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -67,7 +65,7 @@ export default function Billing() {
 
   if (state === "loading") {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center py-16">
         <Spinner />
       </div>
     );
@@ -82,11 +80,9 @@ export default function Billing() {
   }
 
   return (
-    <div className="max-w-4xl">
-      <PageHeader title="Billing" description="Your subscription, orders, and payments." />
-
-      <section className="bg-surface-container border border-white/10 rounded-3xl p-5 md:p-8 mb-10">
-        <h2 className="font-bold text-white mb-4">Your subscription</h2>
+    <div>
+      <section className="bg-surface-container border border-white/10 rounded-2xl p-5 md:p-6 mb-8">
+        <h3 className="font-bold text-white mb-4">Your subscription</h3>
         {subscription ? (
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
@@ -108,8 +104,8 @@ export default function Billing() {
         )}
       </section>
 
-      <section className="mb-10">
-        <h2 className="font-bold text-white mb-4">Orders</h2>
+      <section className="mb-8">
+        <h3 className="font-bold text-white mb-4">Orders</h3>
         {orders.length === 0 ? (
           <EmptyState title="No orders yet" description="Purchases you make at checkout show up here." />
         ) : (
@@ -148,7 +144,7 @@ export default function Billing() {
 
       {payments.length > 0 && (
         <section>
-          <h2 className="font-bold text-white mb-4">Payment history</h2>
+          <h3 className="font-bold text-white mb-4">Payment history</h3>
           <div className="bg-surface-container border border-white/10 rounded-2xl overflow-hidden">
             {payments.map((payment, i) => (
               <div key={payment.id} className={`flex justify-between gap-4 px-5 py-3 text-sm ${i !== payments.length - 1 ? "border-b border-white/5" : ""}`}>

@@ -44,8 +44,8 @@ function AccountMenu({ name, role, onSignOut }: { name: string; role: string; on
             <div className="text-xs text-on-surface-variant capitalize">{role === "internal" ? "Team" : role}</div>
           </div>
           {role === "client" && (
-            <Link to="/app/settings" onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-on-surface-variant hover:text-white hover:bg-white/5">
-              <Settings className="w-4 h-4" /> Settings
+            <Link to="/app/account#profile" onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-on-surface-variant hover:text-white hover:bg-white/5">
+              <Settings className="w-4 h-4" /> Account
             </Link>
           )}
           <button onClick={onSignOut} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-on-surface-variant hover:text-white hover:bg-white/5">

@@ -1,14 +1,11 @@
 import { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/auth/AuthContext";
 import BrandKitEditor from "../components/workspace/BrandKitEditor";
-import PageHeader from "../components/workspace/PageHeader";
 import BrandAssets from "./BrandAssets";
-import type { ClientOutletContext } from "./ClientLayout";
 
-export default function BrandKitPage() {
-  const { orgId } = useOutletContext<ClientOutletContext>();
+// Account page section: the brand rules our team follows, plus uploads.
+export default function BrandSection({ orgId }: { orgId: string }) {
   const { profile } = useAuth();
   const [onboardingId, setOnboardingId] = useState<string | null>(null);
 
@@ -28,8 +25,8 @@ export default function BrandKitPage() {
   }, [orgId]);
 
   return (
-    <div className="max-w-4xl">
-      <PageHeader title="Brand kit" description="The rules our team follows for every post, reel and graphic. Keep it current and we stay on-brand." />
+    <div>
+      <p className="text-sm text-on-surface-variant mb-6 max-w-xl">The rules our team follows for every post, reel and graphic. Keep it current and we stay on-brand.</p>
       <BrandKitEditor orgId={orgId} />
       {profile && <BrandAssets orgId={orgId} onboardingId={onboardingId} profileId={profile.id} />}
     </div>

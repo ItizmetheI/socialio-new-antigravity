@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { formatDate } from "../../lib/format";
 import type { Request } from "../../lib/database.types";
 import { PLATFORM_COLORS, formatLabel, platformLabel } from "./requestMeta";
+import { STAGE_STYLE } from "./stageStyle";
 
 type Props = {
   request: Request;
@@ -23,13 +24,12 @@ export default function RequestCard({ request, to, orgName, assigneeName, highli
   const needsReview = highlightReview && request.stage === "review";
   const eyebrow = [orgName, formatLabel(request.format)].filter(Boolean).join(" · ");
   const when = whenLabel(request);
+  const stage = STAGE_STYLE[request.stage];
 
   return (
     <Link
       to={to}
-      className={`block rounded-xl border bg-surface-container px-4 py-3.5 transition-colors hover:border-white/25 ${
-        needsReview ? "border-primary/60" : "border-white/10"
-      }`}
+      className={`block rounded-xl border border-white/10 border-l-4 ${stage.border} bg-surface-container px-4 py-3.5 transition-colors hover:bg-white/[0.04]`}
     >
       {eyebrow && <div className="text-[11px] text-on-surface-variant mb-1 truncate">{eyebrow}</div>}
       <div className="text-sm font-bold text-white leading-snug">{request.title}</div>
@@ -46,7 +46,7 @@ export default function RequestCard({ request, to, orgName, assigneeName, highli
         </div>
       )}
 
-      {needsReview && <div className="mt-3 text-[11px] font-bold text-primary">Waiting for your review &rarr;</div>}
+      {needsReview && <div className={`mt-3 text-[11px] font-bold ${stage.text}`}>Review this &rarr;</div>}
     </Link>
   );
 }
