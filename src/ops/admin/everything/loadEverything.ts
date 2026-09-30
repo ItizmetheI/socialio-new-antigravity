@@ -124,7 +124,7 @@ export function buildTimeline(d: EverythingData, formatMoney: (cents: number, cu
       orgId: e.org_id,
       type: ACTIVITY_TYPE[e.kind] ?? "work",
       text: e.summary,
-      link: e.request_id ? `/ops/requests/${e.request_id}` : undefined,
+      link: e.request_id ? `/ops/work?item=${e.request_id}` : undefined,
       isInternal: e.is_internal,
     });
   }

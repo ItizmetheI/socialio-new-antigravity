@@ -11,6 +11,8 @@ type Props = {
   requests: Request[];
   linkFor: (id: string) => string;
   orgNameById?: Map<string, string>;
+  // Pages with their own filters (staff Work) hide the calendar's own one.
+  showPlatformFilter?: boolean;
 };
 
 type Entry = { request: Request; day: string; kind: "publish" | "due" };
@@ -60,7 +62,7 @@ function EntryChip({ entry, to, orgName }: { entry: Entry; to: string; orgName?:
   );
 }
 
-export default function ContentCalendar({ requests, linkFor, orgNameById }: Props) {
+export default function ContentCalendar({ requests, linkFor, orgNameById, showPlatformFilter = true }: Props) {
   const today = localDateString();
   const [cursor, setCursor] = useState(() => {
     const now = new Date();
@@ -107,6 +109,7 @@ export default function ContentCalendar({ requests, linkFor, orgNameById }: Prop
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>
+          {showPlatformFilter && (
           <select
             aria-label="Platform"
             value={platform}
@@ -120,6 +123,7 @@ export default function ContentCalendar({ requests, linkFor, orgNameById }: Prop
               </option>
             ))}
           </select>
+          )}
         </div>
 
         {/* Month grid from md up */}

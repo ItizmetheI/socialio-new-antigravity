@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Upload } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Upload } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useLiveRefresh } from "../lib/useLiveRefresh";
 import Spinner from "../components/Spinner";
@@ -9,12 +9,15 @@ import DeliverableList, { DELIVERABLES_BUCKET, storagePathFor } from "../compone
 import { useAuth } from "../lib/auth/AuthContext";
 import SchedulePanel from "./SchedulePanel";
 import { REQUEST_STAGES } from "../lib/database.types";
+import { STAGE_STYLE } from "../components/workspace/stageStyle";
 import type { Request, Comment, Deliverable, RequestStage, CommentVisibility, Organization, Profile } from "../lib/database.types";
 
 type LoadState = "loading" | "error" | "ready";
 
-export default function RequestDetail() {
-  const { id } = useParams<{ id: string }>();
+// One piece of work, staff view: stage, assignee, schedule, files and
+// comments (incl. internal notes). Rendered in the Work tab's side panel;
+// `onChanged` lets the board behind refresh after a change.
+export default function RequestDetail({ id, onChanged }: { id: string; onChanged?: () => void }) {
   const { profile } = useAuth();
   const [state, setState] = useState<LoadState>("loading");
   const [request, setRequest] = useState<Request | null>(null);
@@ -98,6 +101,7 @@ export default function RequestDetail() {
     }
     setActionError("");
     setRequest({ ...request, stage: newStage });
+    onChanged?.();
   };
 
   const assign = async (assignee: string) => {
@@ -110,6 +114,7 @@ export default function RequestDetail() {
       return;
     }
     setRequest({ ...request, assigned_to: assignedTo });
+    onChanged?.();
   };
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -140,7 +145,7 @@ export default function RequestDetail() {
 
   if (state === "loading") {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
+      <div className="flex items-center justify-center py-20">
         <Spinner />
       </div>
     );
@@ -155,13 +160,16 @@ export default function RequestDetail() {
   }
 
   return (
-    <div className="max-w-3xl">
-      <Link to="/ops/board" className="inline-flex items-center gap-1.5 text-sm text-on-surface-variant hover:text-white mb-6">
-        <ArrowLeft className="w-4 h-4" /> Board
-      </Link>
+    <div>
       <div className="mb-8">
-        <div className="text-xs font-bold uppercase tracking-widest text-primary mb-2">{org?.name ?? "—"}</div>
-        <h1 className="hero-display font-bold text-2xl md:text-3xl text-white mb-3 break-words">{request.title}</h1>
+        {org ? (
+          <Link to={`/ops/clients/${org.id}`} className="text-xs font-bold text-primary hover:underline">
+            {org.name}
+          </Link>
+        ) : (
+          <span className="text-xs text-on-surface-variant">—</span>
+        )}
+        <h2 className="hero-display font-bold text-2xl text-white mt-1 mb-3 break-words">{request.title}</h2>
         {request.description && <p className="text-on-surface-variant mb-4 break-words whitespace-pre-line">{request.description}</p>}
         <div className="flex flex-wrap gap-3">
         <select
@@ -169,7 +177,7 @@ export default function RequestDetail() {
           value={request.stage}
           onChange={(e) => changeStage(e.target.value as RequestStage)}
           disabled={isChangingStage}
-          className="field w-auto font-bold disabled:opacity-50"
+          className={`field w-auto font-bold disabled:opacity-50 border-l-4 ${STAGE_STYLE[request.stage].border}`}
         >
           {REQUEST_STAGES.map(({ value, label }) => (
             <option key={value} value={value}>
@@ -198,7 +206,7 @@ export default function RequestDetail() {
       <SchedulePanel key={request.id} request={request} onSaved={setRequest} />
 
       <div className="mb-10">
-        <h2 className="font-bold text-white mb-4">Deliverables</h2>
+        <h3 className="font-bold text-white mb-4">Files</h3>
         <div className="mb-4">
           <DeliverableList deliverables={deliverables} emptyText="Nothing uploaded yet." />
         </div>
@@ -215,7 +223,7 @@ export default function RequestDetail() {
       </div>
 
       <div>
-        <h2 className="font-bold text-white mb-4">Comments</h2>
+        <h3 className="font-bold text-white mb-4">Comments</h3>
         <div className="flex flex-col gap-4 mb-6">
           {comments.length === 0 && <p className="text-on-surface-variant text-sm">No comments yet.</p>}
           {comments.map((comment) => (

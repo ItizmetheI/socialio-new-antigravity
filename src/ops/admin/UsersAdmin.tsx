@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 import Spinner from "../../components/Spinner";
-import PageHeader from "../../components/workspace/PageHeader";
 import EmptyState from "../../components/EmptyState";
 import ErrorBanner from "../../components/ErrorBanner";
 import { inviteUser } from "./inviteUser";
@@ -10,6 +9,7 @@ import type { Profile, UserRole } from "../../lib/database.types";
 type LoadState = "loading" | "error" | "ready";
 type StaffRole = Extract<UserRole, "internal" | "admin">;
 
+// Admin tab, Team section: invite staff, switch accounts on or off.
 export default function UsersAdmin() {
   const [state, setState] = useState<LoadState>("loading");
   const [staff, setStaff] = useState<Profile[]>([]);
@@ -73,9 +73,7 @@ export default function UsersAdmin() {
 
   return (
     <div className="max-w-4xl">
-      <PageHeader title="Team" description="Staff who can see the board and client workspaces." />
-
-      <div className="bg-surface-container border border-white/10 rounded-3xl p-5 md:p-8 mb-10">
+      <div className="bg-surface-container border border-white/10 rounded-2xl p-5 md:p-6 mb-8">
         <h2 className="font-bold text-white mb-5">Invite a teammate</h2>
         <form onSubmit={handleInvite} className="flex flex-col gap-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -135,7 +133,7 @@ export default function UsersAdmin() {
         <EmptyState title="No teammates yet" description="Invite your first staff member above." />
       )}
       {state === "ready" && staff.length > 0 && (
-        <div className="bg-surface-container border border-white/10 rounded-3xl overflow-hidden">
+        <div className="bg-surface-container border border-white/10 rounded-2xl overflow-hidden">
           {staff.map((member, index) => (
             <div
               key={member.id}

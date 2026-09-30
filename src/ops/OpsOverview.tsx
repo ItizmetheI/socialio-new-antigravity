@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowUpRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
+import { TONE_ORDER, TONE_STYLE, buildAttention, type AttentionTone } from "./attention";
 import { supabase } from "../lib/supabase";
 import Spinner from "../components/Spinner";
 import ErrorBanner from "../components/ErrorBanner";
@@ -31,37 +32,15 @@ type OverviewData = {
 };
 
 const REPLY_WINDOW_DAYS = 30;
+const LIST_LIMIT = 12;
 
-function Panel({ title, count, children }: { title: string; count: number; children: ReactNode }) {
-  return (
-    <section>
-      <h2 className="flex items-center gap-2 font-bold text-white mb-2">
-        {title}
-        <span className="text-xs font-normal text-on-surface-variant">{count}</span>
-      </h2>
-      <ul className="divide-y divide-white/10 border-y border-white/10">{children}</ul>
-    </section>
-  );
-}
-
-function Row({ to, title, meta }: { to: string; title: string; meta: string }) {
-  return (
-    <li>
-      <Link to={to} className="flex flex-col sm:flex-row sm:items-center justify-between gap-0.5 sm:gap-3 py-3 group">
-        <span className="text-sm font-bold text-white truncate group-hover:text-primary transition-colors">{title}</span>
-        <span className="flex items-center gap-1 text-xs text-on-surface-variant sm:shrink-0">
-          {meta} <ArrowUpRight className="w-3.5 h-3.5" />
-        </span>
-      </Link>
-    </li>
-  );
-}
-
-// The owner's "what needs me today" screen: every list here is something a
-// person on the team has to act on, not a vanity chart.
+// Today: one list of everything someone on the team should deal with,
+// colour-tagged and most urgent first, then who's carrying what.
 export default function OpsOverview() {
   const [state, setState] = useState<LoadState>("loading");
   const [data, setData] = useState<OverviewData | null>(null);
+  const [toneFilter, setToneFilter] = useState<AttentionTone | "all">("all");
+  const [showAll, setShowAll] = useState(false);
 
   // isRefresh: live updates reload quietly, no spinner.
   const load = useCallback(async (isRefresh = false) => {
@@ -115,35 +94,31 @@ export default function OpsOverview() {
   }
 
   if (state === "error" || !data) {
-    return (
-      <div>
-        <ErrorBanner message="Couldn't load the overview. Try refreshing." />
-      </div>
-    );
+    return <ErrorBanner message="Couldn't load today's list. Try refreshing." />;
   }
 
   const { orgs, requests, onboardings, plans, leads, payments, subscriptions, orders, orderItems, comments, profiles } = data;
   const orgName = (id: string) => orgs.find((o) => o.id === id)?.name ?? "Unknown client";
   const today = localDateString();
-  const soon = localDateString(new Date(Date.now() + DUE_SOON_DAYS * 86400000));
-  const overdue = requests.filter((r) => r.due_date && r.due_date < today);
-  const dueSoon = requests.filter((r) => r.due_date && r.due_date >= today && r.due_date <= soon);
-  const unassigned = requests.filter((r) => !r.assigned_to);
-  const changesRequested = plans.filter((p) => p.status === "changes_requested");
-  const awaitingClient = plans.filter((p) => p.status === "sent" || p.status === "viewed");
+  const items = buildAttention({
+    openRequests: requests,
+    onboardings,
+    plans,
+    newLeads: leads,
+    comments,
+    profiles,
+    orgName,
+    today,
+    soon: localDateString(new Date(Date.now() + DUE_SOON_DAYS * 86400000)),
+    formatDate,
+    timeAgo,
+  });
+  const count = (tone: AttentionTone) => items.filter((i) => i.tone === tone).length;
+  const filtered = toneFilter === "all" ? items : items.filter((i) => i.tone === toneFilter);
+  const shown = showAll ? filtered : filtered.slice(0, LIST_LIMIT);
   const monthStart = new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
   const paidThisMonth = payments.filter((p) => p.created_at >= monthStart).reduce((sum, p) => sum + p.amount, 0);
-
   const mrr = mrrCents(orders, orderItems, subscriptions);
-
-  // A request needs a reply when its latest comment came from the client.
-  const roleById = new Map(profiles.map((p) => [p.id, p.role]));
-  const latestByRequest = new Map<string, Comment>();
-  comments.forEach((c) => latestByRequest.set(c.request_id, c));
-  const openById = new Map(requests.map((r) => [r.id, r]));
-  const awaitingReply = [...latestByRequest.values()]
-    .filter((c) => roleById.get(c.author_id) === "client" && openById.has(c.request_id))
-    .sort((a, b) => a.created_at.localeCompare(b.created_at));
 
   // Who's carrying what.
   const staff = profiles.filter((p) => (p.role === "internal" || p.role === "admin") && p.is_active !== false);
@@ -151,60 +126,14 @@ export default function OpsOverview() {
     .map((m) => ({
       member: m,
       open: requests.filter((r) => r.assigned_to === m.id).length,
-      late: requests.filter((r) => r.assigned_to === m.id && r.due_date && r.due_date < today).length,
+      // Same rule as the list: a piece with the client for review isn't late on us.
+      late: requests.filter((r) => r.assigned_to === m.id && r.stage !== "review" && r.due_date && r.due_date < today).length,
     }))
     .sort((a, b) => b.open - a.open);
 
-  const panels = [
-    {
-      title: "Clients waiting on a reply",
-      rows: awaitingReply.map((c) => {
-        const r = openById.get(c.request_id)!;
-        return <Row key={c.id} to={`/ops/requests/${r.id}`} title={r.title} meta={`${orgName(r.org_id)} · ${timeAgo(c.created_at)}`} />;
-      }),
-    },
-    {
-      title: "Overdue",
-      rows: overdue.map((r) => (
-        <Row key={r.id} to={`/ops/requests/${r.id}`} title={r.title} meta={`${orgName(r.org_id)} · was due ${formatDate(r.due_date)}`} />
-      )),
-    },
-    {
-      title: `Due in the next ${DUE_SOON_DAYS} days`,
-      rows: dueSoon.map((r) => (
-        <Row key={r.id} to={`/ops/requests/${r.id}`} title={r.title} meta={`${orgName(r.org_id)} · ${formatDate(r.due_date)}`} />
-      )),
-    },
-    {
-      title: "Plans with change requests",
-      rows: changesRequested.map((p) => (
-        <Row key={p.id} to={`/ops/admin/plans?org=${p.org_id}`} title={orgName(p.org_id)} meta={`v${p.version} · revise`} />
-      )),
-    },
-    {
-      title: "Onboarding to review",
-      rows: onboardings.map((o) => (
-        <Row key={o.id} to="/ops/onboarding" title={orgName(o.org_id)} meta={`submitted ${formatDate(o.submitted_at)}`} />
-      )),
-    },
-    {
-      title: "Unassigned work",
-      rows: unassigned.map((r) => <Row key={r.id} to={`/ops/requests/${r.id}`} title={r.title} meta={orgName(r.org_id)} />),
-    },
-    {
-      title: "Plans waiting on the client",
-      rows: awaitingClient.map((p) => (
-        <Row key={p.id} to={`/ops/clients/${p.org_id}`} title={orgName(p.org_id)} meta={`sent ${formatDate(p.sent_at)}`} />
-      )),
-    },
-  ];
-  // Only what needs attention gets a panel; the rest is one quiet line.
-  const active = panels.filter((p) => p.rows.length > 0);
-  const clear = panels.filter((p) => p.rows.length === 0).map((p) => p.title.toLowerCase());
-
   return (
     <div>
-      <PageHeader title="Overview" description="Everything that needs someone on the team today." />
+      <PageHeader title="Today" description="What needs the team, most urgent first. Tap anything to deal with it." />
 
       <StatStrip
         stats={[
@@ -214,27 +143,68 @@ export default function OpsOverview() {
             detail: <span className="text-on-surface-variant">{orgs.filter((o) => o.status === "active").length} active clients</span>,
           },
           { label: "Paid this month", value: formatCents(paidThisMonth) },
-          { label: "Open work", value: <Link to="/ops/board" className="hover:text-primary">{requests.length}</Link> },
+          { label: "Open work", value: <Link to="/ops/work" className="hover:text-primary">{requests.length}</Link> },
           { label: "New leads", value: <Link to="/ops/leads" className="hover:text-primary">{leads.length}</Link>, isAccent: leads.length > 0 },
         ]}
       />
 
-      {active.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-10 mb-10">
-          {active.map((p) => (
-            <Panel key={p.title} title={p.title} count={p.rows.length}>
-              {p.rows}
-            </Panel>
-          ))}
+      <section className="mb-14">
+        <div className="flex gap-1.5 overflow-x-auto no-scrollbar -mx-5 px-5 md:mx-0 md:px-0 mb-4" role="group" aria-label="Filter">
+          {(["all", ...TONE_ORDER] as const).map((tone) => {
+            const isActive = toneFilter === tone;
+            const n = tone === "all" ? items.length : count(tone);
+            return (
+              <button
+                key={tone}
+                type="button"
+                onClick={() => {
+                  setToneFilter(tone);
+                  setShowAll(false);
+                }}
+                aria-pressed={isActive}
+                className={`shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border transition-colors ${
+                  isActive ? "border-white/25 bg-white/10 text-white" : "border-white/10 text-on-surface-variant hover:text-white"
+                }`}
+              >
+                {tone !== "all" && <span className={`w-2 h-2 rounded-full ${TONE_STYLE[tone].dot}`} />}
+                {tone === "all" ? "Everything" : TONE_STYLE[tone].label}
+                <span className="font-normal opacity-70">{n}</span>
+              </button>
+            );
+          })}
         </div>
-      )}
-      {clear.length > 0 && (
-        <p className="text-sm text-on-surface-variant">
-          <span className="text-emerald-400 light:text-emerald-700 font-bold">All clear:</span> {clear.join(", ")}.
-        </p>
-      )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-x-12 gap-y-10 mt-12">
+        {filtered.length === 0 ? (
+          <div className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 px-5 py-6 text-sm font-bold text-white flex items-center gap-3">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" /> All caught up. Nothing here needs anyone right now.
+          </div>
+        ) : (
+          <ul className="divide-y divide-white/10 border-y border-white/10">
+            {shown.map((item) => (
+              <li key={item.id}>
+                <Link to={item.to} className="flex items-center gap-3 py-3.5 group">
+                  <span className={`w-2 h-2 rounded-full shrink-0 ${TONE_STYLE[item.tone].dot}`} aria-hidden />
+                  <span className="min-w-0 flex-1">
+                    <span className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <span className="text-sm font-bold text-white group-hover:text-primary transition-colors break-words">{item.title}</span>
+                      <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${TONE_STYLE[item.tone].chip}`}>{item.tag}</span>
+                    </span>
+                    <span className="block text-xs text-on-surface-variant mt-0.5">{item.meta}</span>
+                  </span>
+                  <ChevronRight className="w-4 h-4 text-on-surface-variant shrink-0" aria-hidden />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+        {filtered.length > LIST_LIMIT && (
+          <button type="button" onClick={() => setShowAll((v) => !v)} className="mt-3 text-xs font-bold text-on-surface-variant hover:text-white">
+            {showAll ? "Show fewer" : `Show all ${filtered.length}`}
+          </button>
+        )}
+      </section>
+
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] gap-x-12 gap-y-12">
         <section>
           <h2 className="font-bold text-white mb-2">Team workload</h2>
           {workload.length === 0 ? (
@@ -245,7 +215,7 @@ export default function OpsOverview() {
                 <li key={member.id} className="flex items-center justify-between gap-3 py-3">
                   <span className="text-sm font-bold text-white truncate min-w-0">{member.full_name ?? "Unnamed teammate"}</span>
                   <span className="text-xs text-on-surface-variant shrink-0">
-                    {open} open{late > 0 && <span className="text-error font-bold"> · {late} overdue</span>}
+                    {open} open{late > 0 && <span className="text-red-400 light:text-red-600 font-bold"> · {late} overdue</span>}
                   </span>
                 </li>
               ))}
@@ -254,7 +224,7 @@ export default function OpsOverview() {
         </section>
         <section>
           <h2 className="font-bold text-white mb-2">Live activity</h2>
-          <ActivityFeed linkFor={(id) => `/ops/requests/${id}`} orgNameById={orgNameById} limit={15} emptyText="Activity across all clients shows up here." />
+          <ActivityFeed linkFor={(id) => `/ops/work?item=${id}`} orgNameById={orgNameById} limit={10} emptyText="Activity across all clients shows up here." />
         </section>
       </div>
     </div>

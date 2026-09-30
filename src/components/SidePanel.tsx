@@ -1,12 +1,12 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { X } from "lucide-react";
 import { useLenis } from "lenis/react";
-import RequestDetail from "./RequestDetail";
 
-// A piece of work opens in a panel over the home page instead of a separate
-// page, so the client never loses their place. Esc, the backdrop or the X
-// closes it; focus moves in on open and back to where it was on close.
-export default function RequestDrawer({ id, onClose, onChanged }: { id: string; onClose: () => void; onChanged: () => void }) {
+// Detail opens in a panel over the page instead of a separate page, so
+// nobody loses their place (client home, staff Work). Esc, the backdrop or
+// the X closes it; focus moves in on open and back to where it was on close.
+// Full-screen on phones, like an app sheet.
+export default function SidePanel({ label, onClose, children }: { label: string; onClose: () => void; children: ReactNode }) {
   const closeRef = useRef<HTMLButtonElement>(null);
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
@@ -30,7 +30,7 @@ export default function RequestDrawer({ id, onClose, onChanged }: { id: string; 
   }, [lenis]);
 
   return (
-    <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label="Work details">
+    <div className="fixed inset-0 z-[60]" role="dialog" aria-modal="true" aria-label={label}>
       <button type="button" aria-label="Close" onClick={onClose} className="absolute inset-0 bg-black/50 cursor-default" />
       <div className="absolute inset-y-0 right-0 w-full sm:max-w-xl bg-background border-l border-white/10 shadow-2xl flex flex-col">
         <div className="flex items-center justify-end px-4 py-3 border-b border-white/10">
@@ -39,7 +39,7 @@ export default function RequestDrawer({ id, onClose, onChanged }: { id: string; 
           </button>
         </div>
         <div data-lenis-prevent className="flex-1 overflow-y-auto overscroll-contain px-5 sm:px-8 py-6">
-          <RequestDetail id={id} onChanged={onChanged} />
+          {children}
         </div>
       </div>
     </div>

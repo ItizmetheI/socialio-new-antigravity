@@ -1,54 +1,60 @@
-import { useEffect, useRef, type ReactNode } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import type { ReactNode } from "react";
+import { NavLink } from "react-router-dom";
+import type { LucideIcon } from "lucide-react";
 import NavBar from "./NavBar";
 
-export type NavItem = { to: string; label: string; end: boolean };
-export type NavSection = { heading?: string; items: NavItem[] };
+export type NavItem = { to: string; label: string; end: boolean; icon: LucideIcon };
 
 type Props = {
-  sections: NavSection[];
+  items: NavItem[];
   children: ReactNode;
 };
 
-const tabClass = ({ isActive }: { isActive: boolean }) =>
-  `px-3 py-3.5 text-sm whitespace-nowrap transition-colors border-b-2 ${
+const topTabClass = ({ isActive }: { isActive: boolean }) =>
+  `inline-flex items-center gap-2 px-3 py-3.5 text-sm whitespace-nowrap transition-colors border-b-2 ${
     isActive ? "border-primary text-white font-bold" : "border-transparent text-on-surface-variant hover:text-white"
   }`;
 
-// The dashboard lives inside the site: the normal top nav (with its
-// signed-in-only "Dashboard" link), then a sticky tab row for the
-// dashboard's own sections. Tabs scroll sideways on phones.
-export default function DashboardShell({ sections, children }: Props) {
-  const tabsRef = useRef<HTMLElement>(null);
-  const { pathname } = useLocation();
+const bottomTabClass = ({ isActive }: { isActive: boolean }) =>
+  `flex flex-col items-center justify-center gap-1 py-2 text-[11px] transition-colors ${
+    isActive ? "text-primary font-bold" : "text-on-surface-variant"
+  }`;
 
-  // On phones the tab row scrolls; keep the current tab in view.
-  useEffect(() => {
-    tabsRef.current?.querySelector('[aria-current="page"]')?.scrollIntoView({ inline: "center", block: "nearest" });
-  }, [pathname]);
-
+// The dashboard lives inside the site: the normal top nav, then the
+// dashboard's own sections — a sticky tab row on tablets and up, and an
+// app-style bottom bar on phones (thumb-reachable, like the future app).
+// Kept to 5 sections max so the bottom bar never crowds.
+export default function DashboardShell({ items, children }: Props) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-[calc(4.25rem+env(safe-area-inset-bottom))] md:pb-0">
       <NavBar />
-      <div className="sticky top-20 z-30 bg-background/95 backdrop-blur-md border-b border-white/10 mt-20">
-        <nav
-          ref={tabsRef}
-          aria-label="Dashboard sections"
-          className="max-w-7xl mx-auto px-2 md:px-3 flex items-center overflow-x-auto no-scrollbar -mb-px max-lg:[mask-image:linear-gradient(to_right,transparent,black_20px,black_calc(100%-20px),transparent)]"
-        >
-          {sections.map((section, i) => (
-            <div key={section.heading ?? i} className="flex items-center">
-              {i > 0 && <span aria-hidden className="w-px h-4 bg-white/15 mx-3" />}
-              {section.items.map(({ to, label, end }) => (
-                <NavLink key={to} to={to} end={end} className={tabClass}>
-                  {label}
-                </NavLink>
-              ))}
-            </div>
-          ))}
-        </nav>
+      <div className="mt-20">
+        <div className="hidden md:block sticky top-20 z-30 bg-background/95 backdrop-blur-md border-b border-white/10">
+          <nav aria-label="Dashboard sections" className="max-w-7xl mx-auto px-3 flex items-center gap-1 -mb-px">
+            {items.map(({ to, label, end, icon: Icon }) => (
+              <NavLink key={to} to={to} end={end} className={topTabClass}>
+                <Icon className="w-4 h-4" aria-hidden />
+                {label}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+        <main className="max-w-7xl mx-auto px-5 md:px-6 py-8 md:py-12">{children}</main>
       </div>
-      <main className="max-w-7xl mx-auto px-5 md:px-6 py-8 md:py-12">{children}</main>
+
+      <nav
+        aria-label="Dashboard sections"
+        className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-background/95 backdrop-blur-md border-t border-white/10 pb-[env(safe-area-inset-bottom)]"
+      >
+        <div className="grid" style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}>
+          {items.map(({ to, label, end, icon: Icon }) => (
+            <NavLink key={to} to={to} end={end} className={bottomTabClass}>
+              <Icon className="w-5 h-5" aria-hidden />
+              {label}
+            </NavLink>
+          ))}
+        </div>
+      </nav>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, Navigate, Outlet } from "react-router-dom";
-import DashboardShell from "../components/DashboardShell";
+import { House, UserRound } from "lucide-react";
+import DashboardShell, { type NavItem } from "../components/DashboardShell";
 import NavBar from "../components/NavBar";
 import { useAuth } from "../lib/auth/AuthContext";
 import { useCart } from "../context/CartContext";
@@ -16,9 +17,9 @@ export type ClientOutletContext = {
 // Clients get two pages: Home (all their work, plan and results) and Account
 // (billing, brand kit, login). Onboarding and plan approval are reached from
 // the home page's "next step" banner while they're pending.
-const NAV_ITEMS = [
-  { to: "/app", label: "Home", end: true },
-  { to: "/app/account", label: "Account", end: false },
+const NAV_ITEMS: NavItem[] = [
+  { to: "/app", label: "Home", end: true, icon: House },
+  { to: "/app/account", label: "Account", end: false, icon: UserRound },
 ];
 
 // Signed up but hasn't bought anything yet: no org to show. Used to bounce
@@ -75,7 +76,7 @@ function ClientLayoutInner() {
   }
 
   return (
-    <DashboardShell sections={[{ items: NAV_ITEMS }]}>
+    <DashboardShell items={NAV_ITEMS}>
       <Outlet context={{ orgId: profile.org_id, orgName: org?.name ?? "" } satisfies ClientOutletContext} />
     </DashboardShell>
   );

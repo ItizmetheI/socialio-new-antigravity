@@ -26,7 +26,6 @@ const Signup = lazy(() => import('./app/Signup'));
 const ForgotPassword = lazy(() => import('./app/ForgotPassword'));
 const SetPassword = lazy(() => import('./lib/auth/SetPassword'));
 const Checkout = lazy(() => import('./checkout/Checkout'));
-const OpsCalendar = lazy(() => import('./ops/OpsCalendar'));
 const CheckoutSuccess = lazy(() => import('./checkout/CheckoutSuccess'));
 const ClientLayout = lazy(() => import('./app/ClientLayout'));
 const DashboardHome = lazy(() => import('./app/DashboardHome'));
@@ -35,17 +34,13 @@ const PlanView = lazy(() => import('./app/PlanView'));
 const ProposalView = lazy(() => import('./app/ProposalView'));
 const AccountPage = lazy(() => import('./app/AccountPage'));
 const OpsLayout = lazy(() => import('./ops/OpsLayout'));
-const OpsBoard = lazy(() => import('./ops/OpsBoard'));
 const OpsOverview = lazy(() => import('./ops/OpsOverview'));
+const OpsWork = lazy(() => import('./ops/OpsWork'));
 const ClientsList = lazy(() => import('./ops/ClientsList'));
-const OnboardingReview = lazy(() => import('./ops/OnboardingReview'));
 const LeadsInbox = lazy(() => import('./ops/LeadsInbox'));
 const ClientDetail = lazy(() => import('./ops/ClientDetail'));
-const OpsRequestDetail = lazy(() => import('./ops/RequestDetail'));
-const OrgsAdmin = lazy(() => import('./ops/admin/OrgsAdmin'));
 const ProposalBuilder = lazy(() => import('./ops/admin/ProposalBuilder'));
 const PlanBuilder = lazy(() => import('./ops/admin/PlanBuilder'));
-const UsersAdmin = lazy(() => import('./ops/admin/UsersAdmin'));
 const EverythingPage = lazy(() => import('./ops/admin/everything/EverythingPage'));
 const RoleSwitcher = lazy(() => import('./lib/testMode/RoleSwitcher'));
 
@@ -121,6 +116,19 @@ function OpenRequestOnHome() {
   return <Navigate to={`/app?item=${id}`} replace />;
 }
 
+// /ops/requests/:id (activity feeds, notification links) → Work with that
+// piece open in the side panel.
+function OpenOpsRequest() {
+  const { id } = useParams();
+  return <Navigate to={`/ops/work?item=${id}`} replace />;
+}
+
+// Redirect that keeps the query string (e.g. ?org=… for the plan builder).
+function KeepSearch({ to }: { to: string }) {
+  const { search } = useLocation();
+  return <Navigate to={`${to}${search}`} replace />;
+}
+
 const DASHBOARD_PATH_PREFIXES = ['/app', '/ops', '/set-password', '/checkout'];
 
 function isDashboardPath(pathname: string): boolean {
@@ -168,19 +176,16 @@ function DashboardRoutes() {
         </Route>
         <Route path="/ops" element={<OpsLayout />}>
           <Route index element={<OpsOverview />} />
-          <Route path="board" element={<OpsBoard />} />
-          <Route path="calendar" element={<OpsCalendar />} />
+          <Route path="work" element={<OpsWork />} />
           <Route path="clients" element={<ClientsList />} />
+          <Route path="clients/plan" element={<PlanBuilder />} />
           <Route path="clients/:orgId" element={<ClientDetail />} />
-          <Route path="onboarding" element={<OnboardingReview />} />
           <Route path="leads" element={<LeadsInbox />} />
-          <Route path="admin/plans" element={<PlanBuilder />} />
-          <Route path="requests/:id" element={<OpsRequestDetail />} />
           <Route
-            path="admin/orgs"
+            path="admin"
             element={
               <RequireRole roles={['admin']}>
-                <OrgsAdmin />
+                <EverythingPage />
               </RequireRole>
             }
           />
@@ -192,22 +197,16 @@ function DashboardRoutes() {
               </RequireRole>
             }
           />
-          <Route
-            path="admin/everything"
-            element={
-              <RequireRole roles={['admin']}>
-                <EverythingPage />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="admin/users"
-            element={
-              <RequireRole roles={['admin']}>
-                <UsersAdmin />
-              </RequireRole>
-            }
-          />
+          {/* Staff side is Today / Work / Clients / Leads / Admin now; older
+              links and bookmarks land on the part that replaced them. */}
+          <Route path="board" element={<Navigate to="/ops/work" replace />} />
+          <Route path="calendar" element={<Navigate to="/ops/work" replace />} />
+          <Route path="requests/:id" element={<OpenOpsRequest />} />
+          <Route path="onboarding" element={<Navigate to="/ops/clients" replace />} />
+          <Route path="admin/plans" element={<KeepSearch to="/ops/clients/plan" />} />
+          <Route path="admin/orgs" element={<Navigate to="/ops/clients" replace />} />
+          <Route path="admin/everything" element={<Navigate to="/ops/admin" replace />} />
+          <Route path="admin/users" element={<Navigate to="/ops/admin?view=team" replace />} />
         </Route>
       </Routes>
     </Suspense>

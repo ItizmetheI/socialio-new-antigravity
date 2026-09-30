@@ -17,7 +17,8 @@ import { REQUEST_STAGES } from "../lib/database.types";
 import type { ClientOnboarding, PerformanceReport, Plan, Proposal, Request } from "../lib/database.types";
 import type { ClientOutletContext } from "./ClientLayout";
 import NewRequestForm from "./NewRequestForm";
-import RequestDrawer from "./RequestDrawer";
+import SidePanel from "../components/SidePanel";
+import RequestDetail from "./RequestDetail";
 
 type HomeData = {
   onboarding: ClientOnboarding | null;
@@ -320,7 +321,11 @@ export default function DashboardHome() {
         </section>
       )}
 
-      {openId && <RequestDrawer id={openId} onClose={closeItem} onChanged={() => load(true)} />}
+      {openId && (
+        <SidePanel label="Work details" onClose={closeItem}>
+          <RequestDetail id={openId} onChanged={() => load(true)} />
+        </SidePanel>
+      )}
     </div>
   );
 }

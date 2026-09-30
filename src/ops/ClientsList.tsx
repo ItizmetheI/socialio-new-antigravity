@@ -1,66 +1,75 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { ChevronRight, Plus, Search, X } from "lucide-react";
 import { supabase } from "../lib/supabase";
+import { useAuth } from "../lib/auth/AuthContext";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
-import ProposalStatusBadge, { PlanStatusBadge } from "../components/StatusBadge";
 import PageHeader from "../components/workspace/PageHeader";
 import { formatDate } from "../lib/format";
-import type { Organization, Proposal, Plan, Request } from "../lib/database.types";
+import InviteClientForm from "./admin/InviteClientForm";
+import { STATUS_DOT, STATUS_TONE, clientStatus, type ClientStatus } from "./clientStatus";
+import type { ClientOnboarding, Organization, Plan, Proposal, Request } from "../lib/database.types";
 
-type LoadState = "loading" | "error" | "ready";
+type ClientRow = { org: Organization; status: ClientStatus; openCount: number };
 
-type ClientRow = {
-  org: Organization;
-  latestPlan: Plan | null;
-  latestProposal: Proposal | null;
-  openCount: number;
-  reviewCount: number;
-  hasBrandKit: boolean;
-};
+const TONE_ORDER: ClientStatus["tone"][] = ["ours", "theirs", "good", "idle"];
 
+// Every client, sorted so the ones waiting on us come first. One chip says
+// whose move it is; tap a client for everything else.
 export default function ClientsList() {
-  const [state, setState] = useState<LoadState>("loading");
-  const [rows, setRows] = useState<ClientRow[]>([]);
+  const { profile } = useAuth();
+  const isAdmin = profile?.role === "admin";
+  const [rows, setRows] = useState<ClientRow[] | null>(null);
+  const [orgs, setOrgs] = useState<Organization[]>([]);
+  const [hasError, setHasError] = useState(false);
+  const [query, setQuery] = useState("");
+  const [isInviteOpen, setIsInviteOpen] = useState(false);
 
-  useEffect(() => {
-    let isMounted = true;
-    setState("loading");
-    Promise.all([
+  const load = useCallback(async () => {
+    const [orgsRes, onboardingRes, plansRes, proposalsRes, requestsRes] = await Promise.all([
       supabase.from("organizations").select("*").order("created_at", { ascending: false }),
-      supabase.from("plans").select("*").order("created_at", { ascending: false }),
+      supabase.from("client_onboarding").select("*"),
+      supabase.from("plans").select("*").neq("status", "superseded").order("created_at", { ascending: false }),
       supabase.from("proposals").select("*").order("created_at", { ascending: false }),
       supabase.from("requests").select("org_id, stage").neq("stage", "delivered"),
-      supabase.from("brand_kits").select("org_id"),
-    ]).then(([orgsRes, plansRes, proposalsRes, requestsRes, kitsRes]) => {
-      if (!isMounted) return;
-      if (orgsRes.error || plansRes.error || proposalsRes.error || requestsRes.error || kitsRes.error) {
-        setState("error");
-        return;
-      }
-      const organizations = (orgsRes.data ?? []) as Organization[];
-      const plans = (plansRes.data ?? []) as Plan[];
-      const proposals = (proposalsRes.data ?? []) as Proposal[];
-      const openRequests = (requestsRes.data ?? []) as Pick<Request, "org_id" | "stage">[];
-      const kitOrgIds = new Set(((kitsRes.data ?? []) as { org_id: string }[]).map((k) => k.org_id));
-      const clientRows = organizations.map((org) => ({
-        org,
-        latestPlan: plans.find((p) => p.org_id === org.id && p.status !== "superseded") ?? null,
-        latestProposal: proposals.find((p) => p.org_id === org.id) ?? null,
-        openCount: openRequests.filter((r) => r.org_id === org.id).length,
-        reviewCount: openRequests.filter((r) => r.org_id === org.id && r.stage === "review").length,
-        hasBrandKit: kitOrgIds.has(org.id),
-      }));
-      setRows(clientRows);
-      setState("ready");
-    });
-    return () => {
-      isMounted = false;
-    };
+    ]);
+    if (orgsRes.error || onboardingRes.error || plansRes.error || proposalsRes.error || requestsRes.error) {
+      setHasError(true);
+      return;
+    }
+    const organizations = (orgsRes.data ?? []) as Organization[];
+    const onboardings = (onboardingRes.data ?? []) as ClientOnboarding[];
+    const plans = (plansRes.data ?? []) as Plan[];
+    const proposals = (proposalsRes.data ?? []) as Proposal[];
+    const open = (requestsRes.data ?? []) as Pick<Request, "org_id" | "stage">[];
+    setOrgs(organizations);
+    setRows(
+      organizations
+        .map((org) => {
+          const mine = open.filter((r) => r.org_id === org.id);
+          return {
+            org,
+            openCount: mine.length,
+            status: clientStatus(
+              onboardings.find((o) => o.org_id === org.id),
+              plans.find((p) => p.org_id === org.id),
+              proposals.find((p) => p.org_id === org.id),
+              mine,
+            ),
+          };
+        })
+        .sort((a, b) => TONE_ORDER.indexOf(a.status.tone) - TONE_ORDER.indexOf(b.status.tone)),
+    );
   }, []);
 
-  if (state === "loading") {
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  if (hasError) return <ErrorBanner message="Couldn't load clients. Try refreshing." />;
+  if (!rows) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <Spinner />
@@ -68,86 +77,72 @@ export default function ClientsList() {
     );
   }
 
-  if (state === "error") {
-    return (
-      <div>
-        <ErrorBanner message="Couldn't load clients. Try refreshing." />
-      </div>
-    );
-  }
-
-  if (rows.length === 0) {
-    return (
-      <div>
-        <EmptyState title="No clients yet" description="New organizations show up here once created in Admin." />
-      </div>
-    );
-  }
+  const q = query.trim().toLowerCase();
+  const shown = q ? rows.filter((r) => r.org.name.toLowerCase().includes(q)) : rows;
 
   return (
     <div>
-      <PageHeader title="Clients" description={`${rows.length} ${rows.length === 1 ? "client" : "clients"}. Open one for their plan, work, brand kit and results.`} />
-      {/* Phones: one row per client instead of a sideways-scrolling table. */}
-      <ul className="md:hidden divide-y divide-white/10 border-y border-white/10">
-        {rows.map(({ org, latestPlan, latestProposal, openCount, reviewCount }) => (
-          <li key={org.id}>
-            <Link to={`/ops/clients/${org.id}`} className="flex items-center justify-between gap-4 py-4 group">
-              <span className="min-w-0">
-                <span className="block font-bold text-white group-hover:text-primary transition-colors truncate">{org.name}</span>
-                <span className="block text-xs text-on-surface-variant">
-                  {openCount} open{reviewCount ? ` · ${reviewCount} in review` : ""}
+      <PageHeader
+        title="Clients"
+        description={`${rows.length} ${rows.length === 1 ? "client" : "clients"}. Tap one for their plan, brief, work and billing.`}
+        action={
+          isAdmin && (
+            <button type="button" onClick={() => setIsInviteOpen((v) => !v)} className={isInviteOpen ? "btn-secondary" : "btn-primary"}>
+              {isInviteOpen ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />} {isInviteOpen ? "Close" : "Invite client"}
+            </button>
+          )
+        }
+      />
+
+      {isInviteOpen && <InviteClientForm orgs={orgs} onInvited={load} />}
+
+      {rows.length === 0 ? (
+        <EmptyState title="No clients yet" description={isAdmin ? "Invite your first client to get started." : "Clients show up here once an admin invites them or they check out."} />
+      ) : (
+        <>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6">
+            <label className="relative flex-1 sm:max-w-sm">
+              <span className="sr-only">Search clients</span>
+              <Search className="w-4 h-4 text-on-surface-variant absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search clients" className="field text-sm pl-10" />
+            </label>
+            <p className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-on-surface-variant sm:ml-auto">
+              {(
+                [
+                  ["ours", "Our move"],
+                  ["theirs", "Waiting on client"],
+                  ["good", "On track"],
+                ] as const
+              ).map(([tone, label]) => (
+                <span key={tone} className="inline-flex items-center gap-1.5">
+                  <span className={`w-2 h-2 rounded-full ${STATUS_DOT[tone]}`} /> {label}
                 </span>
-              </span>
-              <span className="shrink-0">
-                {latestPlan ? (
-                  <PlanStatusBadge status={latestPlan.status} />
-                ) : latestProposal ? (
-                  <ProposalStatusBadge status={latestProposal.status} />
-                ) : (
-                  <span className="text-xs text-on-surface-variant">No plan yet</span>
-                )}
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <div className="hidden md:block overflow-x-auto">
-        <table className="w-full text-sm min-w-[40rem]">
-          <thead>
-            <tr className="text-left text-xs text-on-surface-variant border-b border-white/10">
-              <th className="pb-3 font-normal">Client</th>
-              <th className="pb-3 font-normal text-right">Open work</th>
-              <th className="pb-3 font-normal text-right">In client review</th>
-              <th className="pb-3 pl-6 font-normal">Brand kit</th>
-              <th className="pb-3 font-normal text-right">Plan</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-white/10">
-            {rows.map(({ org, latestPlan, latestProposal, openCount, reviewCount, hasBrandKit }) => (
-              <tr key={org.id} className="group">
-                <td className="py-4 pr-4">
-                  <Link to={`/ops/clients/${org.id}`} className="font-bold text-white group-hover:text-primary transition-colors">
-                    {org.name}
-                  </Link>
-                  <div className="text-xs text-on-surface-variant">Joined {formatDate(org.created_at)}</div>
-                </td>
-                <td className="py-4 text-right text-white">{openCount}</td>
-                <td className={`py-4 text-right ${reviewCount ? "text-primary font-bold" : "text-on-surface-variant"}`}>{reviewCount}</td>
-                <td className={`py-4 pl-6 ${hasBrandKit ? "text-white" : "text-on-surface-variant"}`}>{hasBrandKit ? "Filled in" : "Not yet"}</td>
-                <td className="py-4 text-right">
-                  {latestPlan ? (
-                    <PlanStatusBadge status={latestPlan.status} />
-                  ) : latestProposal ? (
-                    <ProposalStatusBadge status={latestProposal.status} />
-                  ) : (
-                    <span className="text-xs text-on-surface-variant">No plan yet</span>
-                  )}
-                </td>
-              </tr>
+              ))}
+            </p>
+          </div>
+
+          {shown.length === 0 && <p className="text-sm text-on-surface-variant py-6">No clients match.</p>}
+          <ul className="divide-y divide-white/10 border-y border-white/10">
+            {shown.map(({ org, status, openCount }) => (
+              <li key={org.id}>
+                <Link to={`/ops/clients/${org.id}`} className="flex items-center gap-4 py-4 group">
+                  <span className="min-w-0 flex-1">
+                    <span className="block font-bold text-white group-hover:text-primary transition-colors truncate">{org.name}</span>
+                    <span className="block text-xs text-on-surface-variant">
+                      Since {formatDate(org.created_at)} · {openCount} open
+                    </span>
+                  </span>
+                  <span className={`shrink-0 inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full ${STATUS_TONE[status.tone]}`}>
+                    <span className={`w-1.5 h-1.5 rounded-full ${STATUS_DOT[status.tone]}`} />
+                    {status.label}
+                  </span>
+                  <ChevronRight className="w-4 h-4 text-on-surface-variant shrink-0" aria-hidden />
+                </Link>
+              </li>
             ))}
-          </tbody>
-        </table>
-      </div>
+          </ul>
+        </>
+      )}
     </div>
   );
 }

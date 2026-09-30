@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Spinner from "../../../components/Spinner";
 import ErrorBanner from "../../../components/ErrorBanner";
 import PageHeader from "../../../components/workspace/PageHeader";
@@ -11,12 +11,14 @@ import ClientsView from "./ClientsView";
 import TimelineView from "./TimelineView";
 import MoneyView from "./MoneyView";
 import AccountsView from "./AccountsView";
+import UsersAdmin from "../UsersAdmin";
 
 const VIEWS = [
   { key: "clients", label: "Clients" },
   { key: "timeline", label: "Timeline" },
   { key: "money", label: "Money" },
   { key: "accounts", label: "Accounts" },
+  { key: "team", label: "Team" },
 ] as const;
 type ViewKey = (typeof VIEWS)[number]["key"];
 
@@ -66,8 +68,8 @@ export default function EverythingPage() {
   return (
     <div>
       <PageHeader
-        title="Everything"
-        description="Every client, account, checkout, payment and piece of work on the site. Updates live."
+        title="Admin"
+        description="Every client, account, payment and action on the site, plus your team. Updates live."
         action={updatedAt && <span className="text-xs text-on-surface-variant">Updated {timeAgo(updatedAt.toISOString())}</span>}
       />
 
@@ -121,6 +123,15 @@ export default function EverythingPage() {
       {view === "timeline" && <TimelineView entries={timeline} orgs={data.orgs} />}
       {view === "money" && <MoneyView orders={data.orders} orderItems={data.orderItems} payments={data.payments} orgs={data.orgs} />}
       {view === "accounts" && <AccountsView users={data.users} orgs={data.orgs} />}
+      {view === "team" && <UsersAdmin />}
+
+      <p className="text-xs text-on-surface-variant mt-16">
+        Older clients from before plans existed use proposals:{" "}
+        <Link to="/ops/admin/proposals" className="text-primary hover:underline">
+          legacy proposals
+        </Link>
+        .
+      </p>
     </div>
   );
 }
