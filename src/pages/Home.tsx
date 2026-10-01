@@ -53,39 +53,69 @@ interface PortfolioItemData {
   category: "Social Posts" | "Short-Form" | "UGC";
   title: string;
   meta: string;
-  gradient: string;
+  gradient: string; // shown behind the video while it loads
   aspect: string;
+  video: string; // /videos/portfolio/<name>.mp4, with a matching .jpg poster
   stat?: string;
 }
 
-// Same gradient-tile language as the hero's feed cards — until real client
-// footage is hosted (needs Supabase Storage access), an honest placeholder
-// beats a hotlinked stock photo captioned to look like something it isn't.
+// Short, silent loops (Mixkit free-licence stock, trimmed and compressed to
+// ~100-400 KB each) showing the kind of content each service makes. Hosted
+// with the site, so no third-party requests and no CSP changes.
 const portfolioItems: PortfolioItemData[] = [
-  { id: "social", category: "Social Posts", title: "Social Media Campaign", meta: "Instagram & Facebook", gradient: "radial-gradient(120% 100% at 20% 15%, #6c4fa3 0%, #241a38 60%, #100c18 100%)", aspect: "aspect-[16/9]", stat: "+300% Engagement" },
-  { id: "short-1", category: "Short-Form", title: "The unboxing hook", meta: "TikTok · Reel", gradient: "radial-gradient(120% 100% at 75% 15%, #ff9169 0%, #a83e22 55%, #24100a 100%)", aspect: "aspect-[4/5]" },
-  { id: "short-2", category: "Short-Form", title: "Before / after cut", meta: "Reels · 0:18", gradient: "radial-gradient(120% 100% at 25% 85%, #4fc7c2 0%, #1c5f60 55%, #0a1e1e 100%)", aspect: "aspect-[4/5]" },
-  { id: "short-3", category: "Short-Form", title: "Founder POV", meta: "TikTok · 0:24", gradient: "radial-gradient(120% 100% at 80% 80%, #e2c1ff 0%, #6f4a99 55%, #1f1330 100%)", aspect: "aspect-[4/5]" },
-  { id: "ugc-1", category: "UGC", title: "Unboxing, unscripted", meta: "Creator-shot · Raw", gradient: "radial-gradient(120% 100% at 30% 20%, #ffd166 0%, #a86a1c 55%, #241804 100%)", aspect: "aspect-[16/9]" },
-  { id: "ugc-2", category: "UGC", title: "A day in the studio", meta: "Creator-shot · Raw", gradient: "radial-gradient(120% 100% at 70% 80%, #7fb8ff 0%, #2f5c94 55%, #0c1a2e 100%)", aspect: "aspect-[16/9]" },
+  { id: "social", category: "Social Posts", title: "Social Media Campaign", meta: "Instagram & Facebook", gradient: "radial-gradient(120% 100% at 20% 15%, #6c4fa3 0%, #241a38 60%, #100c18 100%)", aspect: "aspect-[16/9]", video: "/videos/portfolio/social-campaign", stat: "+300% Engagement" },
+  { id: "short-1", category: "Short-Form", title: "The unboxing hook", meta: "TikTok · Reel", gradient: "radial-gradient(120% 100% at 75% 15%, #ff9169 0%, #a83e22 55%, #24100a 100%)", aspect: "aspect-[4/5]", video: "/videos/portfolio/unboxing-hook" },
+  { id: "short-2", category: "Short-Form", title: "The glow-up reveal", meta: "Reels · Beauty", gradient: "radial-gradient(120% 100% at 25% 85%, #4fc7c2 0%, #1c5f60 55%, #0a1e1e 100%)", aspect: "aspect-[4/5]", video: "/videos/portfolio/makeup-reveal" },
+  { id: "short-3", category: "Short-Form", title: "Founder POV", meta: "TikTok · Talking head", gradient: "radial-gradient(120% 100% at 80% 80%, #e2c1ff 0%, #6f4a99 55%, #1f1330 100%)", aspect: "aspect-[4/5]", video: "/videos/portfolio/founder-pov" },
+  { id: "ugc-1", category: "UGC", title: "Phone-shot skincare routine", meta: "Creator-shot · Raw", gradient: "radial-gradient(120% 100% at 30% 20%, #ffd166 0%, #a86a1c 55%, #241804 100%)", aspect: "aspect-[16/9]", video: "/videos/portfolio/ugc-phone-shot" },
+  { id: "ugc-2", category: "UGC", title: "A day in the studio", meta: "Behind the scenes", gradient: "radial-gradient(120% 100% at 70% 80%, #7fb8ff 0%, #2f5c94 55%, #0c1a2e 100%)", aspect: "aspect-[16/9]", video: "/videos/portfolio/studio-day" },
 ];
 
-// Not a link and no video behind it yet — so no hover zoom or play button
-// pretending otherwise (same reasoning as the Examples page tiles).
-const PortfolioTile: React.FC<{ item: PortfolioItemData; className?: string }> = ({ item, className = "" }) => (
-  <div className={`bg-surface-container border border-white/10 p-2 md:p-6 rounded-2xl flex flex-col ${className}`}>
-    <div className={`overflow-hidden rounded-xl border border-white/5 relative mb-6 ${item.aspect}`}>
-      <div className="absolute inset-0" style={{ background: item.gradient }} />
-    </div>
-    <div className="flex justify-between items-start px-2">
-      <div>
-        <h3 className="text-base font-bold text-white mb-1">{item.title}</h3>
-        <p className="text-xs text-white/50 uppercase tracking-wide font-bold">{item.meta}</p>
+// Plays only while on screen (saves data and battery with six tiles on the
+// page) and never for people who ask for reduced motion: they see the poster.
+function PortfolioTile({ item, className = "" }: { item: PortfolioItemData; className?: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) video.play().catch(() => {});
+        else video.pause();
+      },
+      { threshold: 0.35 },
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div className={`bg-surface-container border border-white/10 p-2 md:p-6 rounded-2xl flex flex-col ${className}`}>
+      <div className={`overflow-hidden rounded-xl border border-white/5 relative mb-6 ${item.aspect}`}>
+        <div className="absolute inset-0" style={{ background: item.gradient }} />
+        <video
+          ref={videoRef}
+          src={`${item.video}.mp4`}
+          poster={`${item.video}.jpg`}
+          muted
+          loop
+          playsInline
+          preload="none"
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
       </div>
-      {item.stat && <div className="text-xs font-bold text-primary mt-1 px-3 py-1 bg-primary/10 rounded-full whitespace-nowrap">{item.stat}</div>}
+      <div className="flex justify-between items-start px-2">
+        <div>
+          <h3 className="text-base font-bold text-white mb-1">{item.title}</h3>
+          <p className="text-xs text-white/50 uppercase tracking-wide font-bold">{item.meta}</p>
+        </div>
+        {item.stat && <div className="text-xs font-bold text-primary mt-1 px-3 py-1 bg-primary/10 rounded-full whitespace-nowrap">{item.stat}</div>}
+      </div>
     </div>
-  </div>
-);
+  );
+}
 
 const FAQS = [
   { question: "How fast will I receive my content?", answer: "Most orders are delivered within 3 to 5 business days. Short-form video and UGC orders may take slightly longer depending on creator availability, but we always communicate timelines upfront." },
