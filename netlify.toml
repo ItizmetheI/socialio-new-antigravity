@@ -1,0 +1,16 @@
+# socialio.io is served by Netlify (Cloudflare Workers serves the same build
+# at the workers.dev address). Security headers live in public/_headers,
+# which both hosts read.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Single-page app: any path that isn't a real file (/pricing, /app/login,
+# links in account emails…) gets index.html and the app routes it.
+# Real files like /logo.png and /assets/* are served first because a
+# non-forced 200 rewrite only applies when no file matches.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
