@@ -186,6 +186,11 @@ export default function Signup() {
             >
               {isSubmitting ? "Creating account…" : "Create account"}
             </button>
+            <p className="text-xs text-on-surface-variant text-center -mt-1">
+              By creating an account you agree to our{" "}
+              <Link to="/terms" className="underline hover:text-white">Terms of Service</Link> and{" "}
+              <Link to="/privacy" className="underline hover:text-white">Privacy Policy</Link>.
+            </p>
           </form>
         </div>
 

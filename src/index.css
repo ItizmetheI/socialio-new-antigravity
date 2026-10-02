@@ -464,3 +464,19 @@ input[type="range"]::-moz-range-track {
     @apply block text-[11px] font-bold uppercase tracking-widest text-on-surface-variant mb-2;
   }
 }
+
+/* Terms / Privacy body text: bring back list bullets (the reset strips them)
+   and make bold lead-ins read as such. */
+.legal-body ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+  display: grid;
+  gap: 0.5rem;
+}
+.legal-body li::marker {
+  color: var(--color-primary);
+}
+.legal-body strong {
+  color: var(--color-white, #fff);
+  font-weight: 700;
+}

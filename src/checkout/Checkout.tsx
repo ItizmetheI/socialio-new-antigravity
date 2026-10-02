@@ -147,7 +147,8 @@ export default function Checkout() {
               )}
               <p className="text-xs text-on-surface-variant mt-4 text-center">
                 By paying you agree to our{" "}
-                <Link to="/terms" className="underline hover:text-white">terms</Link>.
+                <Link to="/terms" className="underline hover:text-white">Terms of Service</Link>, including automatic monthly renewal until you cancel,
+                and our <Link to="/privacy" className="underline hover:text-white">Privacy Policy</Link>.
               </p>
             </section>
 

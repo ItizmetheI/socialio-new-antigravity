@@ -10,7 +10,7 @@ const VIDEO_SERVICE_IDS = ["short-form-videos", "ugc-content"];
 
 const faqs = [
   { question: "How quickly will I receive my first delivery?", answer: "Within 3 to 5 business days of completing your onboarding brief." },
-  { question: "How many revisions do I get?", answer: "As many as you need until you're happy. We don't cap revisions." },
+  { question: "How many revisions do I get?", answer: "Unlimited revisions on anything that doesn't match the brief you approved. A brand-new idea or a changed brief counts as a new request." },
   { question: "Can I upgrade or downgrade my volume?", answer: "Yes. You can change your tier at the start of any new billing cycle." },
   { question: "Is there a contract?", answer: "No contracts. Cancel or pause anytime." },
 ];
@@ -261,7 +261,7 @@ export default function ServiceDetail() {
             <div className="flex flex-col gap-3 px-1">
               {[
                 "First delivery within 3–5 business days",
-                "Unlimited revisions until you're happy",
+                "Unlimited revisions within your brief",
                 "No contracts — cancel or pause anytime",
                 "14-day money-back guarantee",
               ].map((item, i) => (

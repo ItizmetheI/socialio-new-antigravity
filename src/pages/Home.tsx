@@ -59,16 +59,16 @@ interface PortfolioItemData {
   stat?: string;
 }
 
-// Short, silent loops (Mixkit free-licence stock, trimmed and compressed to
-// ~100-400 KB each) showing the kind of content each service makes. Hosted
-// with the site, so no third-party requests and no CSP changes.
+// Short, silent loops trimmed and compressed (~200-650 KB each). Hosted with
+// the site, so no third-party requests and no CSP changes. Vertical clips in
+// wide tiles sit centred over a blurred copy of themselves, the way social
+// platforms show them.
 const portfolioItems: PortfolioItemData[] = [
   { id: "social", category: "Social Posts", title: "Social Media Campaign", meta: "Instagram & Facebook", gradient: "radial-gradient(120% 100% at 20% 15%, #6c4fa3 0%, #241a38 60%, #100c18 100%)", aspect: "aspect-[16/9]", video: "/videos/portfolio/social-campaign", stat: "+300% Engagement" },
-  { id: "short-1", category: "Short-Form", title: "The unboxing hook", meta: "TikTok · Reel", gradient: "radial-gradient(120% 100% at 75% 15%, #ff9169 0%, #a83e22 55%, #24100a 100%)", aspect: "aspect-[4/5]", video: "/videos/portfolio/unboxing-hook" },
+  { id: "short-1", category: "Short-Form", title: "The unboxing hook", meta: "TikTok · Creator PR", gradient: "radial-gradient(120% 100% at 75% 15%, #ff9169 0%, #a83e22 55%, #24100a 100%)", aspect: "aspect-[4/5]", video: "/videos/portfolio/unboxing-hook" },
   { id: "short-2", category: "Short-Form", title: "The glow-up reveal", meta: "Reels · Beauty", gradient: "radial-gradient(120% 100% at 25% 85%, #4fc7c2 0%, #1c5f60 55%, #0a1e1e 100%)", aspect: "aspect-[4/5]", video: "/videos/portfolio/makeup-reveal" },
-  { id: "short-3", category: "Short-Form", title: "Founder POV", meta: "TikTok · Talking head", gradient: "radial-gradient(120% 100% at 80% 80%, #e2c1ff 0%, #6f4a99 55%, #1f1330 100%)", aspect: "aspect-[4/5]", video: "/videos/portfolio/founder-pov" },
-  { id: "ugc-1", category: "UGC", title: "Phone-shot skincare routine", meta: "Creator-shot · Raw", gradient: "radial-gradient(120% 100% at 30% 20%, #ffd166 0%, #a86a1c 55%, #241804 100%)", aspect: "aspect-[16/9]", video: "/videos/portfolio/ugc-phone-shot" },
-  { id: "ugc-2", category: "UGC", title: "A day in the studio", meta: "Behind the scenes", gradient: "radial-gradient(120% 100% at 70% 80%, #7fb8ff 0%, #2f5c94 55%, #0c1a2e 100%)", aspect: "aspect-[16/9]", video: "/videos/portfolio/studio-day" },
+  { id: "short-3", category: "Short-Form", title: "Founder POV", meta: "Reels · Real estate", gradient: "radial-gradient(120% 100% at 80% 80%, #e2c1ff 0%, #6f4a99 55%, #1f1330 100%)", aspect: "aspect-[4/5]", video: "/videos/portfolio/founder-pov" },
+  { id: "ugc-1", category: "UGC", title: "The menu walkthrough", meta: "Creator-shot · Restaurant", gradient: "radial-gradient(120% 100% at 30% 20%, #ffd166 0%, #a86a1c 55%, #241804 100%)", aspect: "aspect-[16/9] md:aspect-[21/9]", video: "/videos/portfolio/menu-walkthrough" },
 ];
 
 // Plays only while on screen (saves data and battery with six tiles on the
@@ -121,9 +121,9 @@ const FAQS = [
   { question: "How fast will I receive my content?", answer: "Most orders are delivered within 3 to 5 business days. Short-form video and UGC orders may take slightly longer depending on creator availability, but we always communicate timelines upfront." },
   { question: "Do I need to sign a long-term contract?", answer: "No. All plans are month-to-month. You can pause or cancel anytime with no penalties and no awkward conversations." },
   { question: "What do you need from me to get started?", answer: "After subscribing, you'll fill out a short onboarding questionnaire covering your brand voice, target audience, and content preferences. That's it — we handle the rest." },
-  { question: "Can I request revisions?", answer: "Yes. Every order includes revision rounds. If something doesn't feel right, just let us know and we'll fix it until it does." },
+  { question: "Can I request revisions?", answer: "Yes. Anything that doesn't match the brief you approved, we fix, with no limit on rounds. A new idea or a changed brief counts as a new request." },
   { question: "Do you manage my social media accounts?", answer: "Social Media Posts plans include scheduled posting — we can post for you once you grant access, or hand over ready-to-post files. Every other service is delivered as finished files to your dashboard." },
-  { question: "How does the money-back guarantee work?", answer: "If you're not satisfied with your first batch of content, contact us within 14 days of delivery and we'll issue a full refund. No hoops." },
+  { question: "How does the money-back guarantee work?", answer: "On your first order, if you're not satisfied with your first batch of content, tell us within 14 days of delivery and we'll refund that first payment in full. No hoops." },
   { question: "Can I buy multiple services at once?", answer: "Absolutely. Many clients stack services — for example, Social Media Posts paired with Short-Form Videos. Add multiple items to your cart and check out in one go." },
   { question: "What industries do you work with?", answer: "We've produced content for e-commerce brands, SaaS companies, local businesses, health and wellness brands, creators, and agencies. If you sell something, we can create content for it." }
 ];
@@ -349,8 +349,8 @@ export default function Home() {
 
             {(activePortfolioTab === 'Featured' || activePortfolioTab === 'UGC') && (
                <>
-                 {portfolioItems.filter(p => p.category === "UGC").map((item) => (
-                    <PortfolioTile key={item.id} item={item} className="md:col-span-6" />
+                 {portfolioItems.filter(p => p.category === "UGC").map((item, _i, ugc) => (
+                    <PortfolioTile key={item.id} item={item} className={ugc.length === 1 ? "md:col-span-12" : "md:col-span-6"} />
                  ))}
                </>
             )}
