@@ -6,7 +6,7 @@ export const servicesData = [
     description: "Branded graphics and copy delivered monthly — ready to post on Instagram, Facebook, LinkedIn, or X.",
     longDescription: "We handle everything — visuals, captions, hashtags, and scheduling. Your brand stays consistent and professional every single month without you lifting a finger.",
     sliderSteps: [
-      { label: "10 Posts", amount: 10, price: 79 },
+      { label: "10 Posts", amount: 10, price: 1 }, // TEMP live card test, restore to 79
       { label: "20 Posts", amount: 20, price: 179 },
       { label: "30 Posts", amount: 30, price: 279 },
     ],
