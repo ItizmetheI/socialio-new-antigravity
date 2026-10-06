@@ -125,6 +125,9 @@ Deno.serve(async (req: Request) => {
 
   const resolved: ResolvedLine[] = [];
   for (const item of body.items) {
+    if (!item || typeof item !== "object") {
+      return jsonResponse({ error: "Each cart item must be an object" }, 400);
+    }
     const line = resolveLine(item);
     if (!line) {
       return jsonResponse({ error: `Unrecognized cart item: ${item.serviceId} / ${item.levelLabel}` }, 400);
@@ -153,14 +156,24 @@ Deno.serve(async (req: Request) => {
     if (orgError || !newOrg) {
       return jsonResponse({ error: orgError?.message ?? "Failed to create organization" }, 500);
     }
-    orgId = newOrg.id;
-    const { error: linkError } = await adminClient
+    // Link only if still unlinked: two checkouts started at once (two tabs,
+    // a retry) would otherwise each create an org, and the second link would
+    // orphan the first — paying that session would activate an org the
+    // client can't see. The loser deletes its org and uses the winner's.
+    const { data: linked, error: linkError } = await adminClient
       .from("profiles")
-      .update({ org_id: orgId })
-      .eq("id", profile.id);
-    if (linkError) {
-      await adminClient.from("organizations").delete().eq("id", orgId);
-      return jsonResponse({ error: linkError.message }, 500);
+      .update({ org_id: newOrg.id })
+      .eq("id", profile.id)
+      .is("org_id", null)
+      .select("org_id");
+    if (linkError || !linked?.length) {
+      await adminClient.from("organizations").delete().eq("id", newOrg.id);
+      if (linkError) return jsonResponse({ error: linkError.message }, 500);
+      const { data: winner } = await adminClient.from("profiles").select("org_id").eq("id", profile.id).single();
+      if (!winner?.org_id) return jsonResponse({ error: "Failed to link organization" }, 500);
+      orgId = winner.org_id as string;
+    } else {
+      orgId = newOrg.id;
     }
   }
 
@@ -191,6 +204,7 @@ Deno.serve(async (req: Request) => {
     })),
   );
   if (itemsError) {
+    await adminClient.from("orders").delete().eq("id", order.id);
     return jsonResponse({ error: itemsError.message }, 500);
   }
 
