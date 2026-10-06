@@ -9,7 +9,7 @@ vi.mock("../lib/auth/AuthContext", () => ({ useAuth }));
 vi.mock("../lib/supabase", () => ({ supabase: { functions: { invoke: vi.fn() } } }));
 vi.mock("../components/NavBar", () => ({ default: () => null }));
 
-import Checkout from "./Checkout";
+import Checkout, { friendlyCheckoutError } from "./Checkout";
 
 const item = (id: string, price: number, type: CartItem["type"]): CartItem => ({
   id,
@@ -72,5 +72,12 @@ describe("Checkout", () => {
     renderCheckout();
     expect(screen.getByText("Pricing page")).toBeInTheDocument();
     expect(screen.queryByText("Checkout")).not.toBeInTheDocument();
+  });
+
+  it("shows cart problems as-is but turns server and network failures into a retry message", () => {
+    expect(friendlyCheckoutError("Unrecognized cart item: x / y", 400)).toBe("Unrecognized cart item: x / y");
+    expect(friendlyCheckoutError("Request rate limit exceeded", 502)).toMatch(/^Checkout is busy/);
+    expect(friendlyCheckoutError("Edge Function returned a non-2xx status code", 503)).toMatch(/^Checkout is busy/);
+    expect(friendlyCheckoutError("Failed to send a request to the Edge Function")).toMatch(/^Checkout is busy/);
   });
 });

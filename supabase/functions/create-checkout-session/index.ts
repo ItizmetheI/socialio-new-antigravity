@@ -88,6 +88,11 @@ Deno.serve(async (req: Request) => {
     global: { headers: { Authorization: authHeader } },
   });
   const { data: callerData, error: callerError } = await callerClient.auth.getUser();
+  // A 4xx from Auth means a bad/expired token; anything else (timeout, 5xx
+  // under load) is ours, so don't tell a signed-in customer to sign in again.
+  if (callerError && !(callerError.status && callerError.status >= 400 && callerError.status < 500)) {
+    return jsonResponse({ error: "Checkout is busy right now. Please try again in a few seconds." }, 503);
+  }
   if (callerError || !callerData.user) {
     return jsonResponse({ error: "Invalid session" }, 401);
   }
@@ -208,7 +213,8 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ error: itemsError.message }, 500);
   }
 
-  const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20", httpClient: Stripe.createFetchHttpClient() });
+  // Retries reuse an idempotency key, so a retried create never makes two sessions.
+  const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20", httpClient: Stripe.createFetchHttpClient(), maxNetworkRetries: 2 });
 
   const line_items = resolved.map((line) => ({
     price_data: {
@@ -253,6 +259,8 @@ Deno.serve(async (req: Request) => {
     .update({ stripe_checkout_session_id: session.id })
     .eq("id", order.id);
   if (sessionSaveError) {
+    // The customer never gets this URL, so don't leave a pending order behind.
+    await adminClient.from("orders").delete().eq("id", order.id);
     return jsonResponse({ error: sessionSaveError.message }, 500);
   }
 

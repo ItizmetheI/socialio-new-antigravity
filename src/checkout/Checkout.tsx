@@ -11,11 +11,17 @@ import { formatDollars } from "../lib/format";
 
 const SUPPORT_EMAIL = "support@socialio.io";
 
-// The Edge Function answers this until the Stripe keys are configured.
-const friendlyCheckoutError = (message: string) =>
-  /missing required env vars/i.test(message)
-    ? `Online payments aren't switched on yet. Email ${SUPPORT_EMAIL} and we'll get you started today.`
-    : message;
+const BUSY = `Checkout is busy right now. Please try again in a few seconds. If it keeps happening, email ${SUPPORT_EMAIL}.`;
+
+// Cart and account problems (4xx) are worth showing as-is; a server, Stripe
+// or network failure (5xx, or no response at all) only ever needs "try again".
+export const friendlyCheckoutError = (message: string, status?: number) => {
+  // The Edge Function answers this until the Stripe keys are configured.
+  if (/missing required env vars/i.test(message)) {
+    return `Online payments aren't switched on yet. Email ${SUPPORT_EMAIL} and we'll get you started today.`;
+  }
+  return status !== undefined && status < 500 ? message : BUSY;
+};
 
 const TRUST_POINTS = [
   { icon: Lock, title: "Paid on Stripe", body: "You pay on Stripe's secure checkout page. Your card details never touch our servers." },
@@ -40,6 +46,7 @@ export default function Checkout() {
       // supabase-js puts the function's JSON error body on invokeError.context.
       let message = data?.error ?? invokeError?.message ?? "Couldn't start checkout. Try again.";
       const context = (invokeError as { context?: Response } | null)?.context;
+      const status = context instanceof Response ? context.status : undefined;
       if (context && typeof context.json === "function") {
         try {
           message = ((await context.json()) as { error?: string }).error ?? message;
@@ -48,7 +55,7 @@ export default function Checkout() {
         }
       }
       setIsRedirecting(false);
-      setError(friendlyCheckoutError(message));
+      setError(friendlyCheckoutError(message, status));
       return;
     }
     window.location.href = data.url;
