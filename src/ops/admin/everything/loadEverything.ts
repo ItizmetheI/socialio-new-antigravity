@@ -111,6 +111,10 @@ const ACTIVITY_TYPE: Record<ActivityEvent["kind"], TimelineEntry["type"]> = {
   plan_approved: "plan",
   plan_changes_requested: "plan",
   payment_received: "money",
+  subscription_started: "money",
+  subscription_canceling: "money",
+  subscription_resumed: "money",
+  subscription_ended: "money",
 };
 
 // Every "who did what, when" source merged into one newest-first list:

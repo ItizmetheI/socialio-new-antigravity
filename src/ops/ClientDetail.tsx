@@ -15,6 +15,7 @@ import StatStrip from "../components/workspace/StatStrip";
 import BrandKitEditor from "../components/workspace/BrandKitEditor";
 import LedgerLines from "../components/workspace/LedgerLines";
 import { computeLedger, loadLedgerData, type LedgerData } from "../components/workspace/LedgerData";
+import ClientAccess from "./ClientAccess";
 import ResultsEditor from "./ResultsEditor";
 import { PlanStatusBadge } from "../components/StatusBadge";
 import { formatCents, formatDate, formatDollars } from "../lib/format";
@@ -52,6 +53,7 @@ const SECTIONS = [
   { key: "work", label: "Work" },
   { key: "plan", label: "Plan & billing" },
   { key: "brief", label: "Brief & brand" },
+  { key: "access", label: "Access" },
   { key: "results", label: "Results" },
 ] as const;
 type SectionKey = (typeof SECTIONS)[number]["key"];
@@ -108,7 +110,7 @@ async function loadClient(orgId: string): Promise<ClientData | null> {
   };
 }
 
-// One client, everything about them, split into five sections so each
+// One client, everything about them, split into six sections so each
 // screen stays short (and maps 1:1 to a future app screen). A callout at
 // the top says the one thing the team should do next for this client.
 export default function ClientDetail() {
@@ -422,6 +424,12 @@ export default function ClientDetail() {
             <BrandKitEditor orgId={org.id} />
           </Section>
         </div>
+      )}
+
+      {section === "access" && (
+        <Section title="Their social logins">
+          <ClientAccess orgId={org.id} />
+        </Section>
       )}
 
       {section === "results" && (

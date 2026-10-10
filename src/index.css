@@ -87,10 +87,9 @@
   /* Fallback sizes if not using full text utilities, but standard setup maps these differently. We'll use text- classes that combine these later */
 }
 
-/* Light theme — overrides the dark values above when the toggle (ThemeContext)
-   sets data-theme="light" on <html>. Deliberately NOT prefers-color-scheme-driven:
-   this site's brand identity is dark-first, so system preference is ignored and
-   the toggle is the only way in; default with no attribute stays dark.
+/* Light theme — the site's only theme. index.html hard-codes data-theme="light"
+   on <html>; there is no toggle and system dark mode is ignored. (The dark
+   values above are the base tokens these override.)
 
    --color-white and --color-black are the reason a toggle this late in the
    project is safe at all: the vast majority of the codebase (296+ text-white,

@@ -5,7 +5,6 @@ import CartDrawer from "./CartDrawer";
 import { useState, useEffect, useRef } from "react";
 import { servicesData } from "../data/services";
 import Logo from "./Logo";
-import ThemeToggle from "./ThemeToggle";
 import NotificationBell from "./NotificationBell";
 import { useAuth } from "../lib/auth/AuthContext";
 
@@ -43,11 +42,9 @@ function AccountMenu({ name, role, onSignOut }: { name: string; role: string; on
             <div className="text-sm font-bold text-white truncate">{name || "Your account"}</div>
             <div className="text-xs text-on-surface-variant capitalize">{role === "internal" ? "Team" : role}</div>
           </div>
-          {role === "client" && (
-            <Link to="/app/account#profile" onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-on-surface-variant hover:text-white hover:bg-white/5">
-              <Settings className="w-4 h-4" /> Account
-            </Link>
-          )}
+          <Link to={accountPathFor(role)} onClick={() => setIsOpen(false)} className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-on-surface-variant hover:text-white hover:bg-white/5">
+            <Settings className="w-4 h-4" /> Account & password
+          </Link>
           <button onClick={onSignOut} className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-on-surface-variant hover:text-white hover:bg-white/5">
             <LogOut className="w-4 h-4" /> Sign out
           </button>
@@ -56,6 +53,9 @@ function AccountMenu({ name, role, onSignOut }: { name: string; role: string; on
     </div>
   );
 }
+
+// Clients keep theirs on the Account page; staff have their own under /ops.
+const accountPathFor = (role: string | undefined) => (role === "client" ? "/app/account#profile" : "/ops/account");
 
 export default function NavBar() {
   const { pathname } = useLocation();
@@ -142,9 +142,6 @@ export default function NavBar() {
             )}
           </div>
           <div className="flex items-center gap-3 lg:gap-5">
-            <div className="hidden lg:block">
-              <ThemeToggle />
-            </div>
             <button
               onClick={() => setIsCartOpen(true)}
               aria-label={`Cart (${items.length} item${items.length === 1 ? "" : "s"})`}
@@ -254,6 +251,9 @@ export default function NavBar() {
                   <Link to={dashboardHome} className="btn-primary">
                     Dashboard
                   </Link>
+                  <Link to={accountPathFor(profile?.role)} className="btn-secondary">
+                    Account & password
+                  </Link>
                   <button onClick={handleSignOut} className="btn-secondary">
                     Sign out
                   </button>
@@ -269,11 +269,6 @@ export default function NavBar() {
                 </>
               )}
 
-              <div className="h-[1px] bg-white/10 my-2 w-full"></div>
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-bold text-on-surface-variant">Theme</span>
-                <ThemeToggle />
-              </div>
            </div>
         </div>
       </nav>

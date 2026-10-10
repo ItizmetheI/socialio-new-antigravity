@@ -8,6 +8,7 @@ import NavBar from "../components/NavBar";
 import ErrorBanner from "../components/ErrorBanner";
 import Spinner from "../components/Spinner";
 import { formatDollars } from "../lib/format";
+import { readFunctionError } from "../lib/functionError";
 
 const SUPPORT_EMAIL = "support@socialio.io";
 
@@ -43,17 +44,7 @@ export default function Checkout() {
       { body: { items: items.map(({ serviceId, levelLabel, type }) => ({ serviceId, levelLabel, type })) } },
     );
     if (invokeError || !data?.url) {
-      // supabase-js puts the function's JSON error body on invokeError.context.
-      let message = data?.error ?? invokeError?.message ?? "Couldn't start checkout. Try again.";
-      const context = (invokeError as { context?: Response } | null)?.context;
-      const status = context instanceof Response ? context.status : undefined;
-      if (context && typeof context.json === "function") {
-        try {
-          message = ((await context.json()) as { error?: string }).error ?? message;
-        } catch {
-          // keep the generic message
-        }
-      }
+      const { message, status } = await readFunctionError(invokeError, data, "Couldn't start checkout. Try again.");
       setIsRedirecting(false);
       setError(friendlyCheckoutError(message, status));
       return;
@@ -117,7 +108,7 @@ export default function Checkout() {
               </div>
               {monthly.length > 0 && (
                 <p className="text-sm text-on-surface-variant mb-6">
-                  Then {formatDollars(monthlyTotal)}/month for your services. Change or cancel by email; it applies from your next billing cycle.
+                  Then {formatDollars(monthlyTotal)}/month, billed monthly. Cancel any time from your account; the month you've paid for still runs to the end.
                 </p>
               )}
 

@@ -6,8 +6,9 @@ import { useAuth } from "../lib/auth/AuthContext";
 import ErrorBanner from "../components/ErrorBanner";
 
 
-// Account page section: name, email and password.
-export default function ProfileSection({ orgName }: { orgName: string }) {
+// Account page section: name, email and password. Staff have no org, so
+// they leave orgName out and the Organization row isn't shown.
+export default function ProfileSection({ orgName }: { orgName?: string }) {
   const { profile, session } = useAuth();
   const [fullName, setFullName] = useState(profile?.full_name ?? "");
   const [isSaving, setIsSaving] = useState(false);
@@ -66,10 +67,12 @@ export default function ProfileSection({ orgName }: { orgName: string }) {
   return (
     <div className="grid lg:grid-cols-2 gap-6 items-start">
       <div className="bg-surface-container border border-white/10 rounded-2xl p-5 md:p-6">
-        <div className="mb-6">
-          <div className="field-label mb-1">Organization</div>
-          <div className="text-white font-bold">{orgName || "—"}</div>
-        </div>
+        {orgName !== undefined && (
+          <div className="mb-6">
+            <div className="field-label mb-1">Organization</div>
+            <div className="text-white font-bold">{orgName || "—"}</div>
+          </div>
+        )}
         <div className="mb-6">
           <div className="field-label mb-1">Email</div>
           <div className="text-white font-bold break-all">{session?.user.email}</div>

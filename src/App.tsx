@@ -12,7 +12,6 @@ import Home from './pages/Home';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 import { CartProvider } from './context/CartContext';
-import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './lib/auth/AuthContext';
 import RequireRole from './lib/auth/RequireRole';
 import { TEST_MODE } from './lib/testMode/flag';
@@ -42,6 +41,7 @@ const ClientDetail = lazy(() => import('./ops/ClientDetail'));
 const ProposalBuilder = lazy(() => import('./ops/admin/ProposalBuilder'));
 const PlanBuilder = lazy(() => import('./ops/admin/PlanBuilder'));
 const EverythingPage = lazy(() => import('./ops/admin/everything/EverythingPage'));
+const StaffAccount = lazy(() => import('./ops/StaffAccount'));
 const RoleSwitcher = lazy(() => import('./lib/testMode/RoleSwitcher'));
 
 // Home is the landing page and stays in the main bundle; every other
@@ -181,6 +181,7 @@ function DashboardRoutes() {
           <Route path="clients/plan" element={<PlanBuilder />} />
           <Route path="clients/:orgId" element={<ClientDetail />} />
           <Route path="leads" element={<LeadsInbox />} />
+          <Route path="account" element={<StaffAccount />} />
           <Route
             path="admin"
             element={
@@ -238,15 +239,13 @@ function AppShell() {
 export default function App() {
   return (
     <ReactLenis root>
-      <ThemeProvider>
-        <BrowserRouter>
-          <AuthProvider>
-            <CartProvider>
-              <AppShell />
-            </CartProvider>
-          </AuthProvider>
-        </BrowserRouter>
-      </ThemeProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <CartProvider>
+            <AppShell />
+          </CartProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </ReactLenis>
   );
 }

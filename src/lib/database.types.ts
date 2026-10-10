@@ -176,6 +176,7 @@ export interface Order {
   stripe_subscription_id: string | null;
   created_at: string;
   paid_at: string | null;
+  confirmation_email_sent_at?: string | null; // schema_subscription_lifecycle.sql
 }
 
 export interface OrderItem {
@@ -304,7 +305,12 @@ export type ActivityKind =
   | "plan_sent"
   | "plan_approved"
   | "plan_changes_requested"
-  | "payment_received";
+  | "payment_received"
+  // schema_subscription_lifecycle.sql
+  | "subscription_started"
+  | "subscription_canceling"
+  | "subscription_resumed"
+  | "subscription_ended";
 
 export interface ActivityEvent {
   id: number;
@@ -314,5 +320,38 @@ export interface ActivityEvent {
   request_id: string | null;
   summary: string;
   is_internal: boolean;
+  created_at: string;
+}
+
+// ---- Social account logins (schema_social_access.sql) ----------------------
+// The password is never in these rows: it's encrypted server-side and only
+// the social-access Edge Function can reveal it (staff only, logged).
+export type SocialPlatform = Platform | "other";
+export type SocialLoginStatus = "submitted" | "working" | "not_working";
+
+export interface SocialLogin {
+  id: string;
+  org_id: string;
+  platform: SocialPlatform;
+  label: string | null;
+  username: string;
+  status: SocialLoginStatus;
+  status_note: string | null;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+  last_revealed_at: string | null;
+  last_revealed_by: string | null;
+}
+
+export interface SocialLoginEvent {
+  id: number;
+  login_id: string | null;
+  org_id: string | null;
+  actor_id: string | null;
+  action: "saved" | "updated" | "removed" | "revealed" | "status" | "unlocked" | "unlock_failed" | "blocked";
+  detail: string | null;
+  ip?: string | null;
+  user_agent?: string | null;
   created_at: string;
 }

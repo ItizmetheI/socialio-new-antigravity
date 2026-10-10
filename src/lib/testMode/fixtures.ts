@@ -17,6 +17,7 @@ import type {
   Subscription,
   Payment,
 } from "../database.types";
+import { demo } from "./demoCompanies";
 
 export const TEST_STAFF_ID = "staff-priya";
 
@@ -504,3 +505,38 @@ export const mockActivityEvents: ActivityEvent[] = [
   { id: 2, org_id: ORG_NORTHWIND_ID, actor_id: null, kind: "payment_received", request_id: null, summary: "Payment received: 79.00 USD", is_internal: false, created_at: new Date(Date.now() - 4 * 86400000).toISOString() },
   { id: 1, org_id: ORG_NORTHWIND_ID, actor_id: null, kind: "plan_approved", request_id: null, summary: "Plan v1 approved", is_internal: false, created_at: new Date(Date.now() - 6 * 86400000).toISOString() },
 ];
+
+// Aurora and Northwind were written against late September 2026. Slide their
+// dates forward by whole days so the demo always reads as "this month"
+// (renewals ahead, due dates near) instead of everything turning overdue.
+const SHIFT_DAYS = Math.max(0, Math.floor((Date.now() - Date.parse("2026-09-22T00:00:00Z")) / 86400000));
+const DATE_FIELDS = ["created_at", "updated_at", "due_date", "publish_at", "responded_at", "submitted_at", "reviewed_at", "sent_at", "viewed_at", "paid_at", "current_period_end"];
+const shiftDate = (v: string) => {
+  const moved = new Date(Date.parse(v) + SHIFT_DAYS * 86400000).toISOString();
+  return v.length === 10 ? moved.slice(0, 10) : moved;
+};
+for (const rows of [mockOrganizations, mockProposals, mockRequests, mockComments, mockClientOnboarding, mockPlans, mockPlanFeedback, mockDeliverables, mockOrders, mockSubscriptions, mockPayments] as unknown as Record<string, unknown>[][]) {
+  for (const row of rows) {
+    for (const field of DATE_FIELDS) {
+      if (typeof row[field] === "string") row[field] = shiftDate(row[field] as string);
+    }
+  }
+}
+
+// The rest of the agency (demoCompanies.ts): six more clients with their own
+// plans, work, payments, results and history.
+mockOrganizations.push(...demo.organizations);
+mockProfiles.push(...demo.profiles);
+mockClientOnboarding.push(...demo.onboarding);
+mockPlans.push(...demo.plans);
+mockPlanItems.push(...demo.planItems);
+mockOrders.push(...demo.orders);
+mockOrderItems.push(...demo.orderItems);
+mockSubscriptions.push(...demo.subscriptions);
+mockPayments.push(...demo.payments);
+mockRequests.push(...demo.requests);
+mockDeliverables.push(...demo.deliverables);
+mockComments.push(...demo.comments);
+mockPerformanceReports.push(...demo.reports);
+mockActivityEvents.push(...demo.activity);
+mockActivityEvents.sort((a, b) => b.created_at.localeCompare(a.created_at));

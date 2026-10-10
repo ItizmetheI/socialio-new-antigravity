@@ -24,6 +24,188 @@ import {
   mockPayments,
 } from "./fixtures";
 import { getStoredTestIdentityKey, TEST_IDENTITIES } from "./testAuth";
+import { demo, DEMO_LEADS, DEMO_NEWSLETTER, DEMO_SOCIAL_EVENTS, DEMO_SOCIAL_LOGINS, DEMO_SOCIAL_SECRETS, DEMO_STAFF_ACCOUNTS } from "./demoCompanies";
+import { planForSubscription } from "../subscriptionPlan";
+import { formatCents, formatDate } from "../format";
+import type { ActivityEvent, Order, OrderItem, SocialLogin, SocialLoginEvent } from "../database.types";
+
+// Demo version of the manage-subscription Edge Function + its database
+// trigger: flips cancel_at_period_end and logs the same activity event, so
+// the owner's dashboard notice shows up when the demo client cancels.
+// Switching demo role reloads the page (fixtures reset), so these changes are
+// replayed from sessionStorage: "client cancels -> owner sees it" works.
+const DEMO_SUBS_KEY = "socialio-demo-subscription-changes";
+type DemoSubChange = { subscriptionId: string; cancel: boolean; event: ActivityEvent };
+
+function readDemoSubChanges(): DemoSubChange[] {
+  try {
+    return JSON.parse(sessionStorage.getItem(DEMO_SUBS_KEY) ?? "[]") as DemoSubChange[];
+  } catch {
+    return [];
+  }
+}
+
+for (const change of readDemoSubChanges()) {
+  const sub = mockSubscriptions.find((s) => s.id === change.subscriptionId);
+  if (sub) sub.cancel_at_period_end = change.cancel;
+  if (!mockActivityEvents.some((e) => e.id === change.event.id)) mockActivityEvents.unshift(change.event);
+}
+
+// Demo logins added/changed in this browser tab survive the role switch
+// (which reloads the page), so "client adds it -> team sees it" works.
+const DEMO_SOCIAL_KEY = "socialio-demo-social-logins";
+function saveDemoSocial() {
+  try {
+    sessionStorage.setItem(
+      DEMO_SOCIAL_KEY,
+      JSON.stringify({ logins: DEMO_SOCIAL_LOGINS, events: DEMO_SOCIAL_EVENTS, secrets: [...DEMO_SOCIAL_SECRETS] }),
+    );
+  } catch {
+    // storage blocked: changes last until the next reload
+  }
+}
+try {
+  const saved = JSON.parse(sessionStorage.getItem(DEMO_SOCIAL_KEY) ?? "null") as {
+    logins: SocialLogin[];
+    events: SocialLoginEvent[];
+    secrets: [string, { password: string; notes: string }][];
+  } | null;
+  if (saved) {
+    DEMO_SOCIAL_LOGINS.splice(0, DEMO_SOCIAL_LOGINS.length, ...saved.logins);
+    DEMO_SOCIAL_EVENTS.splice(0, DEMO_SOCIAL_EVENTS.length, ...saved.events);
+    DEMO_SOCIAL_SECRETS.clear();
+    saved.secrets.forEach(([id, s]) => DEMO_SOCIAL_SECRETS.set(id, s));
+  }
+} catch {
+  // nothing saved
+}
+
+let demoVaultUnlocked = false;
+
+// Demo version of the social-access Edge Function. Same rules (clients: own
+// org, save/remove only; staff: also reveal + status), but the "vault" is an
+// in-memory map of obviously fake passwords.
+function mockSocialAccess(body: Record<string, unknown>) {
+  const viewer = getStoredTestIdentityKey();
+  const me = viewer ? TEST_IDENTITIES[viewer] : null;
+  if (!me) return { data: null, error: { message: "Invalid session" } };
+  const isStaff = me.role !== "client";
+  const logins = DEMO_SOCIAL_LOGINS;
+  const now = new Date().toISOString();
+  const find = (id: unknown) => logins.find((l) => l.id === id && (isStaff || l.org_id === me.orgId));
+  const log = (l: SocialLogin, action: SocialLoginEvent["action"], detail?: string) =>
+    DEMO_SOCIAL_EVENTS.unshift({
+      id: Math.max(0, ...DEMO_SOCIAL_EVENTS.map((e) => e.id)) + 1,
+      login_id: l.id,
+      org_id: l.org_id,
+      actor_id: me.id,
+      action,
+      detail: detail ?? `${l.platform} · ${l.username}`,
+      created_at: now,
+    });
+
+  if (body.action === "save") {
+    const fields = {
+      platform: body.platform as SocialLogin["platform"],
+      label: (body.label as string | null) || null,
+      username: String(body.username ?? "").trim(),
+    };
+    if (!fields.username) return { data: { error: "Enter the username or email you log in with" }, error: null };
+    const existing = find(body.id);
+    if (existing) {
+      Object.assign(existing, fields, { status: "submitted", status_note: null, updated_at: now });
+      if (body.password) {
+        const oldNotes = DEMO_SOCIAL_SECRETS.get(existing.id)?.notes ?? "";
+        DEMO_SOCIAL_SECRETS.set(existing.id, { password: String(body.password), notes: typeof body.notes === "string" ? body.notes : oldNotes });
+      }
+      log(existing, "updated");
+      return { data: { id: existing.id }, error: null };
+    }
+    if (!body.password) return { data: { error: "Enter the password" }, error: null };
+    const row: SocialLogin = {
+      id: nextId("login"),
+      org_id: isStaff ? String(body.orgId) : String(me.orgId),
+      ...fields,
+      status: "submitted",
+      status_note: null,
+      created_by: me.id,
+      created_at: now,
+      updated_at: now,
+      last_revealed_at: null,
+      last_revealed_by: null,
+    };
+    logins.push(row);
+    DEMO_SOCIAL_SECRETS.set(row.id, { password: String(body.password), notes: String(body.notes ?? "") });
+    log(row, "saved");
+    return { data: { id: row.id }, error: null };
+  }
+
+  if (body.action === "unlock") {
+    if (!isStaff) return { data: { error: "Only the Socialio team can do that" }, error: null };
+    if (!body.password) return { data: { error: "That password isn't right." }, error: null };
+    demoVaultUnlocked = true; // demo: any password works
+    return { data: { unlocked_until: new Date(Date.now() + 600000).toISOString() }, error: null };
+  }
+  const row = find(body.id);
+  if (!row) return { data: { error: "Login not found" }, error: null };
+  if (body.action === "remove") {
+    log(row, "removed");
+    logins.splice(logins.indexOf(row), 1);
+    return { data: { ok: true }, error: null };
+  }
+  if (!isStaff) return { data: { error: "Only the Socialio team can do that" }, error: null };
+  if (body.action === "reveal") {
+    if (!demoVaultUnlocked) return { data: { error: "Confirm your password to open the vault.", code: "vault_locked" }, error: null };
+    row.last_revealed_at = now;
+    row.last_revealed_by = me.id;
+    log(row, "revealed");
+    return { data: DEMO_SOCIAL_SECRETS.get(row.id) ?? { password: "demo-password-not-real", notes: "" }, error: null };
+  }
+  if (body.action === "set_status") {
+    row.status = body.status as SocialLogin["status"];
+    row.status_note = (body.note as string) || null;
+    log(row, "status", `${row.platform}: ${row.status}`);
+    return { data: { ok: true }, error: null };
+  }
+  return { data: { error: "Unknown action" }, error: null };
+}
+
+function mockManageSubscription(body: { subscriptionId?: string; action?: string }) {
+  const sub = mockSubscriptions.find((s) => s.id === body.subscriptionId);
+  if (!sub || (body.action !== "cancel" && body.action !== "resume")) {
+    return { data: null, error: { message: "Subscription not found" } };
+  }
+  const isCancel = body.action === "cancel";
+  if (sub.cancel_at_period_end !== isCancel) {
+    sub.cancel_at_period_end = isCancel;
+    sub.updated_at = new Date().toISOString();
+    const plan = planForSubscription(sub, mockOrders as Order[], mockOrderItems as OrderItem[]);
+    const label = `${plan.label} (${formatCents(plan.monthlyCents, plan.currency)}/month)`;
+    const until = sub.current_period_end ? formatDate(sub.current_period_end) : "the end of the paid month";
+    const event: ActivityEvent = {
+      id: Math.max(0, ...mockActivityEvents.map((e) => e.id)) + 1,
+      org_id: sub.org_id,
+      actor_id: null,
+      kind: isCancel ? "subscription_canceling" : "subscription_resumed",
+      request_id: null,
+      summary: isCancel
+        ? `Cancelled: ${label}. Stays active until ${until}, no further charges`
+        : `Cancellation undone: ${label} keeps renewing monthly`,
+      is_internal: false,
+      created_at: new Date().toISOString(),
+    };
+    mockActivityEvents.unshift(event);
+    try {
+      sessionStorage.setItem(DEMO_SUBS_KEY, JSON.stringify([...readDemoSubChanges(), { subscriptionId: sub.id, cancel: isCancel, event }]));
+    } catch {
+      // storage blocked: the change lasts until the next reload
+    }
+  }
+  return {
+    data: { cancel_at_period_end: sub.cancel_at_period_end, current_period_end: sub.current_period_end, status: sub.status },
+    error: null,
+  };
+}
 
 type Row = Record<string, unknown>;
 type MockResult = { data: unknown; error: { message: string } | null };
@@ -48,12 +230,14 @@ const TABLES: Record<string, Row[]> = {
   // the realistic starting state, and it lets these forms actually "succeed"
   // in test mode instead of failing on an unregistered table.
   onboarding_assets: [],
-  contact_submissions: [],
-  newsletter_signups: [],
+  contact_submissions: DEMO_LEADS as unknown as Row[],
+  newsletter_signups: DEMO_NEWSLETTER as unknown as Row[],
   brand_kits: [],
   performance_reports: mockPerformanceReports as unknown as Row[],
   activity_events: mockActivityEvents as unknown as Row[],
   activity_reads: [],
+  social_logins: DEMO_SOCIAL_LOGINS as unknown as Row[],
+  social_login_events: DEMO_SOCIAL_EVENTS as unknown as Row[],
 };
 
 // Column defaults the real schema fills in on insert.
@@ -226,6 +410,15 @@ class MockQueryBuilder implements PromiseLike<MockResult> {
         rows = rows.filter((row) => (this.table === "comments" ? row.visibility === "client" : !row.is_internal));
       }
     }
+    // And the one rule every client table shares: a client only ever sees
+    // their own org (plus staff names), never another demo company's rows.
+    const viewer = getStoredTestIdentityKey();
+    if (viewer && TEST_IDENTITIES[viewer].role === "client") {
+      const ownOrg = TEST_IDENTITIES[viewer].orgId;
+      if (this.table === "organizations") rows = rows.filter((row) => row.id === ownOrg);
+      else if (this.table === "profiles") rows = rows.filter((row) => row.org_id === ownOrg || row.role !== "client");
+      else rows = rows.filter((row) => !("org_id" in row) || row.org_id === ownOrg);
+    }
     if (this.orderCol) {
       const col = this.orderCol;
       const dir = this.orderAscending ? 1 : -1;
@@ -278,7 +471,11 @@ export const mockSupabaseClient = {
       last_sign_in_at: new Date(Date.now() - (i + 1) * 5400000).toISOString(),
       providers: i === 1 ? ["email", "google"] : ["email"],
     }));
-    return { data, error: null };
+    const known = new Set(data.map((d) => d.id));
+    const more = [...DEMO_STAFF_ACCOUNTS, ...demo.accounts]
+      .filter((a) => !known.has(a.id))
+      .map((a) => ({ ...a, is_active: true, email_confirmed_at: a.created_at, providers: ["email"] }));
+    return { data: [...data, ...more], error: null };
   },
   storage: {
     from(_bucket: string) {
@@ -296,6 +493,14 @@ export const mockSupabaseClient = {
   },
   functions: {
     invoke: async (name: string, options?: { body?: Record<string, unknown> }) => {
+      if (name === "social-access") {
+        const result = mockSocialAccess((options?.body ?? {}) as Record<string, unknown>);
+        saveDemoSocial();
+        return result;
+      }
+      if (name === "manage-subscription") {
+        return mockManageSubscription((options?.body ?? {}) as { subscriptionId?: string; action?: string });
+      }
       if (name !== "invite-client") {
         return { data: null, error: { message: `Unmocked function "${name}"` } };
       }

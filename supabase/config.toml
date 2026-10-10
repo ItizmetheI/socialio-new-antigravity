@@ -14,3 +14,11 @@ verify_jwt = false
 
 [functions.invite-client]
 verify_jwt = true
+
+[functions.manage-subscription]
+# A signed-in client cancels or resumes their own plan.
+verify_jwt = true
+
+[functions.social-access]
+# Client social logins: encrypt on save, staff-only reveal, every action logged.
+verify_jwt = true

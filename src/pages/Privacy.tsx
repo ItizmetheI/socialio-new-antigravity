@@ -46,6 +46,7 @@ const SECTIONS: LegalSection[] = [
           <li><strong>Account details:</strong> your name, email address and password. Passwords are stored by our authentication provider in hashed form; we can't read them.</li>
           <li><strong>Google sign-in</strong> (if you use it): the name, email address and profile picture Google shares with us. We don't receive your Google password.</li>
           <li><strong>Your business and brief:</strong> onboarding answers, brand kit (colours, tone, rules, social handles), requests, comments, approvals, and files you upload such as logos, product photos and guidelines.</li>
+          <li><strong>Social account logins you choose to share</strong> (username or email, password and any login notes) so we can post for you. They're encrypted before they're stored, only our team can open them, every time someone does is logged, and you can update or remove them from your account at any time. Tell us when you leave and we delete them.</li>
           <li><strong>Orders and billing:</strong> what you bought, amounts, dates, subscription status and Stripe customer and payment references.</li>
           <li><strong>Contact form and newsletter:</strong> your name, email, company and message, or just your email if you join the newsletter.</li>
           <li><strong>Performance figures</strong> you share, or we report, about your social accounts.</li>
@@ -134,8 +135,7 @@ const SECTIONS: LegalSection[] = [
         <p>We only use storage the site needs to work. We don't use advertising cookies, tracking pixels or analytics tools. Your browser stores:</p>
         <ul>
           <li>your sign-in session, so you stay logged in;</li>
-          <li>your cart, so it's still there when you come back;</li>
-          <li>your light or dark theme choice.</li>
+          <li>your cart, so it's still there when you come back.</li>
         </ul>
         <p>
           You can clear these in your browser settings at any time; you'll be signed out and your cart emptied. Stripe sets its own cookies on its checkout pages for

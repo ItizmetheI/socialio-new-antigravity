@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { CheckCircle2, CreditCard, FileUp, MessageSquare, Plus, ScrollText, Shuffle } from "lucide-react";
+import { BadgeCheck, CheckCircle2, CircleSlash, CreditCard, FileUp, MessageSquare, Plus, RotateCcw, ScrollText, Shuffle, XCircle } from "lucide-react";
 import { supabase } from "../../lib/supabase";
 import { timeAgo } from "../../lib/format";
 import { useLiveRefresh } from "../../lib/useLiveRefresh";
@@ -15,6 +15,10 @@ const ICONS: Record<ActivityKind, typeof Plus> = {
   plan_approved: CheckCircle2,
   plan_changes_requested: ScrollText,
   payment_received: CreditCard,
+  subscription_started: BadgeCheck,
+  subscription_canceling: XCircle,
+  subscription_resumed: RotateCcw,
+  subscription_ended: CircleSlash,
 };
 
 type Props = {

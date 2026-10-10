@@ -26,6 +26,13 @@ export const TEST_IDENTITIES = {
     fullName: "Sam Okafor",
     email: "sam@northwind-coffee.example",
   },
+  "client-cancelled": {
+    id: "client-saffron",
+    role: "client" as UserRole,
+    orgId: "org-saffron",
+    fullName: "Arjun Mehta",
+    email: "arjun@saffrontable.example",
+  },
   internal: {
     id: "staff-morgan",
     role: "internal" as UserRole,

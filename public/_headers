@@ -2,8 +2,7 @@
 # copies everything in public/ to dist/ as-is). Docs:
 # https://developers.cloudflare.com/workers/static-assets/headers/
 #
-# CSP: scripts only from this origin (no inline scripts — the theme bootstrap
-# is /theme-init.js), data only to our Supabase project, media only from the
+# CSP: scripts only from this origin (no inline scripts), data only to our Supabase project, media only from the
 # Streamable CDN and Supabase Storage (signed deliverable URLs), images from
 # Unsplash. Nothing may frame the site. Stripe Checkout and Google sign-in are
 # full-page navigations, which CSP doesn't restrict. Adding a new third party

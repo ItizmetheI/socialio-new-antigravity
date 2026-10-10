@@ -5,6 +5,7 @@ import { getStoredTestIdentityKey, setStoredTestIdentityKey, type TestIdentityKe
 const OPTIONS: { key: TestIdentityKey; label: string; detail: string; home: string }[] = [
   { key: "client-pending", label: "New client", detail: "Just signed up, hasn't sent their brief", home: "/app" },
   { key: "client-approved", label: "Active client", detail: "Plan approved, work in progress, a piece to review", home: "/app" },
+  { key: "client-cancelled", label: "Cancelled client", detail: "Cancelled yesterday, plan runs to the end of the month", home: "/app/account#billing" },
   { key: "internal", label: "Team member", detail: "Sees all clients and the work", home: "/ops" },
   { key: "admin", label: "Owner (admin)", detail: "Everything, plus money, accounts and team", home: "/ops" },
 ];
@@ -29,7 +30,7 @@ export default function RoleSwitcher() {
       {isOpen && (
         <div className="bg-surface-container border border-amber-400/40 rounded-2xl shadow-2xl p-3 w-72 max-w-[calc(100vw-2rem)]" role="dialog" aria-label="Demo controls">
           <p className="text-xs text-on-surface-variant px-2 pt-1 pb-3 leading-relaxed">
-            Demo with sample data. Nothing here touches real accounts. Pick who to view the portal as:
+            Demo agency: 8 clients, a team of 4, real-looking money and work. Nothing here touches real accounts. View the portal as:
           </p>
           <div className="flex flex-col gap-1">
             {OPTIONS.map(({ key, label, detail, home }) => (
@@ -48,7 +49,15 @@ export default function RoleSwitcher() {
           <div className="flex gap-2 mt-2 pt-2 border-t border-white/10">
             <button
               type="button"
-              onClick={() => window.location.reload()}
+              onClick={() => {
+                try {
+                  sessionStorage.removeItem("socialio-demo-subscription-changes");
+                  sessionStorage.removeItem("socialio-demo-social-logins");
+                } catch {
+                  // nothing saved
+                }
+                window.location.reload();
+              }}
               className="flex-1 inline-flex items-center justify-center gap-1.5 text-xs font-bold px-3 py-2 rounded-lg text-on-surface-variant hover:text-white hover:bg-white/5"
             >
               <RotateCcw className="w-3.5 h-3.5" /> Reset sample data

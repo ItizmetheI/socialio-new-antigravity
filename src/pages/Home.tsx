@@ -442,13 +442,13 @@ export default function Home() {
                   <div className="absolute bottom-8 left-8 w-8 h-8 border-b-2 border-l-2 border-white/10 rounded-bl-lg"></div>
                   <div className="absolute bottom-8 right-8 w-8 h-8 border-b-2 border-r-2 border-white/10 rounded-br-lg"></div>
                   
-                  <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/50 mb-2">Sprint Day</span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-white/50 mb-2">Money back guaranteed</span>
                   <span className="text-9xl hero-display font-bold text-white tracking-tighter drop-shadow-2xl">
                     <Counter start={0} end={14} duration={1200} inView={isGuaranteeInView} />
                   </span>
                   
                   <div className="mt-8 flex items-center gap-2">
-                     <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Guaranteed</span>
+                     <span className="font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-white/80">Days</span>
                   </div>
                </div>
              </div>

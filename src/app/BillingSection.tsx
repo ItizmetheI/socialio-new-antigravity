@@ -7,6 +7,7 @@ import EmptyState from "../components/EmptyState";
 import ErrorBanner from "../components/ErrorBanner";
 import { formatCents, formatDate } from "../lib/format";
 import type { Order, OrderItem, Payment, Subscription } from "../lib/database.types";
+import SubscriptionCard from "./SubscriptionCard";
 
 type LoadState = "loading" | "error" | "ready";
 
@@ -26,7 +27,7 @@ const ORDER_STATUS_STYLES: Record<Order["status"], string> = {
 // Account page section: subscription, every order, every payment.
 export default function BillingSection({ orgId }: { orgId: string }) {
   const [state, setState] = useState<LoadState>("loading");
-  const [subscription, setSubscription] = useState<Subscription | null>(null);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [items, setItems] = useState<OrderItem[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
@@ -35,7 +36,7 @@ export default function BillingSection({ orgId }: { orgId: string }) {
     let isMounted = true;
     (async () => {
       const [subsRes, ordersRes, paymentsRes] = await Promise.all([
-        supabase.from("subscriptions").select("*").eq("org_id", orgId).order("created_at", { ascending: false }).limit(1).maybeSingle(),
+        supabase.from("subscriptions").select("*").eq("org_id", orgId).order("created_at", { ascending: false }),
         supabase.from("orders").select("*").eq("org_id", orgId).order("created_at", { ascending: false }),
         supabase.from("payments").select("*").eq("org_id", orgId).order("created_at", { ascending: false }),
       ]);
@@ -52,7 +53,7 @@ export default function BillingSection({ orgId }: { orgId: string }) {
         setState("error");
         return;
       }
-      setSubscription(subsRes.data as Subscription | null);
+      setSubscriptions((subsRes.data ?? []) as Subscription[]);
       setOrders(orderRows);
       setItems((itemsRes.data ?? []) as OrderItem[]);
       setPayments((paymentsRes.data ?? []) as Payment[]);
@@ -81,24 +82,27 @@ export default function BillingSection({ orgId }: { orgId: string }) {
 
   return (
     <div>
-      <section className="bg-surface-container border border-white/10 rounded-2xl p-5 md:p-6 mb-8">
-        <h3 className="font-bold text-white mb-4">Your subscription</h3>
-        {subscription ? (
-          <div className="flex flex-wrap items-center justify-between gap-4">
-            <div>
-              <div className="text-white font-bold capitalize">{subscription.status.replace("_", " ")}</div>
-              <div className="text-sm text-on-surface-variant">
-                {subscription.cancel_at_period_end ? "Ends" : "Renews"} on {formatDate(subscription.current_period_end)}
-              </div>
-            </div>
-            <p className="text-sm text-on-surface-variant max-w-sm">
-              To change volume, pause, or cancel, email{" "}
-              <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">{SUPPORT_EMAIL}</a> — changes apply from your next billing cycle.
+      <section className="mb-8">
+        <h3 className="font-bold text-white mb-4">Your plan{subscriptions.length > 1 ? "s" : ""}</h3>
+        {subscriptions.length > 0 ? (
+          <div className="flex flex-col gap-3">
+            {subscriptions.map((sub) => (
+              <SubscriptionCard
+                key={sub.id}
+                subscription={sub}
+                orders={orders}
+                items={items}
+                onChanged={(next) => setSubscriptions((all) => all.map((s) => (s.id === next.id ? next : s)))}
+              />
+            ))}
+            <p className="text-sm text-on-surface-variant">
+              Want more or fewer pieces, or a pause? Email{" "}
+              <a href={`mailto:${SUPPORT_EMAIL}`} className="text-primary hover:underline">{SUPPORT_EMAIL}</a> and it applies from your next billing month.
             </p>
           </div>
         ) : (
-          <p className="text-sm text-on-surface-variant">
-            No active subscription.{" "}
+          <p className="bg-surface-container border border-white/10 rounded-2xl p-5 md:p-6 text-sm text-on-surface-variant">
+            No active plan.{" "}
             <Link to="/pricing" className="text-primary hover:underline">See plans</Link>
           </p>
         )}

@@ -3,6 +3,7 @@ import { Columns3, Inbox, ShieldCheck, Sun, Users } from "lucide-react";
 import DashboardShell, { type NavItem } from "../components/DashboardShell";
 import { useAuth } from "../lib/auth/AuthContext";
 import RequireRole from "../lib/auth/RequireRole";
+import SubscriptionNotices from "./SubscriptionNotices";
 
 // Four places for the team, five for admins — the same set works as a phone
 // bottom bar. Everything client-specific (plan, onboarding, billing,
@@ -18,9 +19,11 @@ const ADMIN_NAV_ITEM: NavItem = { to: "/ops/admin", label: "Admin", end: false, 
 
 function OpsLayoutInner() {
   const { profile } = useAuth();
-  const items = profile?.role === "admin" ? [...STAFF_NAV_ITEMS, ADMIN_NAV_ITEM] : STAFF_NAV_ITEMS;
+  const isAdmin = profile?.role === "admin";
+  const items = isAdmin ? [...STAFF_NAV_ITEMS, ADMIN_NAV_ITEM] : STAFF_NAV_ITEMS;
   return (
     <DashboardShell items={items}>
+      {isAdmin && <SubscriptionNotices />}
       <Outlet />
     </DashboardShell>
   );

@@ -5,10 +5,12 @@ import PageHeader from "../components/workspace/PageHeader";
 import type { ClientOutletContext } from "./ClientLayout";
 import BillingSection from "./BillingSection";
 import BrandSection from "./BrandSection";
+import SocialLoginsSection from "./SocialLoginsSection";
 import ProfileSection from "./ProfileSection";
 
 const SECTIONS = [
   { id: "billing", label: "Billing" },
+  { id: "socials", label: "Social accounts" },
   { id: "brand", label: "Brand kit" },
   { id: "profile", label: "Your details" },
 ];
@@ -70,7 +72,7 @@ export default function AccountPage() {
 
   return (
     <div className="max-w-5xl">
-      <PageHeader title="Account" description="Billing, your brand kit, and your login details." />
+      <PageHeader title="Account" description="Billing, your social accounts, your brand kit, and your login details." />
       <nav aria-label="Account sections" className="flex flex-wrap gap-2 mb-10">
         {SECTIONS.map((s) => (
           <button
@@ -85,6 +87,9 @@ export default function AccountPage() {
       </nav>
       <Section id="billing" title="Billing">
         <BillingSection orgId={orgId} />
+      </Section>
+      <Section id="socials" title="Social accounts">
+        <SocialLoginsSection orgId={orgId} />
       </Section>
       <Section id="brand" title="Brand kit">
         <BrandSection orgId={orgId} />
