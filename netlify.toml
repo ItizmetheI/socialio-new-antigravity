@@ -10,6 +10,24 @@
 # links in account emails…) gets index.html and the app routes it.
 # Real files like /logo.png and /assets/* are served first because a
 # non-forced 200 rewrite only applies when no file matches.
+# The previous site's portal addresses (already indexed and bookmarked).
+[[redirects]]
+  from = "/client-login"
+  to = "/app/login"
+  status = 301
+[[redirects]]
+  from = "/client-dashboard"
+  to = "/app"
+  status = 301
+[[redirects]]
+  from = "/client-dashboard/*"
+  to = "/app"
+  status = 301
+[[redirects]]
+  from = "/sitemap-index.xml"
+  to = "/sitemap.xml"
+  status = 301
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

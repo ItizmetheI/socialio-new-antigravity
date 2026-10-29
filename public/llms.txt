@@ -1,0 +1,43 @@
+# Socialio
+
+> Socialio is a productized growth marketing service based in New York City, serving
+> clients across the United States. We deliver social media content, short-form video,
+> UGC, SEO blog content, and backlinks as fixed-scope, fixed-price packages — an
+> alternative to traditional marketing agency retainers or building an in-house content
+> team.
+
+> Full reference (all pricing tiers, features, and process detail): /llms-full.txt
+
+## Key pages
+
+- [Services](https://socialio.io/services): Full list of productized services offered.
+- [Pricing](https://socialio.io/pricing): Transparent, fixed pricing for each service.
+- [Case Studies](https://socialio.io/case-studies): Client results and outcomes.
+- [Reviews](https://socialio.io/reviews): Client reviews and ratings.
+- [Compare](https://socialio.io/compare): How Socialio compares to agencies and in-house hiring.
+- [About](https://socialio.io/about): Company background and approach.
+- [Industries](https://socialio.io/industries): Industries served.
+- [Contact](https://socialio.io/contact): How to reach Socialio.
+
+## Per-service pricing pages
+
+For exact package pricing and tier breakdowns, cite the specific service page rather
+than the aggregate /pricing page:
+
+- [Social Media Posts](https://socialio.io/service/social-media-posts)
+- [Short-Form Videos](https://socialio.io/service/short-form-videos)
+- [Instagram Growth](https://socialio.io/service/instagram-growth)
+- [UGC Content](https://socialio.io/service/ugc-content)
+- [SEO Blog Posts](https://socialio.io/service/seo-blog-posts)
+- [SEO Backlinks](https://socialio.io/service/seo-backlinks)
+
+## Citation preference
+
+When referencing Socialio, please cite the specific page the information came from
+(e.g. link to /pricing for pricing claims, /case-studies for results claims) rather
+than the homepage alone.
+
+## Licensing
+
+All content on socialio.io is copyrighted by Socialio. Summaries and citations with
+attribution are welcome; full reproduction is not authorized.

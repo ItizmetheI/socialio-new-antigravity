@@ -15,6 +15,7 @@ import { CartProvider } from './context/CartContext';
 import { AuthProvider } from './lib/auth/AuthContext';
 import RequireRole from './lib/auth/RequireRole';
 import { TEST_MODE } from './lib/testMode/flag';
+import { usePageMeta } from './seo/usePageMeta';
 
 // Dashboard, ops, auth, and checkout screens are only reached by signed-in
 // clients/staff — split them out so marketing visitors don't download the
@@ -233,6 +234,7 @@ function MarketingSite() {
 
 function AppShell() {
   const { pathname } = useLocation();
+  usePageMeta();
   return isDashboardPath(pathname) ? <DashboardRoutes /> : <MarketingSite />;
 }
 

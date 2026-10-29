@@ -1,0 +1,38 @@
+User-agent: *
+Allow: /
+# Dashboards, sign-in and checkout stay crawlable on purpose: they answer
+# with X-Robots-Tag: noindex (public/_headers), which crawlers only see if
+# they're allowed to fetch the page.
+
+# Explicit allow for AI/LLM crawlers — the site owner wants maximum visibility
+# and citation eligibility in AI-generated answers (ChatGPT, Claude, Perplexity).
+# Already covered by the wildcard above; listed explicitly so intent is clear
+# and this doesn't silently break if a future rule narrows the wildcard.
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://socialio.io/sitemap.xml

@@ -17,3 +17,20 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Cross-Origin-Opener-Policy: same-origin
   Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://images.unsplash.com https://arihkzzgylfmcqgdzjqf.supabase.co; media-src 'self' blob: https://*.streamable.com https://arihkzzgylfmcqgdzjqf.supabase.co; connect-src 'self' https://arihkzzgylfmcqgdzjqf.supabase.co wss://arihkzzgylfmcqgdzjqf.supabase.co; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests
+
+# Private pages never belong in search results (robots.txt asks too; this is
+# the rule search engines are required to honour).
+/app
+  X-Robots-Tag: noindex, nofollow
+/app/*
+  X-Robots-Tag: noindex, nofollow
+/ops
+  X-Robots-Tag: noindex, nofollow
+/ops/*
+  X-Robots-Tag: noindex, nofollow
+/checkout
+  X-Robots-Tag: noindex, nofollow
+/checkout/*
+  X-Robots-Tag: noindex, nofollow
+/set-password
+  X-Robots-Tag: noindex, nofollow
